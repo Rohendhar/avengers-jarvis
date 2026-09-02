@@ -227,28 +227,25 @@ def cloud_scheduler_background_thread():
 threading.Thread(target=cloud_scheduler_background_thread, daemon=True).start()
 
 def get_live_workspace_context():
+    """Reads priority master project documents with strict size bounds for instant <4s latency."""
     context_sections = []
     
-    notes_dir = os.path.join(LOCAL_ROOT, "Meeting Notes")
-    if os.path.exists(notes_dir):
-        files = sorted([f for f in os.listdir(notes_dir) if f.endswith(".md")], reverse=True)
-        for f in files:
+    priority_files = [
+        ("Meeting Notes", "2026-09-02_Team_Meeting_Minutes.md"),
+        ("Funding", "CEAS_Innovation_Challenge_Fall2026_Guide.md"),
+        ("Timeline", "milestones.md"),
+        ("Budget", "procurement_and_funding.md"),
+        ("Architecture", "system_overview.md")
+    ]
+    
+    for folder, fname in priority_files:
+        p = os.path.join(LOCAL_ROOT, folder, fname)
+        if os.path.exists(p):
             try:
-                with open(os.path.join(notes_dir, f), "r", encoding="utf-8") as mf:
-                    context_sections.append(f"### [DOCUMENT: Meeting Notes/{f}]\n{mf.read()}")
+                with open(p, "r", encoding="utf-8") as f:
+                    context_sections.append(f"### [DOCUMENT: {folder}/{fname}]\n{f.read()[:2000]}")
             except Exception:
                 pass
-
-    for folder in ["Funding", "Timeline", "Budget", "Architecture", "Business", "Organization"]:
-        f_dir = os.path.join(LOCAL_ROOT, folder)
-        if os.path.exists(f_dir):
-            for file in os.listdir(f_dir):
-                if file.endswith(".md"):
-                    try:
-                        with open(os.path.join(f_dir, file), "r", encoding="utf-8") as mf:
-                            context_sections.append(f"### [DOCUMENT: {folder}/{file}]\n{mf.read()[:3000]}")
-                    except Exception:
-                        pass
 
     return "\n\n".join(context_sections)
 
