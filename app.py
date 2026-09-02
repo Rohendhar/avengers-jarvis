@@ -11,11 +11,16 @@ from datetime import datetime
 from flask import Flask, request, jsonify, render_template
 from dotenv import load_dotenv
 
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-LOCAL_ROOT = PROJECT_ROOT
+CURR_DIR = os.path.dirname(os.path.abspath(__file__))
+# Check if root is current dir (Render) or 2 levels up (local Tools/web_hub)
+if os.path.exists(os.path.join(CURR_DIR, "Meeting Notes")) or os.path.exists(os.path.join(CURR_DIR, "Funding")):
+    LOCAL_ROOT = CURR_DIR
+else:
+    LOCAL_ROOT = os.path.abspath(os.path.join(CURR_DIR, "..", ".."))
+
 load_dotenv(os.path.join(LOCAL_ROOT, ".env"))
 
-app = Flask(__name__, template_folder="templates")
+app = Flask(__name__, template_folder=os.path.join(LOCAL_ROOT, "templates") if os.path.exists(os.path.join(LOCAL_ROOT, "templates")) else "templates")
 
 def get_live_workspace_context():
     """Reads all real-time documents across all workspace folders, prioritizing latest meeting notes."""
