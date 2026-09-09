@@ -254,6 +254,7 @@ def get_live_workspace_context():
     context_sections = []
     
     priority_files = [
+        ("Meeting Notes", "2026-09-09_Team_Meeting_Minutes.md"),
         ("Meeting Notes", "2026-09-02_Team_Meeting_Minutes.md"),
         ("Funding", "CEAS_Innovation_Challenge_Fall2026_Guide.md"),
         ("Timeline", "milestones.md"),
@@ -384,9 +385,9 @@ def status():
         "status": "ONLINE",
         "system": "J.A.R.V.I.S. Mark VII",
         "team": "THE AVENGERS (UC Capstone)",
-        "today": "Wednesday, September 2, 2026",
+        "today": datetime.now().strftime("%A, %B %d, %Y"),
         "scheduler": "24/7 ACTIVE",
-        "version": "7.4.0"
+        "version": "7.5.0"
     })
 
 if __name__ == "__main__":
