@@ -25,20 +25,22 @@
 
 ## 🏆 2. Funding Opportunities
 
-### CEAS Tribunal Innovation Challenge (Fall 2026) — Verified Slide Deck Rules
+### CEAS Tribunal Innovation Challenge (Fall 2026) — Verified Financial Protocol
 - **Weekly Sessions**: Wednesdays @ 5:30 PM (Kautz Attic, Lindner Hall 4350).
-- **Executive Leadership**: Dr. Jason Heikenfeld ("Next Mindset" Director, most patents in UC history), Matthew Bish (President), Elizabeth Watson (Chief of Staff).
-- **Stipends & Prizes**:
-  - **$150.00 Stipend #1**: Paid upon submitting 5-Minute Pitch Deck Video (Due: **Sept 30**).
-  - **$150.00 Stipend #2**: Paid upon completing Prototype Day (Nov 4) & Final Competition (Nov 18).
-  - **$300.00 Top 25% Bonus**: Awarded to teams finishing in top 25% of judges' scores.
-  - **1st, 2nd, 3rd Place Awards**: Tiered cash awards + commemorative giant check.
+- **Per-Student Funding Model**:
+  - **$300.00 / person** for completing all 3 deliverables = **$1,200.00 Total Team Grant**.
+  - **$150.00 / person ($600.00 Team Total)** awarded upon submitting the 5-Minute Pitch Deck Video (Due: **Sept 28**).
+  - *Strategic Decision*: The team has formally agreed to allocate the entire **$600.00 upfront video payout directly as active prototype working capital**!
+  - **$300.00 / person Top 25% Bonus** = Additional **$1,200.00 Team Bonus**.
+  - **Top 3 Podium Prizes**: Up to **$700.00 / person**.
 - **100% Cost of Materials Reimbursement**:
-  - All materials & 1819 Makerspace resources are eligible for reimbursement!
-  - Must fill out the **Purchase Request Excel** from Canvas and submit for approval.
-  - Keep itemized receipts (Amazon, McMaster, Lowe's, 1819). Reimbursement distributed at semester conclusion after Final Competition.
-  - ⚠️ *Policy Note*: Hardware & materials only; software/AI tool subscriptions cannot be reimbursed.
-- **Academic Credit**: Completion counts for **1 University Honors Program (UHP) experience**.
+  - All hardware, electronics, 3D printing filament, CNC, welding, and 1819 Makerspace fabrication expenses are reimbursed.
+  - Payout is distributed at the end of the semester after the **November 18th Final Competition**.
+- **Strict Procurement & Reimbursement Protocol**:
+  1. Complete the official **Purchase Request Form** and obtain Innovation Chair authorization **BEFORE** buying any materials.
+  2. Maintain strictly itemized receipts (vendor, date, unit price, quantity, tax).
+  3. **No gift cards** under any circumstance.
+  4. Team purchase records tracked centrally in master Excel sheet (Lead: Aron).
 
 ### 1819 Venture Lab & Startup Weekend (UC)
 - **Grant Potential**: $5,000–$10,000 via Venture Lab Pre-Accelerator.
