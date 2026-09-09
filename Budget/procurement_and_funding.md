@@ -41,6 +41,9 @@
   2. Maintain strictly itemized receipts (vendor, date, unit price, quantity, tax).
   3. **No gift cards** under any circumstance.
   4. Team purchase records tracked centrally in master Excel sheet (Lead: Aron).
+  5. **1819 Makerspace Pre-Charge**: If charging directly to the 1819 Makerspace, email Elizabeth, Andrew, or Julia at `innovation-challenge@ucmail.uc.edu` *before* using the space.
+- **Official Pitch Deck PowerPoint Template**:
+  - Download layout: [cdn2.me-qr.com/pdf/17693376.pdf](https://cdn2.me-qr.com/pdf/17693376.pdf)
 
 ### 1819 Venture Lab & Startup Weekend (UC)
 - **Grant Potential**: $5,000–$10,000 via Venture Lab Pre-Accelerator.
