@@ -3,8 +3,13 @@
     {
       "name": "Ro",
       "email": "rohendrr@mail.uc.edu",
-      "role": "Documentation, Minutes & AI Integration",
+      "role": "Project Lead, Systems Architecture & Bottling Co-Lead",
       "active_tasks": [
+        "\ud83d\udea8 [DUE SEPT 15] Finalize Team Lead / Sponsor 101 doc for Prof. Jacob Cress",
+        "\ud83d\udea8 [DUE SEPT 23] Complete Team Design Proposal: Bottling CAD layout & pump flow regulation specs",
+        "\ud83d\udcc5 [DUE SEPT 28] Record & Submit 5-Minute Pitch Deck Video ( Team Payout)",
+        "Submit purchase request forms for pre-approval to Innovation Chair before buying",
+        "Meet twice weekly: before and after Wednesday 1:30 PM class",
         "\ud83d\udea8 [URGENT TONIGHT] Submit Student-Initiated Project Document & Innovation Challenge Form (Due Sept 2)",
         "\ud83d\udcc5 [MILESTONE 1 - CRITICAL] Record & Submit 5-Minute Pitch Deck Video (Due: Sept 30, 2026 \u2014  Stipend)",
         "\ud83d\udcc5 [MILESTONE 2 - CRITICAL] Prepare Functional Prototype Showcase Day (Due: Nov 4, 2026)",
@@ -76,8 +81,13 @@
     {
       "name": "Aron",
       "email": "josepha7@mail.uc.edu",
-      "role": "Procurement, Finance & Budgeting",
+      "role": "Finance, Procurement & Bottling Subsystem Co-Lead",
       "active_tasks": [
+        "\ud83d\udea8 [DUE SEPT 23] Complete Bottling Section Proposal: 8-bottle array BOM quotes, food-grade tubing, rubber corks",
+        "\ud83d\udea8 [DUE SEPT 23] Set up Master Purchase Request Excel for Innovation Chair pre-approval & itemized tracking",
+        "\ud83d\udcc5 [DUE SEPT 28] Record & Submit 5-Minute Pitch Deck Video ( Team Payout)",
+        "Allocate  Pitch Deck payout directly as active prototype working capital",
+        "Meet twice weekly: before and after Wednesday 1:30 PM class",
         "\ud83d\udea8 [URGENT TONIGHT] Submit Student-Initiated Project Document & Innovation Challenge Form (Due Sept 2)",
         "\ud83d\udcc5 [MILESTONE 1 - CRITICAL] Record & Submit 5-Minute Pitch Deck Video (Due: Sept 30, 2026 \u2014  Stipend)",
         "\ud83d\udcc5 [MILESTONE 2 - CRITICAL] Prepare Functional Prototype Showcase Day (Due: Nov 4, 2026)",
@@ -141,8 +151,13 @@
     {
       "name": "Eli",
       "email": "radabaer@mail.uc.edu",
-      "role": "Inventory & Resource Management",
+      "role": "Electrical Subsystem Lead & Lift Mechanism Co-Lead",
       "active_tasks": [
+        "\ud83d\udea8 [DUE SEPT 23] Complete Electrical Section Proposal: PLC spec, 24V power supply, relays, wiring layout",
+        "\ud83d\udea8 [DUE SEPT 23] Lift Mechanism Layout Drawing (Linear rail, stepper motor, pulley/lead screw drive with Shyam)",
+        "\ud83d\udcc5 [DUE SEPT 28] Record & Submit 5-Minute Pitch Deck Video ( Team Payout)",
+        "Research reusable stainless steel ice cubes vs. compact thermoelectric mini-chiller",
+        "Meet twice weekly: before and after Wednesday 1:30 PM class",
         "\ud83d\udea8 [URGENT TONIGHT] Submit Student-Initiated Project Document & Innovation Challenge Form (Due Sept 2)",
         "\ud83d\udcc5 [MILESTONE 1 - CRITICAL] Record & Submit 5-Minute Pitch Deck Video (Due: Sept 30, 2026 \u2014  Stipend)",
         "\ud83d\udcc5 [MILESTONE 2 - CRITICAL] Prepare Functional Prototype Showcase Day (Due: Nov 4, 2026)",
@@ -205,8 +220,13 @@
     {
       "name": "Shyam",
       "email": "patel8s7@mail.uc.edu",
-      "role": "Time Management & Scheduling",
+      "role": "Operations, Master Gantt Architecture & Lift Mechanism Co-Lead",
       "active_tasks": [
+        "\ud83d\udea8 [TOP PRIORITY - DUE SEPT 23] Team Design Proposal: Lift Mechanism Layout Drawing with Eli",
+        "\ud83d\udea8 [TOP PRIORITY] Integrate Master Unified Timeline into Master Gantt Chart (Sept 15, 23, 28, Oct 2, Nov 4, Nov 18, Dec 1)",
+        "\ud83d\udcc5 [DUE SEPT 28] Record & Submit 5-Minute Pitch Deck Video ( Team Payout)",
+        "Ice & Thermal Trade Study (Reusable metal cubes vs. mini chiller)",
+        "Meet twice weekly: before and after Wednesday 1:30 PM class",
         "\ud83d\udea8 [URGENT TONIGHT] Submit Student-Initiated Project Document & Innovation Challenge Form (Due Sept 2)",
         "\ud83d\udcc5 [MILESTONE 1 - CRITICAL] Record & Submit 5-Minute Pitch Deck Video (Due: Sept 30, 2026 \u2014  Stipend)",
         "\ud83d\udcc5 [MILESTONE 2 - CRITICAL] Prepare Functional Prototype Showcase Day (Due: Nov 4, 2026)",
