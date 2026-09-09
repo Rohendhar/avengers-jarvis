@@ -18,18 +18,20 @@ gantt
     section Phase 1: Conceptual & Sourcing
     Kickoff & Requirements Gathering       :done,    des1, 2026-08-27, 2026-09-07
     Innovation Challenge First Meeting    :done,    ic1,  2026-09-02, 1d
-    1819 Makerspace Hands-On Tour         :         ic_tour, 2026-09-20, 2026-09-26
-    IC 5-Min Video Pitch ($150 Stipend)   :crit,    ic_vid, 2026-09-15, 2026-09-30
-    Component Sourcing & Bench Testing    :         des3, 2026-09-10, 2026-10-01
+    Scope Freeze & Section Assignments    :done,    des2, 2026-09-09, 1d
+    Team Lead Doc / Sponsor 101 to Cress  :active,  cress1, 2026-09-09, 2026-09-15
+    Team Design Proposal (Quotes & CAD)   :crit,    des_prop, 2026-09-15, 2026-09-23
+    IC 5-Min Video Pitch ($600 Payout)    :crit,    ic_vid, 2026-09-20, 2026-09-28
+    Senior Design Draft Proposal          :         draft_prop, 2026-09-28, 2026-10-02
     Preliminary Design Review (PDR)       :milestone, m1, 2026-10-05, 0d
 
     section Phase 2: Subsystem Prototyping
     CAD Modeling & Frame Design           :         sub1, 2026-10-01, 2026-10-25
     Elevator & Linear Motion Test Rig     :         sub2, 2026-10-15, 2026-11-10
     Pump & Fluid Flow Calibration         :         sub3, 2026-10-20, 2026-11-15
-    IC Prototype Showcase Day             :crit,    ic_proto, 2026-11-04, 1d
+    IC Prototype Showcase & Mentor Day    :crit,    ic_proto, 2026-11-04, 1d
     IC Final Gala & Competition           :crit,    ic_final, 2026-11-18, 1d
-    Critical Design Review (CDR)          :milestone, m2, 2026-11-25, 0d
+    Senior Design Review for Jacob        :milestone, m2, 2026-12-01, 0d
 
     section Phase 3: Integration & Table Build
     Frame Fabrication & Welding           :         int1, 2026-11-15, 2026-12-15
@@ -44,18 +46,21 @@ gantt
 
 ---
 
-### Immediate Action Items & Course Sign-Offs (Week of Sept 2, 2026)
-- [x] **Ro**: Offload Jarvis AI Assistant to 24/7 public server (Render cloud deployment complete).
-- [x] **Ro**: Fix Jarvis link so URL remains permanent (`https://avengers-jarvis.onrender.com`).
-- [x] **All Members**: Attend CEAS Innovation Challenge Kickoff Meeting (Sept 2 @ 5:30 PM, Kautz Attic).
-- [ ] **All Members**: Submit Innovation Challenge registration form via Teams.
-- [ ] **All Members**: Join the Innovation Challenge Canvas course.
-- [ ] **All Members**: Complete Student-Initiated Project Document (Due: **Tonight, Sept 2**).
-- [ ] **Ro & Team**: Obtain Professor Jacob Cress sign-off and course approval.
-- [ ] **All Members**: Finalize & submit neutral project description (*"a device or system that will automatically pour a user-influenced beverage from a selection of available drink options"*).
-- [ ] **Eli**: Create component inventory checklist and upload to Google Drive (Target: **Sept 4**).
-- [ ] **Aron**: Set up Purchase Request Excel for 1819 Makerspace material reimbursement.
-- [ ] **Team**: Record and submit 5-Minute Pitch Deck Video (Due: **September 30, 2026** — unlocks $150 stipend).
+### Immediate Action Items & Deadlines (Sept 9 – Sept 28, 2026)
+- [x] **Ro**: Offload Jarvis AI Assistant to 24/7 cloud server (`https://avengers-jarvis.onrender.com`).
+- [x] **Ro**: Deploy permanent, non-expiring GitHub API token and 24/7 cloud heartbeat.
+- [x] **All Members**: Attend CEAS Innovation Challenge Kickoff Meeting.
+- [ ] **All Members**: Join the Innovation Challenge Canvas course (mandatory for the $300/person stipend).
+- [ ] **All Members**: Submit introductory team lead / sponsor 101 doc to **Professor Jacob Cress** (Due: **Sept 15**).
+- [ ] **All Members**: Complete Team Design Proposal by **September 23rd** (BOM with vendor quotes + section layout drawings).
+- [ ] **Shyam**: Integrate September 23rd Design Proposal into Master Gantt Chart (**TOP PRIORITY**).
+- [ ] **Eli**: Electrical section lead (PLC, 24V DC power supply, relays, wiring layout).
+- [ ] **Eli & Shyam**: Lift mechanism lead (Z-axis linear rail, motor, pulley/belt or lead screw drive).
+- [ ] **Ro & Aron**: Bottling & fluidics lead (8-bottle 2x4 array, peristaltic pumps, flow regulators, rubber corks).
+- [ ] **Shyam & Eli**: Ice/thermal research (reusable metal ice cubes vs. mini chiller).
+- [ ] **Aron**: Set up Purchase Request Excel for Innovation Chair authorization prior to any material purchases.
+- [ ] **Team**: Record and submit 5-Minute Pitch Deck Video by **September 28th** ($600 team payout).
+- [ ] **Cadence**: Meet **twice weekly** moving forward — immediately before and after Wednesday 1:30 PM class.
 
 ### Milestone 1: PDR & Benchtop Proof-of-Concept (Target: Oct 2026)
 - [ ] Requirements document finalized (speed, cup capacity, power draw).
