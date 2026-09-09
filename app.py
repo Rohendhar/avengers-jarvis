@@ -37,62 +37,83 @@ DEFAULT_ROSTER = {
 
 # Master Cloud Scheduled Reminders
 CLOUD_SCHEDULED_JOBS = [
+    # --- SPONSOR / TEAM LEAD DOC TO JACOB CRESS (Sept 15, 2026) ---
     {
-        "id": "tonight_urgent_docs_deadline",
-        "target_time": datetime(2026, 9, 2, 21, 0, 0),
-        "subject": "🚨 URGENT ACTION: Complete Student-Initiated Document & Innovation Challenge Form Tonight!",
+        "id": "cress_sponsor_doc_deadline",
+        "target_time": datetime(2026, 9, 15, 9, 0, 0),
+        "subject": "🚨 TODAY: Submit Team Lead / Sponsor 101 Document to Professor Jacob Cress",
         "message": (
             "Hi Team,\n\n"
-            "This is an automated evening reminder that two critical course deliverables are due TONIGHT:\n\n"
-            "1. Student-Initiated Project Document (Course sign-off from Prof. Jacob Cress)\n"
-            "2. Innovation Challenge Registration Form (Submit via Teams chat)\n\n"
-            "Please confirm once submitted so we stay 100% on schedule!"
+            "Today is the deadline to submit our introductory team lead and project 101 document to Professor Jacob Cress.\n\n"
+            "Please review the neutral project description ('automated user-influenced beverage dispensing table') and ensure all team details are finalized."
+        ),
+        "dispatched": False
+    },
+
+    # --- TEAM DESIGN PROPOSAL (Sept 23, 2026) ---
+    {
+        "id": "design_proposal_1w_before",
+        "target_time": datetime(2026, 9, 16, 9, 0, 0),
+        "subject": "📅 1-WEEK ALERT: Team Design Proposal Due Sept 23 (Quotes + Visual Drawings)",
+        "message": (
+            "Hi Team,\n\n"
+            "This is the 1-WEEK warning for our comprehensive Team Design Proposal due Wednesday, September 23rd!\n\n"
+            "Deliverables Required per Section Lead:\n"
+            "• Electrical (Eli): PLC specs, 24V power supply, relays, high-wall wiring schematic\n"
+            "• Lift Mechanism (Eli & Shyam): Linear rail, stepper motor, pulley/lead screw layout drawing\n"
+            "• Bottling & Fluidics (Ro & Aron): 8-bottle array, peristaltic pumps, inline flow regulators, cork seals\n"
+            "• Ice & Thermal (Shyam & Eli): Reusable metal ice cubes vs. mini chiller trade study\n"
+            "• Finance (Aron): Itemized vendor quotes and pre-approval purchase request form"
         ),
         "dispatched": False
     },
     {
-        "id": "eli_inventory_checklist_1d",
-        "target_time": datetime(2026, 9, 3, 9, 0, 0),
-        "subject": "Reminder: Component Inventory Checklist Due Tomorrow (Friday, Sept 4)",
+        "id": "design_proposal_1d_before",
+        "target_time": datetime(2026, 9, 22, 9, 0, 0),
+        "subject": "🚨 FINAL 24H ALERT: Team Design Proposal Due Tomorrow (Sept 23)",
         "message": (
-            "Hi Team (Eli),\n\n"
-            "This is an automated 24-hour reminder that the Component Inventory & Staging Checklist is due tomorrow, Friday, September 4, on Google Drive.\n\n"
-            "This document logs all available motors, pumps, tubing, and electronics so Aron can build our Purchase Request Excel for the 1819 Makerspace reimbursement."
+            "Hi Team,\n\n"
+            "Tomorrow, Wednesday, September 23rd, is the deadline for our complete Team Design Proposal!\n\n"
+            "Ensure your section's material list with quotes and visual CAD/drawings are ready to compile before our 1:30 PM class."
         ),
         "dispatched": False
     },
+
+    # --- MILESTONE 1: 5-MINUTE PITCH DECK VIDEO (Sept 28, 2026) ---
     {
         "id": "pitch_video_1w_before",
-        "target_time": datetime(2026, 9, 23, 9, 0, 0),
-        "subject": "📅 1-WEEK ALERT: 5-Minute Pitch Deck Video Due Sept 30 ($150 Stipend)",
+        "target_time": datetime(2026, 9, 21, 9, 0, 0),
+        "subject": "📅 1-WEEK ALERT: 5-Minute Pitch Deck Video Due Sept 28 ($600 Team Payout)",
         "message": (
             "Hi Team,\n\n"
             "This is our 1-WEEK countdown reminder for Milestone 1 of the CEAS Innovation Challenge!\n\n"
             "🎯 Deliverable: 5-Minute Recorded Pitch Deck Video\n"
-            "📅 Due Date: Wednesday, September 30, 2026 @ 11:59 PM\n"
-            "💰 Reward: Unlocks the first $150.00 team stipend!\n\n"
+            "📅 Due Date: Monday, September 28, 2026 @ 11:59 PM\n"
+            "💰 Reward: Unlocks $150/person ($600.00 team total) used directly as active prototype budget!\n\n"
             "Key Elements Required in Video:\n"
             "• Problem statement & target market (craft breweries & cigar lounges)\n"
-            "• Product concept: Automated drink dispenser table (3-4 drinks proof-of-concept)\n"
-            "• Technical subsystem architecture (cup elevator, peristaltic dosing, mini-fridge cooling)\n"
-            "• Preliminary budget & BOM ($1,500 cap)"
+            "• 8-bottle table on wheels with precision linear rail lift\n"
+            "• Industrial PLC control, peristaltic dosing, and sanitary fluidics\n"
+            "• Preliminary budget & BOM"
         ),
         "dispatched": False
     },
     {
         "id": "pitch_video_1d_before",
-        "target_time": datetime(2026, 9, 29, 9, 0, 0),
-        "subject": "🚨 FINAL 24H ALERT: Submit 5-Minute Pitch Deck Video Tomorrow (Sept 30)",
+        "target_time": datetime(2026, 9, 27, 9, 0, 0),
+        "subject": "🚨 FINAL 24H ALERT: Submit 5-Minute Pitch Deck Video Tomorrow (Sept 28)",
         "message": (
             "Hi Team,\n\n"
             "Tomorrow is the deadline for Milestone 1 of the CEAS Innovation Challenge!\n\n"
             "🎯 Deliverable: 5-Minute Video Pitch Submission\n"
-            "📅 Due Date: Wednesday, September 30, 2026\n"
-            "💰 Payout: Unlocks our $150.00 stipend upon submission.\n\n"
-            "Please ensure the recording is uploaded and submitted to the Canvas page before the midnight cutoff."
+            "📅 Due Date: Monday, September 28, 2026\n"
+            "💰 Payout: Unlocks our $600.00 team payout upon submission.\n\n"
+            "Please ensure the recording is uploaded and submitted to Canvas before the midnight cutoff."
         ),
         "dispatched": False
     },
+
+    # --- MILESTONE 2: PROTOTYPE DAY SHOWCASE (Nov 4, 2026) ---
     {
         "id": "prototype_day_1w_before",
         "target_time": datetime(2026, 10, 28, 9, 0, 0),
@@ -102,7 +123,7 @@ CLOUD_SCHEDULED_JOBS = [
             "Prototype Day is exactly 1 WEEK away (Wednesday, November 4, 2026)!\n\n"
             "🎯 Milestone Requirement: In-person demonstration of our benchtop prototype.\n"
             "• At least one team member must attend with our benchtop rig.\n"
-            "• Objective: Show the 3-4 drink dosing manifold and elevator mechanism in operation to the Innovation Challenge mentors."
+            "• Objective: Show the 8-bottle dispensing manifold and elevator mechanism in operation."
         ),
         "dispatched": False
     },
@@ -117,18 +138,20 @@ CLOUD_SCHEDULED_JOBS = [
         ),
         "dispatched": False
     },
+
+    # --- MILESTONE 3: FINAL COMPETITION & GALA (Nov 18, 2026) ---
     {
         "id": "final_competition_1w_before",
         "target_time": datetime(2026, 11, 11, 9, 0, 0),
-        "subject": "🏆 1-WEEK ALERT: Innovation Challenge Final Competition on Nov 18 ($150 Stipend + Prizes)",
+        "subject": "🏆 1-WEEK ALERT: Innovation Challenge Final Competition on Nov 18 ($600 Second Stipend + $1,200 Bonus)",
         "message": (
             "Hi Team,\n\n"
             "The Final Competition & Gala is 1 WEEK away (Wednesday, November 18, 2026)!\n\n"
             "⚠️ ATTENDANCE MANDATORY: All team members must attend in person.\n"
             "💰 Stakes:\n"
-            "• Unlocks second $150.00 active participation stipend ($300 total guaranteed)\n"
-            "• $300.00 Top 25% placement bonus\n"
-            "• 1st, 2nd, and 3rd place podium bonus prizes + ceremonial giant check!\n"
+            "• Unlocks second $150/person stipend ($600 team total; $1,200 guaranteed completion grant)\n"
+            "• $300/person ($1,200 team total) Top 25% placement bonus\n"
+            "• 1st, 2nd, and 3rd place podium bonus prizes (up to $700/person) + ceremonial giant check!\n"
             "• Distribution of 100% material reimbursements from 1819 Makerspace."
         ),
         "dispatched": False
@@ -258,18 +281,21 @@ def query_gemini_ai(sender, query_text):
         client = genai.Client(api_key=api_key)
         
         salutation = "Sir / Mr. Rohendhar" if sender.lower() in ["ro", "operator"] else f"Mr. {sender}"
-        today_date_str = "Wednesday, September 2, 2026"
+        today_date_str = "Wednesday, September 9, 2026"
         current_time_str = datetime.now().strftime("%I:%M %p")
         
         system_instruction = (
             f"You are J.A.R.V.I.S., the brilliant, witty, and sophisticated AI operating system for Tony Stark, "
-            f"now serving Project AVENGERS at the University of Cincinnati (MECH5051 / EECE5001).\n\n"
+            f"now dedicated to Project AVENGERS at the University of Cincinnati (MECH5051 / EECE5001).\n\n"
             f"TEMPORAL ANCHOR (CRITICAL):\n"
-            f"- TODAY'S DATE IS: {today_date_str} ({current_time_str} EDT).\n\n"
+            f"- TODAY'S DATE IS: {today_date_str} ({current_time_str} EDT).\n"
+            f"- RECENT MEETINGS LOG:\n"
+            f"  * TODAY (Wednesday, September 9, 2026): Team Alignment & Scope Freeze. Formally expanded from 3-4 drinks to an 8-bottle automated drink dispensing side table on wheels (~30x17x10 in). Architecture: 8 custom flat-bottom bottles (2x4 array: 4 juice, 4 alcohol) with rubber corks and one-way air replacement valves; food-grade peristaltic pumps with individual flow regulators; precision linear rail lift mechanism; industrial PLC (24V DC power supply, relays) mounted high on the rear bulkhead; thermal management via reusable stainless steel ice cubes or compact mini-chiller. Section leads: Eli (Electrical), Eli/Shyam (Lift), Ro/Aron (Bottling), Shyam/Eli (Ice), Ro (Project Lead). Unified Schedule: Sept 15 Sponsor doc to Prof. Cress; Sept 23 Team Design Proposal (BOM quotes + CAD drawings); Sept 28 5-min pitch video ($600 team payout from Innovation Challenge); Oct 2 draft proposal; Nov 4 mentor day; Nov 18 final competition; Dec 1 senior design review. Meeting twice weekly before & after Wed 1:30 PM class.\n"
+            f"  * PREVIOUS MEETING: Wednesday, September 2, 2026 (Kickoff & Innovation Challenge initial enrollment).\n\n"
             f"RULES OF CONDUCT:\n"
-            f"1. You have direct access to all Project AVENGERS repository files below. Always reference them accurately.\n"
+            f"1. Ground all answers in the provided project repository documents below.\n"
             f"2. Tone: Refined British poise, sharp intelligence, concise and proactive with subtle dry humor.\n"
-            f"3. When answering engineering questions, provide real formulas, torque, or flow specs."
+            f"3. Be concise, direct, use bold headers and bullet points. Never make up dates or specs."
         )
         
         context_data = get_live_workspace_context()
@@ -302,13 +328,14 @@ def fallback_answer(sender, query_text):
     salutation = "Sir" if sender.lower() in ["ro", "operator"] else sender
     if any(w in q for w in ["meeting", "today", "notes"]):
         return (
-            f"Good evening, **{salutation}**. Yes, there was an official team meeting **TODAY, Wednesday, September 2, 2026**!\n\n"
-            "### 📋 Key Decisions & Urgent Action Items:\n"
-            "• **Venue & Positioning**: Craft breweries and cigar lounges as a hospitality amenity.\n"
-            "• **Phase 1 Scope**: 3–4 non-carbonated drinks proof of concept.\n"
-            "• **Thermal Management (Plan B)**: Mini-fridge insert structure.\n"
-            "• **Budget**: Cap raised to **$1,500.00**.\n"
-            "• **Action Items Tonight**: Submit Innovation Challenge form & Student-Initiated Project Document."
+            f"Good evening, **{salutation}**. Yes, the team convened **TODAY, Wednesday, September 9, 2026**!\n\n"
+            "### 📋 Key Decisions & Frozen Technical Scope:\n"
+            "• **8-Bottle Capacity**: 2 rows of 4 (4 juices, 4 spirits) with custom flat-bottom bottles and rubber corks.\n"
+            "• **Fluidics**: Food-grade peristaltic pumps with individual flow regulators to eliminate splashing.\n"
+            "• **Lift Mechanism**: Precision Z-axis linear rail driven by stepper motor with upper/lower limit switches.\n"
+            "• **Industrial PLC Controls**: PLC selected over Arduino for robust ladder logic; mounted high on rear wall.\n"
+            "• **Mobile Form Factor**: Side table on heavy-duty caster wheels (~30\" × 17\" × 10\").\n"
+            "• **Next Major Deadline**: **Team Design Proposal due September 23rd** (BOM quotes + visual drawings)."
         )
     return f"At your service, **{salutation}**. J.A.R.V.I.S. neural core is running online."
 
