@@ -15,13 +15,31 @@ from email.mime.multipart import MIMEMultipart
 from flask import Flask, request, jsonify, render_template
 from dotenv import load_dotenv
 
-CURR_DIR = os.path.dirname(os.path.abspath(__file__))
-if os.path.exists(os.path.join(CURR_DIR, "Meeting Notes")) or os.path.exists(os.path.join(CURR_DIR, "Funding")):
-    LOCAL_ROOT = CURR_DIR
-else:
-    LOCAL_ROOT = os.path.abspath(os.path.join(CURR_DIR, "..", ".."))
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+        sys.stderr.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
 
-load_dotenv(os.path.join(LOCAL_ROOT, ".env"))
+CURR_DIR = os.path.dirname(os.path.abspath(__file__))
+if os.path.exists(os.path.join(CURR_DIR, "Meeting Notes")):
+    LOCAL_ROOT = CURR_DIR
+elif os.path.exists(os.path.join(CURR_DIR, "..", "Meeting Notes")):
+    LOCAL_ROOT = os.path.abspath(os.path.join(CURR_DIR, ".."))
+elif os.path.exists(os.path.join(CURR_DIR, "..", "..", "Meeting Notes")):
+    LOCAL_ROOT = os.path.abspath(os.path.join(CURR_DIR, "..", ".."))
+else:
+    LOCAL_ROOT = CURR_DIR
+
+for candidate_env in [
+    os.path.join(LOCAL_ROOT, ".env"),
+    os.path.join(CURR_DIR, ".env"),
+    os.path.join(CURR_DIR, "..", ".env")
+]:
+    if os.path.exists(candidate_env):
+        load_dotenv(candidate_env)
+        break
 
 app = Flask(__name__, template_folder=os.path.join(LOCAL_ROOT, "templates") if os.path.exists(os.path.join(LOCAL_ROOT, "templates")) else "templates")
 
@@ -255,19 +273,29 @@ def get_live_workspace_context():
     
     priority_files = [
         ("Meeting Notes", "2026-09-09_Team_Meeting_Minutes.md"),
-        ("Meeting Notes", "2026-09-02_Team_Meeting_Minutes.md"),
-        ("Funding", "CEAS_Innovation_Challenge_Fall2026_Guide.md"),
+        ("Timeline", "Master_Gantt_Chart_Fall2026.md"),
         ("Timeline", "milestones.md"),
-        ("Budget", "procurement_and_funding.md"),
-        ("Architecture", "system_overview.md")
+        ("Funding", "CEAS_Innovation_Challenge_Fall2026_Guide.md"),
+        ("Architecture", "system_overview.md"),
+        ("Budget", "procurement_and_funding.md")
     ]
     
     for folder, fname in priority_files:
-        p = os.path.join(LOCAL_ROOT, folder, fname)
+        p = os.path.join(LOCAL_ROOT, folder, fname) if folder else os.path.join(LOCAL_ROOT, fname)
         if os.path.exists(p):
             try:
                 with open(p, "r", encoding="utf-8") as f:
-                    context_sections.append(f"### [DOCUMENT: {folder}/{fname}]\n{f.read()[:2000]}")
+                    context_sections.append(f"### [DOCUMENT: {folder}/{fname}]\n{f.read()[:2500]}")
+            except Exception:
+                pass
+
+    # Include team roster
+    for r_path in [os.path.join(LOCAL_ROOT, "team_roster.json"), os.path.join(LOCAL_ROOT, "Tools", "reminders", "team_roster.json")]:
+        if os.path.exists(r_path):
+            try:
+                with open(r_path, "r", encoding="utf-8") as f:
+                    context_sections.append(f"### [DOCUMENT: team_roster.json]\n{f.read()[:2000]}")
+                    break
             except Exception:
                 pass
 
@@ -282,7 +310,7 @@ def query_gemini_ai(sender, query_text):
         client = genai.Client(api_key=api_key)
         
         salutation = "Sir / Mr. Rohendhar" if sender.lower() in ["ro", "operator"] else f"Mr. {sender}"
-        today_date_str = "Wednesday, September 9, 2026"
+        today_date_str = "Wednesday, September 16, 2026"
         current_time_str = datetime.now().strftime("%I:%M %p")
         
         system_instruction = (
@@ -290,13 +318,15 @@ def query_gemini_ai(sender, query_text):
             f"now dedicated to Project AVENGERS at the University of Cincinnati (MECH5051 / EECE5001).\n\n"
             f"TEMPORAL ANCHOR (CRITICAL):\n"
             f"- TODAY'S DATE IS: {today_date_str} ({current_time_str} EDT).\n"
-            f"- RECENT MEETINGS LOG:\n"
-            f"  * TODAY (Wednesday, September 9, 2026): Team Alignment & Scope Freeze. Formally expanded from 3-4 drinks to an 8-bottle automated drink dispensing side table on wheels (~30x17x10 in). Architecture: 8 custom flat-bottom bottles (2x4 array: 4 juice, 4 alcohol) with rubber corks and one-way air replacement valves; food-grade peristaltic pumps with individual flow regulators; precision linear rail lift mechanism; industrial PLC (24V DC power supply, relays) mounted high on the rear bulkhead; thermal management via reusable stainless steel ice cubes or compact mini-chiller. Section leads: Eli (Electrical), Eli/Shyam (Lift), Ro/Aron (Bottling), Shyam/Eli (Ice), Ro (Project Lead). Unified Schedule: Sept 15 Sponsor doc to Prof. Cress; Sept 23 Team Design Proposal (BOM quotes + CAD drawings); Sept 28 5-min pitch video ($600 team payout from Innovation Challenge); Oct 2 draft proposal; Nov 4 mentor day; Nov 18 final competition; Dec 1 senior design review. Meeting twice weekly before & after Wed 1:30 PM class.\n"
-            f"  * PREVIOUS MEETING: Wednesday, September 2, 2026 (Kickoff & Innovation Challenge initial enrollment).\n\n"
+            f"- CURRENT STATUS:\n"
+            f"  * 1 WEEK COUNTDOWN to Team Design Proposal deadline (Wednesday, September 23, 2026).\n"
+            f"  * All 4 section leads must deliver itemized BOM vendor quotes + visual CAD layout drawings.\n"
+            f"  * 5-Minute Pitch Deck Video due Monday, September 28, 2026 (Unlocks $600.00 upfront team payout).\n"
+            f"  * Standing meetings: Twice weekly — before (12:45 PM) and after (2:45 PM) Wednesday 1:30 PM class.\n\n"
             f"RULES OF CONDUCT:\n"
-            f"1. Ground all answers in the provided project repository documents below.\n"
+            f"1. You have complete mastery of all Project AVENGERS engineering documents below.\n"
             f"2. Tone: Refined British poise, sharp intelligence, concise and proactive with subtle dry humor.\n"
-            f"3. Be concise, direct, use bold headers and bullet points. Never make up dates or specs."
+            f"3. Always provide clear, direct answers with specific component numbers, dates, formulas, or team member assignments. Never give generic one-line dismissals."
         )
         
         context_data = get_live_workspace_context()
@@ -306,7 +336,15 @@ def query_gemini_ai(sender, query_text):
             f"QUERY: {query_text}"
         )
         
-        for candidate in ["gemini-flash-latest", "gemini-3.1-flash-lite"]:
+        # High-performance 4-tier model cascade for 100% uptime
+        CANDIDATE_MODELS = [
+            "gemini-3.8-flash",
+            "gemini-3.6-flash",
+            "gemini-3.1-flash-lite",
+            "gemini-3.5-flash"
+        ]
+        
+        for candidate in CANDIDATE_MODELS:
             try:
                 t0 = time.time()
                 resp = client.models.generate_content(
@@ -318,6 +356,7 @@ def query_gemini_ai(sender, query_text):
                     print(f"[{candidate}] answered in {time.time()-t0:.2f}s")
                     return resp.text
             except Exception as ex:
+                print(f"[{candidate}] failed: {ex}")
                 continue
                 
     except Exception as e:
@@ -325,20 +364,97 @@ def query_gemini_ai(sender, query_text):
     return None
 
 def fallback_answer(sender, query_text):
+    """Comprehensive intelligent offline fallback engine — never gives generic brush-offs."""
     q = query_text.lower()
     salutation = "Sir" if sender.lower() in ["ro", "operator"] else sender
-    if any(w in q for w in ["meeting", "today", "notes"]):
+
+    # 1. Timeline, Deadlines & Gantt
+    if any(w in q for w in ["deadline", "timeline", "gantt", "due", "when", "schedule", "calendar"]):
         return (
-            f"Good evening, **{salutation}**. Yes, the team convened **TODAY, Wednesday, September 9, 2026**!\n\n"
-            "### 📋 Key Decisions & Frozen Technical Scope:\n"
-            "• **8-Bottle Capacity**: 2 rows of 4 (4 juices, 4 spirits) with custom flat-bottom bottles and rubber corks.\n"
-            "• **Fluidics**: Food-grade peristaltic pumps with individual flow regulators to eliminate splashing.\n"
-            "• **Lift Mechanism**: Precision Z-axis linear rail driven by stepper motor with upper/lower limit switches.\n"
-            "• **Industrial PLC Controls**: PLC selected over Arduino for robust ladder logic; mounted high on rear wall.\n"
-            "• **Mobile Form Factor**: Side table on heavy-duty caster wheels (~30\" × 17\" × 10\").\n"
-            "• **Next Major Deadline**: **Team Design Proposal due September 23rd** (BOM quotes + visual drawings)."
+            f"Good day, **{salutation}**. Here is our verified Master Milestone Schedule:\n\n"
+            "### 📅 Master Project Deadlines:\n"
+            "• **🚨 Wednesday, Sept 23**: **Team Design Proposal** *(BOM Quotes + Section CAD Layouts)* — **1 WEEK AWAY**.\n"
+            "• **💰 Monday, Sept 28**: **5-Minute Pitch Deck Video** *(Unlocks $600.00 team payout for prototype capital)*.\n"
+            "• **Friday, Oct 2**: Senior Design Draft Proposal for Prof. Jacob Cress.\n"
+            "• **Wednesday, Nov 4**: Innovation Challenge **Prototype Day** (In-person benchtop rig demo).\n"
+            "• **🎉 Wednesday, Nov 18**: **Final Competition & Gala** *($600 second stipend + $1,200 bonus + 100% reimbursement)*.\n"
+            "• **Tuesday, Dec 1**: Formal Senior Design Course Defense.\n\n"
+            "⏰ *Meeting Cadence*: Twice weekly — immediately before (12:45 PM) and after (2:45 PM) Wednesday 1:30 PM class."
         )
-    return f"At your service, **{salutation}**. J.A.R.V.I.S. neural core is running online."
+
+    # 2. Team Roles & Section Leads
+    if any(w in q for w in ["role", "who", "eli", "aron", "shyam", "ro", "team", "assign"]):
+        return (
+            f"At your command, **{salutation}**. Here are the assigned Subsystem Section Leads:\n\n"
+            "### 👥 Subsystem Leadership Roster:\n"
+            "• **Eli Radabaugh**: **Electrical Subsystem Lead** & Lift Mechanism Co-Lead *(PLC specs, 24V supply, relays, wiring)*.\n"
+            "• **Aron Joseph**: **Finance & Procurement Lead** & Bottling Subsystem Co-Lead *(Purchase requests, $600 capital, 8 bottles, tubing)*.\n"
+            "• **Shyam Patel**: **Operations & Master Gantt Lead**, Lift Mechanism Co-Lead & Ice Lead *(Gantt chart, linear rail, ice study)*.\n"
+            "• **Rohendhar**: **Project Manager & Systems Integration Lead** & Bottling Co-Lead *(Overall architecture, Cress sponsor doc, nozzle manifold)*."
+        )
+
+    # 3. Lift Mechanism & Mechanics
+    if any(w in q for w in ["lift", "rail", "motor", "elevator", "carriage", "screw"]):
+        return (
+            f"Regarding the **Z-Axis Lift Mechanism**, **{salutation}**:\n\n"
+            "• **Linear Guide**: Sizing an **MGN12H linear guide rail (350mm–400mm)** with an extra-long carriage block to resist cantilever deflection under 1.5kg cup loads.\n"
+            "• **Drive Transmission**: **8mm Lead Screw (2mm pitch)** with flexible coupler driven by a NEMA 17 stepper motor. Lead screws provide self-locking holding friction so the platform cannot free-fall on power failure.\n"
+            "• **Position Sensing**: Two **Normally Closed (NC) optical limit switches** for upper (table flush) and lower (dispense) stops.\n"
+            "• **Leads**: Shyam Patel & Eli Radabaugh."
+        )
+
+    # 4. Electrical & Controls
+    if any(w in q for w in ["electric", "plc", "power", "relay", "wire", "voltage", "24v"]):
+        return (
+            f"Here are the specifications for the **Electrical Subsystem**, **{salutation}**:\n\n"
+            "• **Controller**: Industrial **AutomationDirect Click PLC** (or Siemens LOGO! 24RCE) for 24V industrial noise immunity and ladder logic.\n"
+            "• **Power Supply**: Single **Mean Well LRS-350-24 (24V DC, 14.6A)** switching power supply to power PLC, relays, and pumps.\n"
+            "• **Inductive Protection**: Optocoupled relay blocks with 1N4007 flyback diodes across each pump motor to suppress back-EMF spikes.\n"
+            "• **Placement**: NEMA/IP junction box mounted high on the **rear vertical bulkhead** to eliminate fluid drip hazards.\n"
+            "• **Leads**: Eli Radabaugh & Rohendhar."
+        )
+
+    # 5. Bottling, Fluidics & Pumps
+    if any(w in q for w in ["bottle", "pump", "fluid", "tube", "dispens", "pour", "flow", "cork"]):
+        return (
+            f"Here are the engineering parameters for the **Bottling & Fluidics Subsystem**, **{salutation}**:\n\n"
+            "• **Bottle Storage**: **8 bottles total** in a linear 2x4 array (4 juices/mixers, 4 alcoholic spirits).\n"
+            "• **Vessels**: Custom flat-bottom 500ml–750ml bottles with uniform height for modular mounting.\n"
+            "• **Sanitary Closures**: Food-grade rubber corks with integrated **one-way duckbill silicone check valves** for ambient air replacement (prevents vacuum stall).\n"
+            "• **Pumping**: Food-grade 12V peristaltic dosing pumps with **inline screw pinch/needle flow regulators** to calibrate pour speeds and eliminate splashing.\n"
+            "• **Leads**: Rohendhar & Aron Joseph."
+        )
+
+    # 6. Ice & Thermal System
+    if any(w in q for w in ["ice", "cool", "thermal", "fridge", "chiller"]):
+        return (
+            f"Regarding the **Thermal Management & Ice Subsystem**, **{salutation}**:\n\n"
+            "• **Architecture Decision**: Motorized ice makers and compressors were permanently ruled out due to bulk, plumbing, and drainage.\n"
+            "• **Current Baseline**: Insulated cold bay utilizing **reusable food-grade 304 stainless steel whiskey stones** or a compact 12V thermoelectric (Peltier) cold plate.\n"
+            "• **Insulation**: Closed-cell neoprene foam to prevent condensation dripping into the electrical compartment.\n"
+            "• **Leads**: Shyam Patel & Eli Radabaugh."
+        )
+
+    # 7. Funding & Innovation Challenge
+    if any(w in q for w in ["fund", "money", "grant", "stipend", "reimburse", "challenge", "1819", "prize"]):
+        return (
+            f"Here is the financial breakdown for the **CEAS Innovation Challenge**, **{salutation}**:\n\n"
+            "• **Total Guaranteed Grant**: **$1,200.00** ($300.00 per student) for completing the 3 deliverables.\n"
+            "• **Upfront Working Capital**: **$600.00** ($150/person) awarded upon submitting the **5-Minute Pitch Deck Video (Sept 28)**, used directly as active prototype budget.\n"
+            "• **Top 25% Bonus**: Additional **$1,200.00** ($300/person); podium prizes up to **$700/person**.\n"
+            "• **100% Material Reimbursement**: Covers all hardware, fasteners, and 1819 Makerspace equipment.\n"
+            "• **⚠️ Critical Rule**: You MUST complete the Canvas **Purchase Request Form** and obtain Innovation Chair authorization **BEFORE** buying anything. Itemized receipts only; NO gift cards."
+        )
+
+    # General Fallback
+    return (
+        f"At your service, **{salutation}**. J.A.R.V.I.S. neural telemetry is fully operational.\n\n"
+        "### 🚀 Project AVENGERS Status Summary:\n"
+        "• **Form Factor**: Automated 8-Bottle Mobile Table on Wheels (~30\" × 17\" × 10\").\n"
+        "• **Immediate Focus**: **Team Design Proposal due Wednesday, September 23rd** (BOM quotes + CAD drawings per section).\n"
+        "• **Upcoming Payout**: 5-Minute Pitch Deck Video due September 28th ($600.00 team payout).\n\n"
+        "How may I assist you further with CAD specs, wiring diagrams, or milestone tracking?"
+    )
 
 @app.route("/")
 def home():
