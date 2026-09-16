@@ -583,7 +583,7 @@
         <div class="tactical-code">[02]</div>
         <div class="tactical-info">
           <h3>INNOVATION CHALLENGE</h3>
-          <p>Kickoff: Wed, Sept 2 @ 5:30 PM (Lindner)</p>
+          <p>Next: Pitch Video Sept 28 ($600)</p>
         </div>
       </div>
 
@@ -592,7 +592,7 @@
         <div class="tactical-code">[03]</div>
         <div class="tactical-info">
           <h3>FINANCIAL // BOM SPECS</h3>
-          <p>Target: ~$300 MVP (<$1,000 Cap)</p>
+          <p>Target: $1,200 Grant (<$1,500 Cap)</p>
         </div>
       </div>
 
@@ -601,7 +601,7 @@
         <div class="tactical-code">[04]</div>
         <div class="tactical-info">
           <h3>CAPITAL // GRANTS</h3>
-          <p>5 Verified Student Grant Programs</p>
+          <p>Pre-Approval & 1819 Reimbursement</p>
         </div>
       </div>
 
@@ -610,7 +610,7 @@
         <div class="tactical-code">[05]</div>
         <div class="tactical-info">
           <h3>HARDWARE // TRADE STUDY</h3>
-          <p>Elevator vs Carousel vs Gantry Analysis</p>
+          <p>8-Bottle Mobile Table & Linear Rail</p>
         </div>
       </div>
 
@@ -634,7 +634,7 @@
       <div class="terminal-title">
         <span id="panelTitle">OPERATOR DELIVERABLES // RO</span>
       </div>
-      <div class="terminal-badge" id="panelTag">TELEMETRY SYNC</div>
+      <div class="terminal-badge" id="panelTag" onclick="resyncCurrentOption()" style="cursor:pointer;" title="Click to refresh telemetry">TELEMETRY SYNC ⟳</div>
     </div>
     <div class="terminal-content" id="panelBody">
       Initializing J.A.R.V.I.S. neural link...
@@ -694,7 +694,26 @@
     selectOption('tasks', document.querySelector('.tactical-grid .tactical-card'));
   }
 
+  let currentKey = 'tasks';
+
+  async function fetchWithRetry(url, options, maxRetries = 3) {
+    const panelBody = document.getElementById('panelBody');
+    for (let i = 0; i < maxRetries; i++) {
+      try {
+        const res = await fetch(url, options);
+        if (res.ok) return await res.json();
+      } catch (err) {
+        if (i < maxRetries - 1) {
+          panelBody.innerHTML = `<em>J.A.R.V.I.S. Core synchronizing telemetry (Attempt ${i + 2}/${maxRetries})...</em>`;
+          await new Promise(r => setTimeout(r, 2000));
+        }
+      }
+    }
+    throw new Error('Connection timeout');
+  }
+
   async function selectOption(key, cardEl) {
+    currentKey = key;
     document.querySelectorAll('.tactical-card').forEach(c => c.classList.remove('active'));
     if (cardEl) cardEl.classList.add('active');
 
@@ -702,22 +721,32 @@
     document.getElementById('panelTitle').innerText = title;
     
     const panelBody = document.getElementById('panelBody');
-    panelBody.innerHTML = '<em>Accessing Avengers Directory project telemetry...</em>';
+    panelBody.innerHTML = '<em>Accessing Avengers project telemetry...</em>';
 
     const sender = document.getElementById('userSelect').value;
     const promptText = queries[key] || key;
 
     try {
-      const res = await fetch('/api/chat', {
+      const data = await fetchWithRetry('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sender: sender, message: promptText })
-      });
-      const data = await res.json();
+      }, 3);
       panelBody.innerHTML = typeof marked !== 'undefined' ? marked.parse(data.reply) : data.reply;
     } catch (e) {
-      panelBody.innerHTML = '⚠️ J.A.R.V.I.S. core offline. Connection lost.';
+      panelBody.innerHTML = `
+        <div style="background:rgba(239,68,68,0.1); border-left:4px solid #ef4444; padding:12px; border-radius:4px; margin-top:8px;">
+          <strong style="color:#f87171;">⚠️ Connection Momentarily Interrupted</strong><br>
+          <span style="font-size:13px; color:#cbd5e1;">The server was deploying updates or waking up from idle.</span><br><br>
+          <button onclick="selectOption('${key}')" style="background:#0284c7; color:#fff; border:none; padding:8px 16px; border-radius:4px; cursor:pointer; font-weight:bold;">
+            ⟳ Reconnect & Refresh Telemetry
+          </button>
+        </div>`;
     }
+  }
+
+  function resyncCurrentOption() {
+    selectOption(currentKey);
   }
 
   async function sendCustom() {
@@ -733,15 +762,18 @@
 
     const sender = document.getElementById('userSelect').value;
     try {
-      const res = await fetch('/api/chat', {
+      const data = await fetchWithRetry('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sender: sender, message: text })
-      });
-      const data = await res.json();
+      }, 3);
       panelBody.innerHTML = typeof marked !== 'undefined' ? marked.parse(data.reply) : data.reply;
     } catch (e) {
-      panelBody.innerHTML = '⚠️ J.A.R.V.I.S. could not compute response.';
+      panelBody.innerHTML = `
+        <div style="background:rgba(239,68,68,0.1); border-left:4px solid #ef4444; padding:12px; border-radius:4px; margin-top:8px;">
+          <strong style="color:#f87171;">⚠️ Response Interrupted</strong><br>
+          <span style="font-size:13px; color:#cbd5e1;">Could not reach server. Please retry your query.</span>
+        </div>`;
     }
   }
 
