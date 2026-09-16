@@ -3,7 +3,7 @@ services:
     name: avengers-jarvis
     runtime: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn Tools.web_hub.app:app
+    startCommand: gunicorn app:app --timeout 60
     envVars:
       - key: GEMINI_API_KEY
         sync: false
