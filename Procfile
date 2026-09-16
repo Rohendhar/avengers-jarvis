@@ -1,1 +1,1 @@
-web: gunicorn Tools.web_hub.app:app
+web: gunicorn app:app --timeout 60
