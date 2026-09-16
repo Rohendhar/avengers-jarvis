@@ -12,7 +12,7 @@ import smtplib
 import urllib.request
 import urllib.error
 import urllib.parse
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from flask import Flask, request, jsonify, render_template
@@ -43,6 +43,15 @@ for candidate_env in [
     if os.path.exists(candidate_env):
         load_dotenv(candidate_env)
         break
+
+def get_eastern_now():
+    """Returns current datetime in US/Eastern (Cincinnati, OH / EDT/EST)."""
+    try:
+        from zoneinfo import ZoneInfo
+        return datetime.now(ZoneInfo("America/New_York"))
+    except Exception:
+        # Fallback to EDT (UTC-4 in Sep-Nov)
+        return datetime.now(timezone(timedelta(hours=-4)))
 
 app = Flask(__name__, template_folder=os.path.join(LOCAL_ROOT, "templates") if os.path.exists(os.path.join(LOCAL_ROOT, "templates")) else "templates")
 
@@ -227,7 +236,7 @@ def dispatch_cloud_email(subject, message):
                     <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 24px 0 16px 0;">
                     <p style="font-size: 12px; color: #94a3b8;">
                         Dispatched 24/7 autonomously by J.A.R.V.I.S. Cloud Infrastructure.<br>
-                        Timestamp: {datetime.now().strftime('%B %d, %Y at %I:%M %p EDT')}
+                        Timestamp: {get_eastern_now().strftime('%B %d, %Y at %I:%M %p EDT')}
                     </p>
                 </div>
             </div>
@@ -248,7 +257,7 @@ def dispatch_cloud_email(subject, message):
     return success
 
 def execute_scheduler_checks():
-    now_dt = datetime.now()
+    now_dt = get_eastern_now().replace(tzinfo=None)
     dispatched_count = 0
     for job in CLOUD_SCHEDULED_JOBS:
         # Only trigger if target_time is reached and within a 2-hour window
@@ -311,15 +320,18 @@ def query_gemini_ai(sender, query_text):
     if not api_key:
         return None
     try:
+        now_eastern = get_eastern_now()
+        today_date_str = now_eastern.strftime("%A, %B %d, %Y")
+        current_time_str = now_eastern.strftime("%I:%M %p EDT").lstrip("0")
         salutation = "Sir / Mr. Rohendhar" if sender.lower() in ["ro", "operator"] else f"Mr. {sender}"
-        today_date_str = "Wednesday, September 16, 2026"
-        current_time_str = datetime.now().strftime("%I:%M %p")
         
         system_instruction = (
             f"You are J.A.R.V.I.S., the brilliant, witty, and sophisticated AI operating system for Tony Stark, "
             f"now dedicated to Project AVENGERS at the University of Cincinnati (MECH5051 / EECE5001).\n\n"
             f"TEMPORAL ANCHOR (CRITICAL):\n"
-            f"- TODAY'S DATE IS: {today_date_str} ({current_time_str} EDT).\n"
+            f"- TODAY'S DATE IS: {today_date_str}.\n"
+            f"- CURRENT LOCAL TIME IS: {current_time_str} (Cincinnati, Ohio / US Eastern Time / EDT).\n"
+            f"- The team is physically based at the University of Cincinnati in Eastern Time (EDT). If asked about the current time or date, always report {current_time_str}.\n"
             f"- CURRENT STATUS:\n"
             f"  * 1 WEEK COUNTDOWN to Team Design Proposal deadline (Wednesday, September 23, 2026).\n"
             f"  * All 4 section leads must deliver itemized BOM vendor quotes + visual CAD layout drawings.\n"
@@ -418,6 +430,16 @@ def fallback_answer(sender, query_text):
                 "3. **Team Proposal Synthesis**: Merge all 4 section BOM quotes and CAD layouts into the master submission by Sept 23.\n"
                 "4. **5-Minute Pitch Deck Video**: Structure slides and script for the Sept 28 submission ($600 upfront team payout)."
             )
+
+    # 0b. Time, Date, and System Clock
+    if any(w in q for w in ["what time", "current time", "what is the time", "clock", "what date", "today's date", "todays date", "time is it", "time now"]):
+        now_eastern = get_eastern_now()
+        time_str = now_eastern.strftime("%I:%M %p EDT").lstrip("0")
+        date_str = now_eastern.strftime("%A, %B %d, %Y")
+        return (
+            f"The current local time in Cincinnati, Ohio is **{time_str}** on **{date_str}**, **{salutation}**.\n\n"
+            f"All Project AVENGERS operational deadlines and meeting schedules are calibrated to Eastern Daylight Time (EDT)."
+        )
 
     # 1. Timeline, Deadlines & Gantt
     if any(w in q for w in ["deadline", "timeline", "gantt", "due", "when", "schedule", "calendar"]):
@@ -543,18 +565,20 @@ def cron_endpoint():
         "status": "HEARTBEAT_ACKNOWLEDGED",
         "system": "J.A.R.V.I.S. Mark VII",
         "dispatched_jobs": dispatched,
-        "timestamp": datetime.now().isoformat()
+        "timestamp": get_eastern_now().isoformat()
     })
 
 @app.route("/api/status", methods=["GET"])
 def status():
+    now_eastern = get_eastern_now()
     return jsonify({
         "status": "ONLINE",
         "system": "J.A.R.V.I.S. Mark VII",
         "team": "THE AVENGERS (UC Capstone)",
-        "today": datetime.now().strftime("%A, %B %d, %Y"),
+        "today": now_eastern.strftime("%A, %B %d, %Y"),
+        "time": now_eastern.strftime("%I:%M %p EDT").lstrip("0"),
         "scheduler": "24/7 ACTIVE",
-        "version": "7.5.0"
+        "version": "7.5.1"
     })
 
 if __name__ == "__main__":
