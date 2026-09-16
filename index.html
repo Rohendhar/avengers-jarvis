@@ -695,17 +695,22 @@
   }
 
   let currentKey = 'tasks';
+  let lastCustomQuery = '';
 
   async function fetchWithRetry(url, options, maxRetries = 3) {
     const panelBody = document.getElementById('panelBody');
     for (let i = 0; i < maxRetries; i++) {
       try {
-        const res = await fetch(url, options);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 20000);
+        const fetchOptions = { ...options, signal: controller.signal };
+        const res = await fetch(url, fetchOptions);
+        clearTimeout(timeoutId);
         if (res.ok) return await res.json();
       } catch (err) {
         if (i < maxRetries - 1) {
-          panelBody.innerHTML = `<em>J.A.R.V.I.S. Core synchronizing telemetry (Attempt ${i + 2}/${maxRetries})...</em>`;
-          await new Promise(r => setTimeout(r, 2000));
+          panelBody.innerHTML = `<em>J.A.R.V.I.S. neural telemetry synchronizing (Attempt ${i + 2}/${maxRetries})...</em>`;
+          await new Promise(r => setTimeout(r, 1200));
         }
       }
     }
@@ -714,8 +719,15 @@
 
   async function selectOption(key, cardEl) {
     currentKey = key;
+    lastCustomQuery = '';
     document.querySelectorAll('.tactical-card').forEach(c => c.classList.remove('active'));
-    if (cardEl) cardEl.classList.add('active');
+    if (cardEl) {
+      cardEl.classList.add('active');
+    } else {
+      const allCards = document.querySelectorAll('.tactical-card');
+      const idx = ['tasks', 'meeting', 'budget', 'funding', 'mechanism', 'drive'].indexOf(key);
+      if (idx >= 0 && allCards[idx]) allCards[idx].classList.add('active');
+    }
 
     const title = titles[key] || "J.A.R.V.I.S. INTELLIGENCE";
     document.getElementById('panelTitle').innerText = title;
@@ -735,10 +747,10 @@
       panelBody.innerHTML = typeof marked !== 'undefined' ? marked.parse(data.reply) : data.reply;
     } catch (e) {
       panelBody.innerHTML = `
-        <div style="background:rgba(239,68,68,0.1); border-left:4px solid #ef4444; padding:12px; border-radius:4px; margin-top:8px;">
-          <strong style="color:#f87171;">⚠️ Connection Momentarily Interrupted</strong><br>
-          <span style="font-size:13px; color:#cbd5e1;">The server was deploying updates or waking up from idle.</span><br><br>
-          <button onclick="selectOption('${key}')" style="background:#0284c7; color:#fff; border:none; padding:8px 16px; border-radius:4px; cursor:pointer; font-weight:bold;">
+        <div style="background:rgba(239,68,68,0.1); border-left:4px solid #ef4444; padding:14px; border-radius:4px; margin-top:8px;">
+          <strong style="color:#f87171; font-size:14px;">⚠️ Connection Momentarily Interrupted</strong><br>
+          <span style="font-size:13px; color:#cbd5e1;">The server was waking from standby or deploying telemetry updates.</span><br><br>
+          <button onclick="selectOption('${key}')" style="background:#0284c7; color:#fff; border:none; padding:8px 18px; border-radius:4px; cursor:pointer; font-weight:bold; letter-spacing:0.5px;">
             ⟳ Reconnect & Refresh Telemetry
           </button>
         </div>`;
@@ -746,19 +758,35 @@
   }
 
   function resyncCurrentOption() {
-    selectOption(currentKey);
+    if (lastCustomQuery) {
+      executeCustomQuery(lastCustomQuery);
+    } else {
+      selectOption(currentKey);
+    }
   }
 
   async function sendCustom() {
     const input = document.getElementById('customQuery');
     const text = input.value.trim();
     if (!text) return;
+    lastCustomQuery = text;
+    input.value = '';
+    executeCustomQuery(text);
+  }
 
+  function retryCustom() {
+    if (lastCustomQuery) {
+      executeCustomQuery(lastCustomQuery);
+    } else {
+      resyncCurrentOption();
+    }
+  }
+
+  async function executeCustomQuery(text) {
     document.querySelectorAll('.tactical-card').forEach(c => c.classList.remove('active'));
     document.getElementById('panelTitle').innerText = `QUERY: "${text.toUpperCase()}"`;
     const panelBody = document.getElementById('panelBody');
     panelBody.innerHTML = '<em>J.A.R.V.I.S. is crunching neural telemetry...</em>';
-    input.value = '';
 
     const sender = document.getElementById('userSelect').value;
     try {
@@ -770,9 +798,12 @@
       panelBody.innerHTML = typeof marked !== 'undefined' ? marked.parse(data.reply) : data.reply;
     } catch (e) {
       panelBody.innerHTML = `
-        <div style="background:rgba(239,68,68,0.1); border-left:4px solid #ef4444; padding:12px; border-radius:4px; margin-top:8px;">
-          <strong style="color:#f87171;">⚠️ Response Interrupted</strong><br>
-          <span style="font-size:13px; color:#cbd5e1;">Could not reach server. Please retry your query.</span>
+        <div style="background:rgba(239,68,68,0.1); border-left:4px solid #ef4444; padding:14px; border-radius:4px; margin-top:8px;">
+          <strong style="color:#f87171; font-size:14px;">⚠️ Connection Momentarily Interrupted</strong><br>
+          <span style="font-size:13px; color:#cbd5e1;">Neural response timed out or server is reconnecting.</span><br><br>
+          <button onclick="retryCustom()" style="background:#0284c7; color:#fff; border:none; padding:8px 18px; border-radius:4px; cursor:pointer; font-weight:bold; letter-spacing:0.5px;">
+            ⟳ Retry Query
+          </button>
         </div>`;
     }
   }
