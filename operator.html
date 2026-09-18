@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kinetic Pour // J.A.R.V.I.S. Operator Command Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #07090e;
+      --panel-bg: rgba(13, 17, 26, 0.92);
+      --cyan: #00f0ff;
+      --cyan-glow: rgba(0, 240, 255, 0.35);
+      --infrared: #ff3b14;
+      --gold: #ffd600;
+      --green: #00e676;
+      --border-cyan: rgba(0, 240, 255, 0.22);
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(0, 240, 255, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 85% 80%, rgba(255, 59, 20, 0.07) 0%, transparent 50%),
+        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+      color: #f1f5f9;
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    header {
+      background: rgba(8, 11, 18, 0.95);
+      border-bottom: 1px solid var(--border-cyan);
+      padding: 0.85rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+    }
+
+    .brand-group { display: flex; align-items: center; gap: 12px; }
+
+    .brand-badge {
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--cyan); box-shadow: 0 0 12px var(--cyan);
+      animation: pulseGreen 1.4s infinite alternate;
+    }
+
+    .brand-title {
+      font-family: var(--font-display); font-size: 1.1rem;
+      font-weight: 800; letter-spacing: 0.06em; color: #fff;
+    }
+
+    .brand-sub {
+      font-family: var(--font-mono); font-size: 0.7rem;
+      color: var(--cyan); margin-left: 8px;
+    }
+
+    .header-links { display: flex; align-items: center; gap: 14px; }
+
+    .link-public-site {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 0.4rem 0.9rem; border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.05); color: #e2e8f0;
+      text-decoration: none; font-size: 0.76rem; font-weight: 700;
+      font-family: var(--font-display); transition: all 0.2s ease;
+    }
+    .link-public-site:hover {
+      background: rgba(0, 240, 255, 0.15); border-color: var(--cyan);
+      color: #fff; transform: translateY(-1px);
+    }
+
+    main {
+      flex: 1; max-width: 1600px; width: 100%; margin: 0 auto;
+      padding: 1.8rem 2rem 2.5rem; display: flex; flex-direction: column; gap: 1.5rem;
+    }
+
+    .operator-telemetry-row {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+    }
+
+    .telemetry-card {
+      background: var(--panel-bg); border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px; padding: 0.9rem 1.1rem; display: flex;
+      flex-direction: column; gap: 4px; backdrop-filter: blur(12px);
+    }
+    .telemetry-card:hover {
+      border-color: var(--cyan); box-shadow: 0 0 16px rgba(0, 240, 255, 0.12);
+    }
+
+    .telemetry-label {
+      font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700;
+      color: #94a3b8; letter-spacing: 0.06em; text-transform: uppercase;
+      display: flex; justify-content: space-between;
+    }
+    .telemetry-val {
+      font-family: var(--font-display); font-size: 0.95rem; font-weight: 800; color: #fff;
+    }
+    .telemetry-sub {
+      font-size: 0.72rem; color: var(--cyan); font-family: var(--font-mono);
+    }
+
+    .hud-console-deck {
+      display: grid; grid-template-columns: 1fr 390px; gap: 1.6rem;
+      background: radial-gradient(120% 120% at 20% 15%, rgba(20, 26, 38, 0.85) 0%, rgba(10, 13, 20, 0.95) 60%, rgba(6, 8, 12, 0.98) 100%);
+      border: 1.5px solid var(--border-cyan); border-radius: 20px;
+      padding: 1.6rem; position: relative;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+    }
+
+    .hud-corner {
+      position: absolute; width: 16px; height: 16px; border: 2px solid var(--cyan);
+      pointer-events: none; z-index: 5;
+    }
+    .hud-corner.tl { top: 12px; left: 12px; border-right: none; border-bottom: none; }
+    .hud-corner.tr { top: 12px; right: 12px; border-left: none; border-bottom: none; }
+    .hud-corner.bl { bottom: 12px; left: 12px; border-right: none; border-top: none; }
+    .hud-corner.br { bottom: 12px; right: 12px; border-left: none; border-top: none; }
+
+    .chat-station {
+      display: flex; flex-direction: column; height: 620px;
+      background: rgba(10, 14, 22, 0.95); border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px; overflow: hidden; box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.12);
+    }
+
+    .operator-control-bar {
+      padding: 0.75rem 1.2rem; background: rgba(14, 18, 28, 0.95);
+      border-bottom: 1px solid rgba(0, 240, 255, 0.18);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 0.8rem;
+    }
+
+    .operator-status-tag {
+      display: flex; align-items: center; gap: 8px; font-family: var(--font-mono);
+      font-size: 0.74rem; font-weight: 700; color: #94a3b8;
+    }
+    .operator-status-tag.active-auth { color: var(--cyan); }
+
+    .status-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: #94a3b8;
+      box-shadow: 0 0 6px rgba(148, 163, 184, 0.5);
+    }
+    .status-dot.active-green {
+      background: var(--cyan); box-shadow: 0 0 10px var(--cyan);
+      animation: pulseGreen 1.2s infinite alternate;
+    }
+
+    .operator-buttons { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+    .op-select-btn {
+      background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 6px; padding: 0.35rem 0.75rem; font-family: var(--font-display);
+      font-size: 0.74rem; font-weight: 700; color: #cbd5e1; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s ease;
+    }
+    .op-select-btn:hover {
+      background: rgba(0, 240, 255, 0.14); border-color: var(--cyan); color: #fff;
+    }
+    .op-select-btn.active {
+      background: rgba(0, 240, 255, 0.22); border-color: var(--cyan); color: var(--cyan);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+    }
+
+    .op-logout-btn {
+      background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #f87171; border-radius: 6px; padding: 0.35rem 0.7rem;
+      font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700;
+      cursor: pointer; transition: all 0.2s ease;
+    }
+    .op-logout-btn:hover { background: rgba(239, 68, 68, 0.3); border-color: #ef4444; color: #fff; }
+
+    .operator-passcode-box {
+      margin: 0.8rem 1.2rem; padding: 1rem 1.3rem; background: rgba(8, 12, 20, 0.98);
+      border: 1.5px solid var(--cyan); border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0, 240, 255, 0.2); animation: fadeIn 0.2s ease-out;
+    }
+
+    .passcode-input {
+      background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(0, 240, 255, 0.45);
+      border-radius: 8px; color: #fff; padding: 0.5rem 0.9rem;
+      font-family: var(--font-mono); font-size: 0.84rem; outline: none; transition: all 0.2s;
+    }
+    .passcode-input:focus { border-color: var(--cyan); box-shadow: 0 0 12px rgba(0, 240, 255, 0.4); }
+
+    .chat-history {
+      flex: 1; overflow-y: auto; padding: 1.2rem; display: flex; flex-direction: column; gap: 1.1rem;
+    }
+
+    .chat-msg { display: flex; flex-direction: column; gap: 4px; max-width: 90%; animation: fadeInMsg 0.25s ease-out; }
+    .chat-msg.jarvis { align-self: flex-start; }
+    .chat-msg.user { align-self: flex-end; }
+
+    .chat-sender { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; }
+
+    .chat-bubble { padding: 1rem 1.3rem; border-radius: 12px; font-size: 0.92rem; line-height: 1.6; }
+
+    .chat-msg.jarvis .chat-bubble {
+      background: linear-gradient(135deg, rgba(20, 26, 38, 0.95) 0%, rgba(12, 16, 24, 0.98) 100%);
+      border: 1px solid rgba(0, 240, 255, 0.25); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+    .chat-msg.user .chat-bubble {
+      background: linear-gradient(135deg, rgba(255, 59, 20, 0.3) 0%, rgba(255, 87, 34, 0.2) 100%);
+      border: 1px solid var(--infrared); box-shadow: 0 0 20px rgba(255, 59, 20, 0.25);
+    }
+
+    .chat-input-row {
+      display: flex; gap: 8px; padding: 0.9rem 1.2rem; background: rgba(12, 16, 24, 0.95);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .chat-input {
+      flex: 1; background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 10px; color: #fff; padding: 0.8rem 1.2rem;
+      font-family: var(--font-body); font-size: 0.9rem; outline: none; transition: all 0.2s;
+    }
+    .chat-input:focus { border-color: var(--cyan); box-shadow: 0 0 14px rgba(0, 240, 255, 0.25); }
+
+    .btn-transmit {
+      background: linear-gradient(135deg, #00f0ff 0%, #00a0cc 100%); border: none;
+      border-radius: 10px; color: #050810; font-family: var(--font-display);
+      font-weight: 800; font-size: 0.85rem; padding: 0 1.6rem; cursor: pointer;
+      transition: all 0.2s; letter-spacing: 0.04em;
+    }
+    .btn-transmit:hover { box-shadow: 0 0 20px rgba(0, 240, 255, 0.5); transform: translateY(-1px); }
+
+    .core-deck { display: flex; flex-direction: column; gap: 1.2rem; }
+
+    .arc-reactor-card {
+      background: linear-gradient(180deg, rgba(16, 20, 30, 0.92) 0%, rgba(8, 10, 16, 0.98) 100%);
+      border: 1px solid var(--border-cyan); border-radius: 16px;
+      padding: 1.4rem 1.2rem; display: flex; flex-direction: column; align-items: center; gap: 1rem;
+      box-shadow: 0 0 35px rgba(0, 240, 255, 0.15);
+    }
+
+    .arc-visualizer {
+      position: relative; width: 110px; height: 110px; display: flex;
+      align-items: center; justify-content: center;
+    }
+    .arc-ring-1 {
+      position: absolute; width: 108px; height: 108px; border: 2px dashed rgba(0, 240, 255, 0.55);
+      border-radius: 50%; animation: spinClockwise 12s linear infinite;
+    }
+    .arc-ring-2 {
+      position: absolute; width: 82px; height: 82px; border: 2px solid transparent;
+      border-top: 2.5px solid var(--cyan); border-bottom: 2.5px solid var(--infrared);
+      border-radius: 50%; animation: spinCounter 6s linear infinite;
+    }
+    .arc-ring-3 {
+      position: absolute; width: 58px; height: 58px; border: 1.5px dotted rgba(255, 255, 255, 0.7);
+      border-radius: 50%; animation: spinClockwise 8s linear infinite;
+    }
+    .arc-glow-core {
+      position: absolute; width: 34px; height: 34px; border-radius: 50%;
+      background: radial-gradient(circle, #ffffff 0%, #00f0ff 40%, rgba(255, 59, 20, 0.6) 85%, transparent 100%);
+      box-shadow: 0 0 25px var(--cyan); animation: corePulse 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes spinClockwise { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes spinCounter { 0% { transform: rotate(0deg); } 100% { transform: rotate(-360deg); } }
+    @keyframes corePulse {
+      0% { transform: scale(0.92); opacity: 0.85; filter: drop-shadow(0 0 10px var(--cyan)); }
+      100% { transform: scale(1.1); opacity: 1; filter: drop-shadow(0 0 25px var(--infrared)); }
+    }
+
+    .waveform-bar-group {
+      display: flex; align-items: center; justify-content: center; gap: 3.5px; height: 28px; width: 100%;
+    }
+    .w-bar {
+      width: 3.5px; height: 6px; background: linear-gradient(180deg, var(--cyan) 0%, var(--infrared) 100%);
+      border-radius: 2px; animation: wave 1.2s ease-in-out infinite alternate; box-shadow: 0 0 6px var(--cyan);
+    }
+    .w-bar:nth-child(1) { animation-delay: 0.1s; }
+    .w-bar:nth-child(2) { animation-delay: 0.35s; }
+    .w-bar:nth-child(3) { animation-delay: 0.55s; }
+    .w-bar:nth-child(4) { animation-delay: 0.2s; }
+    .w-bar:nth-child(5) { animation-delay: 0.65s; }
+    .w-bar:nth-child(6) { animation-delay: 0.4s; }
+    .w-bar:nth-child(7) { animation-delay: 0.75s; }
+    .w-bar:nth-child(8) { animation-delay: 0.3s; }
+    .w-bar:nth-child(9) { animation-delay: 0.5s; }
+    .w-bar:nth-child(10) { animation-delay: 0.25s; }
+
+    @keyframes wave { 0% { height: 4px; } 100% { height: 24px; } }
+
+    .presets-box { display: flex; flex-direction: column; gap: 0.6rem; }
+
+    .preset-pill {
+      background: linear-gradient(135deg, rgba(20, 25, 36, 0.85) 0%, rgba(12, 16, 24, 0.92) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 10px;
+      padding: 0.75rem 1rem; color: #f1f5f9; font-size: 0.8rem; font-weight: 600;
+      text-align: left; cursor: pointer; display: flex; justify-content: space-between;
+      align-items: center; transition: all 0.2s;
+    }
+    .preset-pill:hover {
+      border-color: var(--cyan); background: rgba(0, 240, 255, 0.1); transform: translateX(3px);
+    }
+
+    @keyframes pulseGreen {
+      0% { opacity: 0.6; transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1.05); }
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInMsg { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 1024px) {
+      .hud-console-deck { grid-template-columns: 1fr; }
+      .operator-telemetry-row { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
+      .operator-telemetry-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand-group">
+      <div class="brand-badge"></div>
+      <div>
+        <span class="brand-title">J.A.R.V.I.S. MARK VII</span>
+        <span class="brand-sub">// OPERATOR COMMAND DECK</span>
+      </div>
+    </div>
+
+    <div class="header-links">
+      <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #94a3b8;">
+        CLEARANCE: LEVEL 5 PROTOCOL
+      </span>
+      <a href="https://rohendhar.github.io/kinetic-pour/" class="link-public-site">
+        ← Public Kinetic Pour Site
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <div class="operator-telemetry-row">
+      <div class="telemetry-card">
+        <div class="telemetry-label">
+          <span>8-BOTTLE FLUIDICS</span>
+          <span style="color: var(--cyan);">SUB-01</span>
+        </div>
+        <div class="telemetry-val">GROTHEN 24V × 8</div>
+        <div class="telemetry-sub">LEADS: RO &amp; ARON</div>
+      </div>
+
+      <div class="telemetry-card">
+        <div class="telemetry-label">
+          <span>T8 ELEVATOR LIFT</span>
+          <span style="color: var(--infrared);">SUB-02</span>
+        </div>
+        <div class="telemetry-val">NEMA 17 / 100mm</div>
+        <div class="telemetry-sub">LEADS: SHYAM &amp; ELI</div>
+      </div>
+
+      <div class="telemetry-card">
+        <div class="telemetry-label">
+          <span>INDUSTRIAL PLC</span>
+          <span style="color: var(--gold);">SUB-03</span>
+        </div>
+        <div class="telemetry-val">CLICK 24V / LRS-350</div>
+        <div class="telemetry-sub">LEAD: ELI RADABAUGH</div>
+      </div>
+
+      <div class="telemetry-card">
+        <div class="telemetry-label">
+          <span>CAPSTONE GRANT</span>
+          <span style="color: var(--green);">CEAS 2026</span>
+        </div>
+        <div class="telemetry-val">$1,200.00 ALLOCATED</div>
+        <div class="telemetry-sub">LEAD: ARON JOSEPH</div>
+      </div>
+    </div>
+
+    <div class="hud-console-deck">
+      <div class="hud-corner tl"></div>
+      <div class="hud-corner tr"></div>
+      <div class="hud-corner bl"></div>
+      <div class="hud-corner br"></div>
+
+      <div class="chat-station">
+        <div class="operator-control-bar">
+          <div class="operator-status-tag" id="operator-status-tag">
+            <span class="status-dot" id="operator-status-dot"></span>
+            <span id="operator-status-text">STATUS: OBSERVER // CLEARANCE REQUIRED</span>
+          </div>
+
+          <div class="operator-buttons">
+            <button class="op-select-btn" id="btn-op-ro" onclick="promptOperatorLogin('Ro')">
+              👤 Ro
+            </button>
+            <button class="op-select-btn" id="btn-op-aron" onclick="promptOperatorLogin('Aron')">
+              👤 Aron
+            </button>
+            <button class="op-select-btn" id="btn-op-eli" onclick="promptOperatorLogin('Eli')">
+              👤 Eli
+            </button>
+            <button class="op-select-btn" id="btn-op-shyam" onclick="promptOperatorLogin('Shyam')">
+              👤 Shyam
+            </button>
+            <button class="op-logout-btn" id="operator-logout-btn" onclick="logoutOperator()" style="display:none;">
+              LOGOUT
+            </button>
+          </div>
+        </div>
+
+        <div class="operator-passcode-box" id="operator-passcode-box" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-family: var(--font-display); font-weight: 800; font-size: 0.84rem; color: var(--cyan); letter-spacing: 0.04em;">
+              OPERATOR CLEARANCE REQUIRED
+            </span>
+            <span style="font-family: var(--font-mono); font-size: 0.68rem; color: #94a3b8;">
+              CLEARANCE LEVEL 5
+            </span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="font-size: 0.82rem; color: #e2e8f0;">
+              Enter Passcode to operate as <strong id="target-operator-name" style="color: var(--cyan);">Ro</strong>:
+              <span style="font-size: 0.72rem; color: #94a3b8; margin-left: 6px;">(Hint: enter operator name)</span>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <input type="password" id="operator-passcode-input" class="passcode-input" placeholder="Enter operator name..." onkeydown="if(event.key==='Enter') submitOperatorPasscode()">
+              <button class="btn-transmit" onclick="submitOperatorPasscode()" style="padding: 0.5rem 1.2rem; font-size: 0.78rem;">AUTHENTICATE</button>
+              <button onclick="cancelOperatorLogin()" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #cbd5e1; border-radius: 8px; padding: 0.5rem 0.85rem; font-size: 0.76rem; cursor: pointer;">CANCEL</button>
+            </div>
+            <div id="passcode-error-msg" style="color: #ff3b30; font-family: var(--font-mono); font-size: 0.72rem; display: none;">
+              ⚠️ ACCESS DENIED: Passcode must match operator name (case-insensitive).
+            </div>
+          </div>
+        </div>
+
+        <div id="chat-history" class="chat-history">
+          <div class="chat-msg jarvis">
+            <span class="chat-sender" style="color: var(--cyan);">J.A.R.V.I.S. // SECURITY MATRIX</span>
+            <div class="chat-bubble">
+              Welcome to the <strong>Kinetic Pour Operator Command Portal</strong>. All classified Capstone engineering dossiers, CEAS Innovation Challenge finances ($1,200 grant / $600 working capital), and internal task deliverables are indexed under Level 5 Security.<br><br>
+              <em>Please select your operator profile above (Ro, Aron, Eli, or Shyam) and authenticate with your passcode to access your active directives.</em>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-input-row">
+          <input type="text" id="chat-input" class="chat-input" placeholder="Query J.A.R.V.I.S. about active tasks, CEAS grant finances, or CAD deadlines..." onkeydown="if(event.key==='Enter') sendJarvisMessage()">
+          <button class="btn-transmit" onclick="sendJarvisMessage()">TRANSMIT</button>
+        </div>
+      </div>
+
+      <div class="core-deck">
+        <div class="arc-reactor-card">
+          <div class="arc-visualizer">
+            <div class="arc-ring-1"></div>
+            <div class="arc-ring-2"></div>
+            <div class="arc-ring-3"></div>
+            <div class="arc-glow-core"></div>
+          </div>
+
+          <div style="text-align: center;">
+            <div style="font-family: var(--font-display); font-weight: 800; font-size: 0.95rem; color: #fff; letter-spacing: 0.04em;">
+              NEURAL CORE
+            </div>
+            <div style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--cyan); margin-top: 2px;">
+              TACTICAL DECISION ENGINE
+            </div>
+          </div>
+
+          <div class="waveform-bar-group" id="waveform-group">
+            <span class="w-bar"></span>
+            <span class="w-bar"></span>
+            <span class="w-bar"></span>
+            <span class="w-bar"></span>
+            <span class="w-bar"></span>
+            <span class="w-bar"></span>
+            <span class="w-bar"></span>
+            <span class="w-bar"></span>
+            <span class="w-bar"></span>
+            <span class="w-bar"></span>
+          </div>
+        </div>
+
+        <div class="presets-box">
+          <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: #94a3b8; letter-spacing: 0.08em; text-transform: uppercase;">
+            OPERATOR MISSION PRESETS
+          </span>
+
+          <div id="presets-container" style="display: flex; flex-direction: column; gap: 0.55rem;">
+            <button class="preset-pill" onclick="askPreset('What are my priority deliverables and action items?')">
+              <span>▸ My Priority Action Items</span>
+              <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--cyan);">[TASK]</span>
+            </button>
+            <button class="preset-pill" onclick="askPreset('What are our milestone deadlines and Gantt schedule?')">
+              <span>▸ Master Milestone Deadlines</span>
+              <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--infrared);">[PLAN]</span>
+            </button>
+            <button class="preset-pill" onclick="askPreset('What is the deadline for the 5-Minute Pitch Deck Video and $600 payout?')">
+              <span>▸ Pitch Video &amp; $600 Payout</span>
+              <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--gold);">[DATE]</span>
+            </button>
+            <button class="preset-pill" onclick="askPreset('Explain the CEAS Innovation Challenge $1,200 grant requirements')">
+              <span>▸ $1,200 Grant Requirements</span>
+              <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--green);">[FUND]</span>
+            </button>
+            <button class="preset-pill" onclick="askPreset('What are the 8 bottle parameters and fluidic tubing specs?')">
+              <span>▸ 8-Bottle Fluidics &amp; Tubing</span>
+              <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--cyan);">[SPEC]</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let currentOperator = sessionStorage.getItem('kp_operator_auth_name') || null;
+    let isOperatorAuthenticated = sessionStorage.getItem('kp_operator_auth_state') === 'true';
+    let targetOperator = 'Ro';
+
+    function promptOperatorLogin(name) {
+      targetOperator = name;
+      const targetEl = document.getElementById('target-operator-name');
+      if (targetEl) targetEl.innerText = name;
+
+      const box = document.getElementById('operator-passcode-box');
+      if (box) box.style.display = 'block';
+
+      const input = document.getElementById('operator-passcode-input');
+      if (input) {
+        input.value = '';
+        input.placeholder = `Passcode (e.g. ${name})`;
+        input.focus();
+      }
+
+      const err = document.getElementById('passcode-error-msg');
+      if (err) err.style.display = 'none';
+    }
+
+    function cancelOperatorLogin() {
+      const box = document.getElementById('operator-passcode-box');
+      if (box) box.style.display = 'none';
+    }
+
+    function submitOperatorPasscode() {
+      const input = document.getElementById('operator-passcode-input');
+      const val = (input ? input.value : '').trim();
+      const err = document.getElementById('passcode-error-msg');
+
+      if (val.toLowerCase() === targetOperator.toLowerCase()) {
+        currentOperator = targetOperator;
+        isOperatorAuthenticated = true;
+        sessionStorage.setItem('kp_operator_auth_name', currentOperator);
+        sessionStorage.setItem('kp_operator_auth_state', 'true');
+
+        const box = document.getElementById('operator-passcode-box');
+        if (box) box.style.display = 'none';
+
+        renderUI();
+
+        appendJarvisSystemNotice(
+          `Clearance Level 5 verified. Welcome, <strong>Operator ${currentOperator}</strong>. Active deliverables, CEAS grant allocations ($1,200), upfront payout schedule ($600), and internal subsystem deadlines are unlocked.`
+        );
+      } else {
+        if (err) {
+          err.innerText = `⚠️ ACCESS DENIED: Passcode must match operator name ("${targetOperator}").`;
+          err.style.display = 'block';
+        }
+        if (input) {
+          input.style.borderColor = '#ff3b30';
+          setTimeout(() => { input.style.borderColor = 'rgba(0, 240, 255, 0.45)'; }, 1000);
+        }
+      }
+    }
+
+    function logoutOperator() {
+      sessionStorage.removeItem('kp_operator_auth_name');
+      sessionStorage.removeItem('kp_operator_auth_state');
+      currentOperator = null;
+      isOperatorAuthenticated = false;
+
+      const box = document.getElementById('operator-passcode-box');
+      if (box) box.style.display = 'none';
+
+      renderUI();
+
+      appendJarvisSystemNotice(
+        `Operator logged out. Security protocols reset to Level 1. Please select an operator to authenticate.`
+      );
+    }
+
+    function renderUI() {
+      const btns = document.querySelectorAll('.op-select-btn');
+      btns.forEach(b => b.classList.remove('active'));
+
+      if (isOperatorAuthenticated && currentOperator) {
+        const activeBtn = document.getElementById(`btn-op-${currentOperator.toLowerCase()}`);
+        if (activeBtn) activeBtn.classList.add('active');
+      }
+
+      const tag = document.getElementById('operator-status-tag');
+      const dot = document.getElementById('operator-status-dot');
+      const text = document.getElementById('operator-status-text');
+      const logoutBtn = document.getElementById('operator-logout-btn');
+
+      if (isOperatorAuthenticated && currentOperator) {
+        if (tag) tag.classList.add('active-auth');
+        if (dot) dot.classList.add('active-green');
+        if (text) text.innerText = `OPERATOR: ${currentOperator.toUpperCase()} // CLEARANCE: LEVEL 5 (AUTHORIZED)`;
+        if (logoutBtn) logoutBtn.style.display = 'inline-block';
+      } else {
+        if (tag) tag.classList.remove('active-auth');
+        if (dot) dot.classList.remove('active-green');
+        if (text) text.innerText = 'STATUS: OBSERVER // CLEARANCE REQUIRED';
+        if (logoutBtn) logoutBtn.style.display = 'none';
+      }
+    }
+
+    function appendJarvisSystemNotice(html) {
+      const history = document.getElementById('chat-history');
+      if (!history) return;
+
+      const div = document.createElement('div');
+      div.className = 'chat-msg jarvis';
+      div.innerHTML = `
+        <span class="chat-sender" style="color: var(--cyan);">J.A.R.V.I.S. // SECURITY MATRIX</span>
+        <div class="chat-bubble" style="border-color: rgba(0, 240, 255, 0.4);">${html}</div>
+      `;
+      history.appendChild(div);
+      history.scrollTop = history.scrollHeight;
+    }
+
+    function surgeWaveform(active) {
+      const bars = document.querySelectorAll('.w-bar');
+      bars.forEach(b => {
+        b.style.animationDuration = active ? '0.3s' : '1.2s';
+        b.style.boxShadow = active ? '0 0 14px #00f0ff' : '0 0 6px rgba(0, 240, 255, 0.6)';
+      });
+    }
+
+    async function sendJarvisMessage(text) {
+      const input = document.getElementById('chat-input');
+      const message = text || input.value.trim();
+      if (!message) return;
+
+      if (!text) input.value = '';
+
+      const history = document.getElementById('chat-history');
+
+      const userDiv = document.createElement('div');
+      userDiv.className = 'chat-msg user';
+      const senderHeader = isOperatorAuthenticated 
+        ? `OPERATOR: ${currentOperator.toUpperCase()} // TRANSMIT` 
+        : 'OBSERVER // INQUIRY';
+
+      userDiv.innerHTML = `
+        <span class="chat-sender" style="color: var(--infrared);">${senderHeader}</span>
+        <div class="chat-bubble">${escapeHtml(message)}</div>
+      `;
+      history.appendChild(userDiv);
+      history.scrollTop = history.scrollHeight;
+
+      surgeWaveform(true);
+
+      const loadingDiv = document.createElement('div');
+      loadingDiv.className = 'chat-msg jarvis';
+      loadingDiv.innerHTML = `
+        <span class="chat-sender" style="color: var(--cyan); display: flex; align-items: center; gap: 6px;">
+          <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan); animation: pulseGreen 1s infinite alternate;"></span>
+          J.A.R.V.I.S. // SYNTHESIZING
+        </span>
+        <div class="chat-bubble" style="color: var(--cyan);">
+          Accessing encrypted Capstone telemetry...
+        </div>
+      `;
+      history.appendChild(loadingDiv);
+      history.scrollTop = history.scrollHeight;
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            sender: isOperatorAuthenticated ? currentOperator : 'Guest', 
+            operatorAuth: isOperatorAuthenticated,
+            message: message 
+          })
+        });
+        const data = await res.json();
+        surgeWaveform(false);
+        loadingDiv.innerHTML = `
+          <span class="chat-sender" style="color: var(--cyan);">
+            J.A.R.V.I.S. // ${isOperatorAuthenticated ? 'TACTICAL OPERATOR AI' : 'OBSERVER TELEMETRY'}
+          </span>
+          <div class="chat-bubble">${formatReply(data.reply || "No response received.")}</div>
+        `;
+      } catch (err) {
+        surgeWaveform(false);
+        const q = message.toLowerCase();
+        let fallbackText = "";
+
+        if (!isOperatorAuthenticated) {
+          if (q.includes("task") || q.includes("todo") || q.includes("action") || q.includes("deadline") || q.includes("fund") || q.includes("money") || q.includes("grant") || q.includes("payout")) {
+            fallbackText = "🔒 **Security Interlock Active**: You are currently in Observer mode.\n\n" +
+              "To review internal task lists, CEAS grant allocations ($1,200), or milestone deadlines, please select your operator profile (Ro, Aron, Eli, or Shyam) and authenticate with your passcode.";
+          } else {
+            fallbackText = "Welcome to the **Operator Command Portal**. Please authenticate as an operator to unlock Level 5 Capstone telemetry.";
+          }
+        } else {
+          const op = currentOperator.toLowerCase();
+
+          if (q.includes("task") || q.includes("todo") || q.includes("action") || q.includes("what should i") || q.includes("deliverable") || q.includes("assignment")) {
+            if (op.includes("eli")) {
+              fallbackText = "Good day, **Mr. Radabaugh**. Here are your active engineering deliverables as **Electrical Lead**:\n\n" +
+                "### ⚡ Eli's Priority Action Items (Target: Wednesday, Sept 23):\n" +
+                "1. **BOM Vendor Quotes**: Finalize exact quotes and datasheets for the Click PLC (AutomationDirect) or Siemens LOGO!, Mean Well LRS-350-24 power supply, 24V relay module, flyback diodes, and terminal blocks.\n" +
+                "2. **Electrical CAD Layout**: Produce single-line wiring schematic and bulkhead IP-rated enclosure layout.\n" +
+                "3. **Z-Axis Lift Co-Lead**: Finalize wiring and mount locations for upper/lower normally-closed optical limit switches on the lift carriage with Shyam.\n" +
+                "4. **Innovation Challenge**: Confirm you have joined the Canvas course page (mandatory for $300 payout).";
+            } else if (op.includes("aron")) {
+              fallbackText = "Good day, **Mr. Joseph**. Here are your active deliverables as **Finance & Bottling Co-Lead**:\n\n" +
+                "### 💰 Aron's Priority Action Items (Target: Wednesday, Sept 23):\n" +
+                "1. **BOM Cost Rollup**: Compile itemized quotes from all 4 section leads for the Team Design Proposal.\n" +
+                "2. **Bottling Hardware Quotes**: Finalize vendor quotes for 8 uniform flat-bottom bottles (500ml–750ml), food-grade rubber corks with silicone check valves, 12V peristaltic pumps, and silicone tubing.\n" +
+                "3. **Purchase Request Forms**: Prepare Canvas Purchase Request drafts for Innovation Chair authorization (pre-approval required prior to any spending).\n" +
+                "4. **Innovation Challenge**: Confirm Canvas enrollment for $300 individual stipend.";
+            } else if (op.includes("shyam")) {
+              fallbackText = "Good day, **Mr. Patel**. Here are your active deliverables as **Operations & Gantt Lead**:\n\n" +
+                "### 📐 Shyam's Priority Action Items (Target: Wednesday, Sept 23):\n" +
+                "1. **Lift Mechanism CAD Layout**: Complete CAD drawing and sizing for the MGN12H linear guide rail (350mm–400mm) and 8mm lead screw with NEMA 17 motor.\n" +
+                "2. **Master Gantt Maintenance**: Update the master Excel schedule for upcoming deliverables (Sept 23 Proposal, Sept 28 Pitch Video).\n" +
+                "3. **Ice / Thermal Study**: Finalize recommendation (reusable 304 stainless steel whiskey stones cold bay vs thermoelectric Peltier plate).\n" +
+                "4. **Innovation Challenge**: Confirm Canvas enrollment for $300 individual stipend.";
+            } else {
+              fallbackText = "Good day, **Sir (Mr. Rohendhar)**. Here are your active executive directives as **Project Manager & Systems Lead**:\n\n" +
+                "### 🎯 Ro's Priority Action Items (Target: Wednesday, Sept 23):\n" +
+                "1. **Bottling CAD & Fluid Routing**: Complete CAD layout drawing for the 8-nozzle dispensing manifold, cup centering ring, and fluid routing lines.\n" +
+                "2. **Jacob Cress Documentation**: Finalize and submit the Team Lead / Project Sponsor introductory document.\n" +
+                "3. **Team Proposal Synthesis**: Merge all 4 section BOM quotes and CAD layouts into the master submission by Sept 23.\n" +
+                "4. **5-Minute Pitch Deck Video**: Structure slides and script for the Sept 28 submission ($600 upfront team payout).";
+            }
+          } else if (q.includes("deadline") || q.includes("date") || q.includes("schedule") || q.includes("when") || q.includes("due") || q.includes("gantt") || q.includes("milestone")) {
+            fallbackText = `Good day, **Operator ${currentOperator}**. Here is our verified Master Milestone Schedule:\n\n` +
+              "### 📅 Master Project Deadlines:\n" +
+              "• **🚨 Wednesday, Sept 23**: **Team Design Proposal** *(BOM Quotes + Section CAD Layouts)*.\n" +
+              "• **💰 Monday, Sept 28**: **5-Minute Pitch Deck Video** *(Unlocks $600.00 upfront team payout for prototype capital)*.\n" +
+              "• **Friday, Oct 2**: Senior Design Draft Proposal for Prof. Jacob Cress.\n" +
+              "• **Wednesday, Nov 4**: Innovation Challenge **Prototype Day** (In-person benchtop rig demo).\n" +
+              "• **🎉 Wednesday, Nov 18**: **Final Competition & Gala** *($600 second stipend + $1,200 bonus + 100% reimbursement)*.\n" +
+              "• **Tuesday, Dec 1**: Formal Senior Design Course Defense.\n\n" +
+              "⏰ *Meeting Cadence*: Twice weekly — immediately before (12:45 PM) and after (2:45 PM) Wednesday 1:30 PM class.";
+          } else if (q.includes("fund") || q.includes("money") || q.includes("grant") || q.includes("budget") || q.includes("payout") || q.includes("cost") || q.includes("1200") || q.includes("600") || q.includes("challenge") || q.includes("stipend")) {
+            fallbackText = `Here is the financial breakdown for the **CEAS Innovation Challenge**, **Operator ${currentOperator}**:\n\n` +
+              "• **Total Guaranteed Grant**: **$1,200.00** ($300.00 per student) for completing the 3 deliverables.\n" +
+              "• **Upfront Working Capital**: **$600.00** ($150/person) awarded upon submitting the **5-Minute Pitch Deck Video (Sept 28)**, used directly as active prototype budget.\n" +
+              "• **Top 25% Bonus**: Additional **$1,200.00** ($300/person); podium prizes up to **$700/person**.\n" +
+              "• **100% Material Reimbursement**: Covers all hardware, fasteners, and 1819 Makerspace equipment.\n" +
+              "• **⚠️ Critical Rule**: You MUST complete the Canvas **Purchase Request Form** and obtain Innovation Chair authorization **BEFORE** buying anything. Itemized receipts only; NO gift cards.";
+          } else if (q.includes("bottle") || q.includes("fluid") || q.includes("tube") || q.includes("pump")) {
+            fallbackText = `Here are the engineering parameters for the **8-Bottle Fluidics Subsystem**, **Operator ${currentOperator}**:\n\n` +
+              "• **Reservoirs:** 8x 750ml Bordeaux-style modular bottles in a 2x4 3D-printed caddy.\n" +
+              "• **Check Valves:** 1/4\" inline one-way valves to prevent backflow and keep lines primed.\n" +
+              "• **Dosing Pumps:** 8x GROTHEN 24V peristaltic pumps with 3-roller rotor heads.\n" +
+              "• **Tubing:** High-temperature food-grade 3x5mm silicone tubing converging at the 3D printed manifold.\n" +
+              "• **Leads:** Rohendhar & Aron Joseph.";
+          } else if (q.includes("lift") || q.includes("elevator") || q.includes("screw") || q.includes("stepper")) {
+            fallbackText = `Regarding the **T8 Linear Elevator Subsystem**, **Operator ${currentOperator}**:\n\n` +
+              "• **Mechanism:** NEMA 17 stepper motor driving a T8 stainless lead screw with dual precision guide rods.\n" +
+              "• **Stroke Travel:** 100 mm vertical stroke (lowers cup into dispensing bay, then lifts flush with tabletop).\n" +
+              "• **Sensors:** IR optical photocell cup-presence check and optical microswitch endstops.\n" +
+              "• **Leads:** Shyam Patel & Eli Radabaugh.";
+          } else if (q.includes("team") || q.includes("roster") || q.includes("who")) {
+            fallbackText = `Here is the **Kinetic Pour Leadership Roster**, **Operator ${currentOperator}**:\n\n` +
+              "• **Rohendhar**: Project Manager & Systems Integration Lead (Lead)\n" +
+              "• **Aron Joseph**: Finance, Procurement & Bottling Co-Lead\n" +
+              "• **Eli Radabaugh**: Electrical Subsystem & Industrial Automation Lead\n" +
+              "• **Shyam Patel**: Mechanical Kinematics, Linear Elevator & Gantt Lead";
+          } else {
+            fallbackText = `At your service, **Operator ${currentOperator}**. J.A.R.V.I.S. neural telemetry is fully operational.\n\n` +
+              "All Level 5 engineering dossiers for **Kinetic Pour** are indexed (8-bottle fluidics, T8 elevator, GROTHEN pumps, CEAS Innovation Challenge budgets, and personal task matrices).\n\n" +
+              "How may I assist your engineering deliverables today?";
+          }
+        }
+
+        loadingDiv.innerHTML = `
+          <span class="chat-sender" style="color: var(--cyan);">
+            J.A.R.V.I.S. // ${isOperatorAuthenticated ? 'LOCAL OPERATOR ENGINE' : 'OBSERVER TELEMETRY'}
+          </span>
+          <div class="chat-bubble">${formatReply(fallbackText)}</div>
+        `;
+      }
+      history.scrollTop = history.scrollHeight;
+    }
+
+    function askPreset(q) { sendJarvisMessage(q); }
+    function escapeHtml(text) { return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    function formatReply(text) {
+      return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+    }
+
+    renderUI();
+  </script>
+</body>
+</html>
