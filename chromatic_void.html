@@ -145,92 +145,201 @@
 
       <!-- Right Column: User HMI Touchscreen & Controls -->
       <div class="hmi-control-deck">
-        <!-- Touchscreen Ordering Panel -->
-        <div class="hmi-screen-card">
-          <div class="hmi-header">
-            <span class="hmi-title">DRINK SELECTION HMI</span>
-            <span class="hmi-mode-tag">TOUCHSCREEN ACTIVE</span>
+        <!-- Touchscreen Ordering Panel (Liquid Glass Screen Interface) -->
+        <div class="hmi-screen-card" id="hmi-touchscreen-panel">
+          <!-- Glass Sheen & Scanlines -->
+          <div class="screen-glass-sheen"></div>
+          <div class="screen-scanlines"></div>
+
+          <!-- Top Hardware & Telemetry Bar -->
+          <div class="hmi-screen-top-bar">
+            <div class="screen-notch-group">
+              <span class="screen-camera-lens" title="Optical Gesture Camera"></span>
+              <span class="screen-ir-sensor" title="IR Proximity Sensor"></span>
+            </div>
+            <div class="screen-telemetry-badge">
+              <span>CAPACITIVE OLED // 120Hz</span>
+            </div>
+            <div class="screen-live-clock" id="screen-clock">00:00:00</div>
           </div>
 
-          <!-- 6 Preset Cocktail Cards -->
+          <!-- Section Header: USER INTERFACE -->
+          <div class="hmi-header">
+            <div class="hmi-title-group">
+              <span class="hmi-screen-tag">DISPENSING CONTROL SURFACE</span>
+              <h2 class="hmi-title">USER INTERFACE</h2>
+            </div>
+            <div class="hmi-mode-pill">
+              <span class="hmi-touch-pulse"></span>
+              <span class="hmi-mode-tag">TOUCHSCREEN ACTIVE</span>
+            </div>
+          </div>
+
+          <!-- 6 Preset Cocktail Cards (Liquid Glass Tiles) -->
           <div class="hmi-drink-grid">
             <button class="hmi-drink-btn active" onclick="selectRecipeHmi('Old Fashioned', [0, 7], 'a84200', this)">
-              <span class="drink-name">Old Fashioned</span>
+              <div class="drink-header-row">
+                <span class="drink-name">Old Fashioned</span>
+                <span class="drink-indicator-dot" style="--dot-color: #c75100;"></span>
+              </div>
               <span class="drink-spec">Bourbon + Citrus Sour</span>
             </button>
 
             <button class="hmi-drink-btn" onclick="selectRecipeHmi('Cosmopolitan', [1, 4, 5, 7], 'd61a3c', this)">
-              <span class="drink-name">Cosmopolitan</span>
+              <div class="drink-header-row">
+                <span class="drink-name">Cosmopolitan</span>
+                <span class="drink-indicator-dot" style="--dot-color: #e01642;"></span>
+              </div>
               <span class="drink-spec">Vodka + Triple Sec + Cran</span>
             </button>
 
             <button class="hmi-drink-btn" onclick="selectRecipeHmi('Gin & Tonic', [2, 6, 7], '00f0ff', this)">
-              <span class="drink-name">Gin &amp; Tonic</span>
+              <div class="drink-header-row">
+                <span class="drink-name">Gin &amp; Tonic</span>
+                <span class="drink-indicator-dot" style="--dot-color: #00d4ff;"></span>
+              </div>
               <span class="drink-spec">Gin + Tonic + Citrus</span>
             </button>
 
             <button class="hmi-drink-btn" onclick="selectRecipeHmi('Tequila Sunrise', [3, 4, 5, 7], 'ff5722', this)">
-              <span class="drink-name">Tequila Sunrise</span>
+              <div class="drink-header-row">
+                <span class="drink-name">Tequila Sunrise</span>
+                <span class="drink-indicator-dot" style="--dot-color: #ff5722;"></span>
+              </div>
               <span class="drink-spec">Tequila + Citrus + Cran</span>
             </button>
 
             <button class="hmi-drink-btn" onclick="selectRecipeHmi('Cyber Long Island', [0, 1, 2, 3, 4, 7], 'ff9900', this)">
-              <span class="drink-name">Cyber Long Island</span>
+              <div class="drink-header-row">
+                <span class="drink-name">Cyber Long Island</span>
+                <span class="drink-indicator-dot" style="--dot-color: #ff9900;"></span>
+              </div>
               <span class="drink-spec">Vodka + Gin + Teq + Rum</span>
             </button>
 
             <button class="hmi-drink-btn" onclick="selectRecipeHmi('Kinetic Reserve', [0, 1, 2, 3, 4, 5, 6, 7], '8b24e3', this)">
-              <span class="drink-name">Kinetic Reserve</span>
+              <div class="drink-header-row">
+                <span class="drink-name">Kinetic Reserve</span>
+                <span class="drink-indicator-dot" style="--dot-color: #a34ee8;"></span>
+              </div>
               <span class="drink-spec">All 8 Botanical Spirits</span>
             </button>
           </div>
 
-          <!-- Real-Time 8-Bottle Fill Gauges -->
-          <div style="font-family: var(--font-body); font-weight: 700; font-size: 0.74rem; color: var(--text-muted); margin-bottom: 0.45rem; letter-spacing: 0.04em;">
-            RESERVOIR INVENTORY GAUGES (REAL-TIME DRAIN)
+          <!-- Real-Time 8-Bottle Fill Gauges (Liquid Glass Ampoules) -->
+          <div class="inventory-section-header">
+            <div class="inventory-title-group">
+              <span class="inventory-title">RESERVOIR INVENTORY GAUGES</span>
+              <span class="inventory-subtitle">REAL-TIME OPTICAL DRAIN SENSORS</span>
+            </div>
+            <span class="inventory-live-chip">LIVE TELEMETRY</span>
           </div>
+
           <div class="bottle-levels-monitor">
             <div class="bottle-gauge">
-              <div class="gauge-bar-track"><div id="gauge-fill-0" class="gauge-bar-fill" style="height: 100%;"></div></div>
+              <div class="gauge-ampoule">
+                <div class="gauge-glass-glare"></div>
+                <div class="gauge-bar-track">
+                  <div id="gauge-fill-0" class="gauge-bar-fill liquid-bourbon" style="height: 100%;">
+                    <div class="gauge-liquid-meniscus"></div>
+                  </div>
+                </div>
+              </div>
               <span class="bottle-gauge-label">BOURBON</span>
             </div>
+
             <div class="bottle-gauge">
-              <div class="gauge-bar-track"><div id="gauge-fill-1" class="gauge-bar-fill" style="height: 100%;"></div></div>
+              <div class="gauge-ampoule">
+                <div class="gauge-glass-glare"></div>
+                <div class="gauge-bar-track">
+                  <div id="gauge-fill-1" class="gauge-bar-fill liquid-vodka" style="height: 100%;">
+                    <div class="gauge-liquid-meniscus"></div>
+                  </div>
+                </div>
+              </div>
               <span class="bottle-gauge-label">VODKA</span>
             </div>
+
             <div class="bottle-gauge">
-              <div class="gauge-bar-track"><div id="gauge-fill-2" class="gauge-bar-fill" style="height: 100%;"></div></div>
+              <div class="gauge-ampoule">
+                <div class="gauge-glass-glare"></div>
+                <div class="gauge-bar-track">
+                  <div id="gauge-fill-2" class="gauge-bar-fill liquid-gin" style="height: 100%;">
+                    <div class="gauge-liquid-meniscus"></div>
+                  </div>
+                </div>
+              </div>
               <span class="bottle-gauge-label">GIN</span>
             </div>
+
             <div class="bottle-gauge">
-              <div class="gauge-bar-track"><div id="gauge-fill-3" class="gauge-bar-fill" style="height: 100%;"></div></div>
+              <div class="gauge-ampoule">
+                <div class="gauge-glass-glare"></div>
+                <div class="gauge-bar-track">
+                  <div id="gauge-fill-3" class="gauge-bar-fill liquid-tequila" style="height: 100%;">
+                    <div class="gauge-liquid-meniscus"></div>
+                  </div>
+                </div>
+              </div>
               <span class="bottle-gauge-label">TEQUILA</span>
             </div>
+
             <div class="bottle-gauge">
-              <div class="gauge-bar-track"><div id="gauge-fill-4" class="gauge-bar-fill" style="height: 100%;"></div></div>
+              <div class="gauge-ampoule">
+                <div class="gauge-glass-glare"></div>
+                <div class="gauge-bar-track">
+                  <div id="gauge-fill-4" class="gauge-bar-fill liquid-triplesec" style="height: 100%;">
+                    <div class="gauge-liquid-meniscus"></div>
+                  </div>
+                </div>
+              </div>
               <span class="bottle-gauge-label">TRIPLE SEC</span>
             </div>
+
             <div class="bottle-gauge">
-              <div class="gauge-bar-track"><div id="gauge-fill-5" class="gauge-bar-fill" style="height: 100%;"></div></div>
+              <div class="gauge-ampoule">
+                <div class="gauge-glass-glare"></div>
+                <div class="gauge-bar-track">
+                  <div id="gauge-fill-5" class="gauge-bar-fill liquid-cranberry" style="height: 100%;">
+                    <div class="gauge-liquid-meniscus"></div>
+                  </div>
+                </div>
+              </div>
               <span class="bottle-gauge-label">CRANBERRY</span>
             </div>
+
             <div class="bottle-gauge">
-              <div class="gauge-bar-track"><div id="gauge-fill-6" class="gauge-bar-fill" style="height: 100%;"></div></div>
+              <div class="gauge-ampoule">
+                <div class="gauge-glass-glare"></div>
+                <div class="gauge-bar-track">
+                  <div id="gauge-fill-6" class="gauge-bar-fill liquid-tonic" style="height: 100%;">
+                    <div class="gauge-liquid-meniscus"></div>
+                  </div>
+                </div>
+              </div>
               <span class="bottle-gauge-label">TONIC</span>
             </div>
+
             <div class="bottle-gauge">
-              <div class="gauge-bar-track"><div id="gauge-fill-7" class="gauge-bar-fill" style="height: 100%;"></div></div>
+              <div class="gauge-ampoule">
+                <div class="gauge-glass-glare"></div>
+                <div class="gauge-bar-track">
+                  <div id="gauge-fill-7" class="gauge-bar-fill liquid-citrus" style="height: 100%;">
+                    <div class="gauge-liquid-meniscus"></div>
+                  </div>
+                </div>
+              </div>
               <span class="bottle-gauge-label">CITRUS</span>
             </div>
           </div>
 
-          <!-- Action Buttons -->
-          <div style="display: flex; flex-direction: column; gap: 0.65rem;">
-            <button id="btn-place-cup" class="btn-secondary" style="width: 100%; justify-content: center;" onclick="placeDrinkCup()">
+          <!-- Tactile Action Buttons (Liquid Glass Styled) -->
+          <div class="hmi-actions-stack">
+            <button id="btn-place-cup" class="btn-place-cup-glass" onclick="placeDrinkCup()">
               PLACE DRINK CUP
             </button>
 
-            <button id="btn-dispense" class="btn-primary btn-dispense" disabled onclick="startDispenseCycle()">
+            <button id="btn-dispense" class="btn-dispense-glass" disabled onclick="startDispenseCycle()">
               START DISPENSE SEQUENCE
             </button>
           </div>
@@ -524,6 +633,45 @@
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/\n\n/g, '<br><br>')
         .replace(/\n/g, '<br>');
+    }
+
+    /* ==========================================
+       LIQUID GLASS TOUCHSCREEN INTERFACE LOGIC
+       ========================================== */
+    // 1. Live Capacitive Screen Clock
+    function updateScreenClock() {
+      const clockEl = document.getElementById('screen-clock');
+      if (clockEl) {
+        const now = new Date();
+        const hrs = String(now.getHours()).padStart(2, '0');
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        const secs = String(now.getSeconds()).padStart(2, '0');
+        clockEl.innerText = `${hrs}:${mins}:${secs}`;
+      }
+    }
+    setInterval(updateScreenClock, 1000);
+    updateScreenClock();
+
+    // 2. Interactive Liquid Ripple on Glass Touch
+    const hmiScreen = document.getElementById('hmi-touchscreen-panel');
+    if (hmiScreen) {
+      hmiScreen.addEventListener('pointerdown', function (e) {
+        const rect = hmiScreen.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const ripple = document.createElement('div');
+        ripple.className = 'screen-touch-ripple';
+        ripple.style.left = `${x}px`;
+        ripple.style.top = `${y}px`;
+        ripple.style.width = '30px';
+        ripple.style.height = '30px';
+
+        hmiScreen.appendChild(ripple);
+        setTimeout(() => {
+          if (ripple.parentNode) ripple.parentNode.removeChild(ripple);
+        }, 700);
+      });
     }
   </script>
 </body>
