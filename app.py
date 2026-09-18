@@ -315,38 +315,56 @@ def get_live_workspace_context():
 
     return "\n\n".join(context_sections)
 
-def query_gemini_ai(sender, query_text):
-    api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+def query_gemini_ai(sender, query_text, operator_auth=False):
+    """High-speed Gemini AI via direct REST API call with Public vs Operator clearance tiers."""
+    api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         return None
     try:
         now_eastern = get_eastern_now()
         today_date_str = now_eastern.strftime("%A, %B %d, %Y")
         current_time_str = now_eastern.strftime("%I:%M %p EDT").lstrip("0")
-        salutation = "Sir / Mr. Rohendhar" if sender.lower() in ["ro", "operator"] else f"Mr. {sender}"
         
-        system_instruction = (
-            f"You are J.A.R.V.I.S., the brilliant, witty, and sophisticated AI operating system for Tony Stark, "
-            f"now dedicated to Project AVENGERS at the University of Cincinnati (MECH5051 / EECE5001).\n\n"
-            f"TEMPORAL ANCHOR (CRITICAL):\n"
-            f"- TODAY'S DATE IS: {today_date_str}.\n"
-            f"- CURRENT LOCAL TIME IS: {current_time_str} (Cincinnati, Ohio / US Eastern Time / EDT).\n"
-            f"- The team is physically based at the University of Cincinnati in Eastern Time (EDT). If asked about the current time or date, always report {current_time_str}.\n"
-            f"- CURRENT STATUS:\n"
-            f"  * 1 WEEK COUNTDOWN to Team Design Proposal deadline (Wednesday, September 23, 2026).\n"
-            f"  * All 4 section leads must deliver itemized BOM vendor quotes + visual CAD layout drawings.\n"
-            f"  * 5-Minute Pitch Deck Video due Monday, September 28, 2026 (Unlocks $600.00 upfront team payout).\n"
-            f"  * Standing meetings: Twice weekly — before (12:45 PM) and after (2:45 PM) Wednesday 1:30 PM class.\n\n"
-            f"RULES OF CONDUCT:\n"
-            f"1. Tone: Refined British poise, sharp intelligence, concise and proactive with subtle dry humor.\n"
-            f"2. Always provide clear, direct answers with specific component numbers, dates, formulas, or team member assignments. Never give generic one-line dismissals.\n"
-            f"3. Operator is: {salutation}."
-        )
+        if operator_auth:
+            salutation = "Sir / Mr. Rohendhar" if sender.lower() in ["ro", "operator"] else f"Mr. {sender}"
+            system_instruction = (
+                f"You are J.A.R.V.I.S., the AI operating system for Kinetic Pour (University of Cincinnati Capstone MECH5051/EECE5001).\n"
+                f"CLEARANCE: LEVEL 5 (AUTHORIZED OPERATOR: {salutation}).\n\n"
+                f"TEMPORAL ANCHOR (CRITICAL):\n"
+                f"- TODAY'S DATE IS: {today_date_str}.\n"
+                f"- CURRENT LOCAL TIME IS: {current_time_str} (Cincinnati, Ohio / EDT).\n"
+                f"- CURRENT STATUS:\n"
+                f"  * 1 WEEK COUNTDOWN to Team Design Proposal deadline (Wednesday, September 23, 2026).\n"
+                f"  * All 4 section leads must deliver itemized BOM vendor quotes + visual CAD layout drawings.\n"
+                f"  * 5-Minute Pitch Deck Video due Monday, September 28, 2026 (Unlocks $600.00 upfront team payout).\n"
+                f"  * Innovation Challenge: $1,200 guaranteed grant ($300/person); itemized receipts via Canvas Purchase Request Form.\n"
+                f"  * Standing meetings: Twice weekly — before (12:45 PM) and after (2:45 PM) Wednesday 1:30 PM class.\n\n"
+                f"RULES OF CONDUCT:\n"
+                f"1. Tone: Refined British poise, sharp intelligence, concise and proactive with subtle dry humor.\n"
+                f"2. Provide clear, direct engineering answers with specific component numbers, dates, formulas, or team member assignments.\n"
+                f"3. Operator is: {salutation}."
+            )
+        else:
+            salutation = "Guest"
+            system_instruction = (
+                f"You are J.A.R.V.I.S., the systems intelligence and technical guide for Kinetic Pour at the University of Cincinnati.\n"
+                f"CLEARANCE: PUBLIC GUEST (SURFACE ARCHITECTURE).\n\n"
+                f"CRITICAL ACCESS & PRIVACY PROTOCOLS:\n"
+                f"1. Do NOT disclose internal calendar deadlines (e.g. Sept 23, Sept 28, Oct 15) or presentation deadlines.\n"
+                f"2. Do NOT disclose internal grant finances, team payouts ($600 / $150 per person), budget breakdowns ($1,200), or Canvas Purchase Request forms. If asked about money or internal deadlines, politely explain that financial figures and internal schedules are restricted under Level 5 Operator Clearance.\n"
+                f"3. INSTEAD, discuss:\n"
+                f"   - What Kinetic Pour is: an automated, precision drink-crafting table with 8 modular bottles, GROTHEN 24V peristaltic pumps, a NEMA 17 stepper T8 lead screw elevator lift, food-grade silicone lines, and industrial PLC control.\n"
+                f"   - Milestones Achieved: Completed 8-bottle fluidics Three.js simulation, CAD modeled modular 2x4 reservoir chassis and dispensing manifold, and mapped 8-step PLC safety sequence with optical interlocks.\n"
+                f"   - Next Milestone: Team Design Proposal & CAD BOM submission (hardware procurement phase).\n"
+                f"   - General technical subsystem specifications and features.\n"
+                f"4. Tone: Helpful, articulate, sophisticated British AI host."
+            )
         
         context_data = get_live_workspace_context()
         prompt = (
-            f"PROJECT ARCHITECTURE & STATUS DATA:\n{context_data}\n\n"
-            f"OPERATOR: {sender}\n"
+            f"PROJECT ARCHITECTURE DATA:\n{context_data}\n\n"
+            f"OPERATOR AUTHENTICATED: {operator_auth}\n"
+            f"USER IDENTIFIER: {sender}\n"
             f"QUERY: {query_text}"
         )
         
@@ -386,9 +404,89 @@ def query_gemini_ai(sender, query_text):
         print(f"Gemini API error: {e}")
     return None
 
-def fallback_answer(sender, query_text):
-    """Comprehensive intelligent offline fallback engine — never gives generic brush-offs."""
+def fallback_answer(sender, query_text, operator_auth=False):
+    """Comprehensive intelligent offline fallback engine with Public vs Operator clearance tiers."""
     q = query_text.lower()
+
+    if not operator_auth:
+        # ==============================
+        # PUBLIC GUEST MODE (SURFACE-LEVEL)
+        # ==============================
+        if any(w in q for w in ["deadline", "timeline", "gantt", "due", "when", "schedule", "calendar", "milestone", "date", "submit"]):
+            return (
+                "Here is the verified **Kinetic Pour Milestone Progress**:\n\n"
+                "### ✅ Milestones Achieved:\n"
+                "• **3D Fluidics Architecture**: 8-bottle hydraulic layout & Three.js interactive simulation completed and validated.\n"
+                "• **Modular Caddy & Manifold**: Engineered 2x4 bottle mounting chassis and 8-nozzle dispensing head in CAD.\n"
+                "• **PLC Safety State Machine**: Designed 8-step safety sequence with optical cup-presence interlocks.\n\n"
+                "### 🎯 Next Upcoming Milestone:\n"
+                "• **Team Design Proposal & CAD BOM Submission**: Finalizing structural drawings, vendor datasheets, and procurement quotes for hardware assembly.\n\n"
+                "🔒 *Note: Specific calendar dates, pitch video submission requirements, and internal task checklists require Level 5 Operator Clearance.*"
+            )
+
+        if any(w in q for w in ["fund", "money", "grant", "stipend", "reimburse", "challenge", "1819", "prize", "budget", "payout", "cost"]):
+            return (
+                "**Kinetic Pour** is an undergraduate Senior Design capstone project developed at the University of Cincinnati, supported through collegiate engineering innovation grants.\n\n"
+                "🔒 **Access Restricted**: Specific grant allocations ($1,200.00 total), upfront working capital payouts ($600.00 on Sept 28), and reimbursement procedures are reserved for authorized Level 5 Operators. Please select an Operator profile and enter your passcode to view internal finances."
+            )
+
+        if any(w in q for w in ["task", "action", "todo", "what should i", "do i need", "deliverable", "assignment", "work on"]):
+            return (
+                "Individual team member task allocations and internal accountability checklists require Level 5 Operator authentication.\n\n"
+                "Please select your operator profile (Ro, Aron, Eli, or Shyam) and enter your passcode to access your active deliverables."
+            )
+
+        if any(w in q for w in ["role", "who", "team", "assign", "members", "roster"]):
+            return (
+                "**Kinetic Pour Engineering Team:**\n\n"
+                "• **Rohendhar** — Project Manager & Systems Integration Lead\n"
+                "• **Aron Joseph** — Finance & Bottling Subsystem Lead\n"
+                "• **Eli Radabaugh** — Electrical & Industrial Automation Lead\n"
+                "• **Shyam Patel** — Mechanical Kinematics & Operations Lead\n\n"
+                "🔒 *Internal task checklists and deliverable tracking require Operator login.*"
+            )
+
+        if any(w in q for w in ["bottle", "fluid", "pump", "liquid", "peristaltic", "grothen", "tube", "dispens"]):
+            return (
+                "Here are the engineering parameters for the **8-Bottle Fluidics Subsystem**:\n\n"
+                "• **Reservoirs**: 8x 750ml Bordeaux-style modular bottles in a 2x4 3D-printed caddy.\n"
+                "• **Check Valves**: 1/4\" inline one-way check valves to prevent backflow and keep lines primed.\n"
+                "• **Dosing Pumps**: 8x GROTHEN 24V peristaltic pumps with 3-roller rotor heads for positive displacement metering.\n"
+                "• **Tubing**: High-temperature food-grade 3x5mm silicone tubing converging at the central 3D-printed manifold.\n"
+                "• **Sanitation**: Clean-in-place (CIP) purge cycle compatible."
+            )
+
+        if any(w in q for w in ["lift", "rail", "motor", "elevator", "carriage", "screw", "stepper"]):
+            return (
+                "Regarding the **T8 Linear Elevator Subsystem**:\n\n"
+                "• **Mechanism**: NEMA 17 stepper motor driving a T8 stainless lead screw with dual precision guide rods.\n"
+                "• **Stroke Travel**: 100 mm vertical stroke (lowers cup into dispensing bay, then lifts flush with tabletop).\n"
+                "• **Sensors**: Optical photocell cup-presence verification and microswitch endstops.\n"
+                "• **Cycle Time**: ~4 seconds full stroke transit."
+            )
+
+        if any(w in q for w in ["ice", "cool", "thermal", "fridge", "chiller"]):
+            return (
+                "Regarding the **Thermal Management Subsystem**:\n\n"
+                "• **Architecture Decision**: Motorized compressors were ruled out due to bulk, plumbing, and power draw.\n"
+                "• **Current Baseline**: Insulated cold bay utilizing **reusable food-grade 304 stainless steel whiskey stones** or compact 12V thermoelectric (Peltier) cold plates.\n"
+                "• **Insulation**: Closed-cell neoprene barrier preventing condensation in the electrical bay."
+            )
+
+        # General Public Fallback
+        return (
+            "Greetings! I am **J.A.R.V.I.S.**, systems intelligence for the **Kinetic Pour Automated Drink Table**.\n\n"
+            "I am currently operating in **Public Guest Mode** (Surface Telemetry). I can answer questions regarding:\n"
+            "• **Project Overview & Specs**: Hardware architecture and dispensing capabilities.\n"
+            "• **Milestones Achieved**: 3D fluidics simulation, CAD manifold, and PLC safety logic.\n"
+            "• **Next Milestone**: Team Design Proposal & CAD BOM submission.\n"
+            "• **Subsystems**: GROTHEN 24V pumps, T8 elevator lift, and capacitive touchscreen HMI.\n\n"
+            "*(For internal team task lists, CEAS grant allocations, or submission deadlines, team operators should access the dedicated [Operator Command Portal](https://rohendhar.github.io/jarvis-operator/)).*"
+        )
+
+    # ==============================
+    # OPERATOR MODE (LEVEL 5 UNLOCKED)
+    # ==============================
     salutation = "Sir" if sender.lower() in ["ro", "operator"] else sender
 
     # 0. Tasks, Action Items & Deliverables (Member-Specific)
@@ -469,33 +567,37 @@ def fallback_answer(sender, query_text):
     # 3. Lift Mechanism & Mechanics
     if any(w in q for w in ["lift", "rail", "motor", "elevator", "carriage", "screw"]):
         return (
-            f"Regarding the **Z-Axis Lift Mechanism**, **{salutation}**:\n\n"
-            "• **Linear Guide**: Sizing an **MGN12H linear guide rail (350mm–400mm)** with an extra-long carriage block to resist cantilever deflection under 1.5kg cup loads.\n"
-            "• **Drive Transmission**: **8mm Lead Screw (2mm pitch)** with flexible coupler driven by a NEMA 17 stepper motor. Lead screws provide self-locking holding friction so the platform cannot free-fall on power failure.\n"
-            "• **Position Sensing**: Two **Normally Closed (NC) optical limit switches** for upper (table flush) and lower (dispense) stops.\n"
+            f"Here are the engineering parameters for the **Linear Elevator Mechanism**, **{salutation}**:\n\n"
+            "• **Linear Guide**: Precision MGN12H linear rail (350mm–400mm) with dual bearing blocks.\n"
+            "• **Drive Mechanism**: NEMA 17 stepper motor driving an 8mm lead screw (T8x8, 2mm pitch, 8mm lead) or high-torque 12V worm-drive DC gearmotor.\n"
+            "• **Travel Stroke**: 100mm vertical stroke.\n"
+            "• **Limit Switches**: Normally-closed optical microswitches at top and bottom limits for fail-safe PLC homing.\n"
+            "• **Cup Safety**: Centering ring with infrared presence sensor.\n"
             "• **Leads**: Shyam Patel & Eli Radabaugh."
         )
 
-    # 4. Electrical & Controls
-    if any(w in q for w in ["electric", "plc", "power", "relay", "wire", "voltage", "24v"]):
+    # 4. Bottling & Fluidics System
+    if any(w in q for w in ["bottle", "fluid", "pump", "liquid", "cork", "manifold", "nozzle", "tubing", "valves"]):
         return (
-            f"Here are the specifications for the **Electrical Subsystem**, **{salutation}**:\n\n"
-            "• **Controller**: Industrial **AutomationDirect Click PLC** (or Siemens LOGO! 24RCE) for 24V industrial noise immunity and ladder logic.\n"
-            "• **Power Supply**: Single **Mean Well LRS-350-24 (24V DC, 14.6A)** switching power supply to power PLC, relays, and pumps.\n"
-            "• **Inductive Protection**: Optocoupled relay blocks with 1N4007 flyback diodes across each pump motor to suppress back-EMF spikes.\n"
-            "• **Placement**: NEMA/IP junction box mounted high on the **rear vertical bulkhead** to eliminate fluid drip hazards.\n"
-            "• **Leads**: Eli Radabaugh & Rohendhar."
+            f"Here are the finalized parameters for the **8-Bottle Fluidics Subsystem**, **{salutation}**:\n\n"
+            "• **Reservoir Matrix**: 8 uniform glass bottles (500ml–750ml) in a 2×4 modular bay.\n"
+            "• **Corks & Seals**: Food-grade silicone rubber bungs with dual barbed ports (fluid delivery + pressure equalization check valve).\n"
+            "• **Metering Pumps**: 8x 12V/24V food-grade peristaltic metering pumps (~100–150 ml/min).\n"
+            "• **Dispensing Manifold**: Custom 3D-printed food-safe PETG manifold focusing all 8 lines into a 2.5\" diameter dispensing cone.\n"
+            "• **Tubing**: 1/4\" OD food-grade silicone tubing.\n"
+            "• **Leads**: Rohendhar & Aron Joseph."
         )
 
-    # 5. Bottling, Fluidics & Pumps
-    if any(w in q for w in ["bottle", "pump", "fluid", "tube", "dispens", "pour", "flow", "cork"]):
+    # 5. Electrical, PLC & Controls
+    if any(w in q for w in ["plc", "wire", "power", "relay", "schematic", "electric", "fuse", "diode"]):
         return (
-            f"Here are the engineering parameters for the **Bottling & Fluidics Subsystem**, **{salutation}**:\n\n"
-            "• **Bottle Storage**: **8 bottles total** in a linear 2x4 array (4 juices/mixers, 4 alcoholic spirits).\n"
-            "• **Vessels**: Custom flat-bottom 500ml–750ml bottles with uniform height for modular mounting.\n"
-            "• **Sanitary Closures**: Food-grade rubber corks with integrated **one-way duckbill silicone check valves** for ambient air replacement (prevents vacuum stall).\n"
-            "• **Pumping**: Food-grade 12V peristaltic dosing pumps with **inline screw pinch/needle flow regulators** to calibrate pour speeds and eliminate splashing.\n"
-            "• **Leads**: Rohendhar & Aron Joseph."
+            f"Regarding the **Electrical & Industrial Control Subsystem**, **{salutation}**:\n\n"
+            "• **Controller**: AutomationDirect Click PLC (or Siemens LOGO! 24RCE) running 24V sinking/sourcing I/O.\n"
+            "• **Power Supply**: Mean Well LRS-350-24 (24V DC, 14.6A, 350W) with terminal distribution blocks.\n"
+            "• **Pump Switching**: 8-channel 24V optoisolated relay module with 1N4007 flyback diodes across inductive pump coils.\n"
+            "• **Safety Circuit**: Physical Mushroom E-Stop cutting all 24V actuator power while keeping PLC logic energized.\n"
+            "• **Enclosure**: IP65 sealed polycarbonate bulkhead enclosure with gland connectors.\n"
+            "• **Lead**: Eli Radabaugh."
         )
 
     # 6. Ice & Thermal System
@@ -522,12 +624,27 @@ def fallback_answer(sender, query_text):
     # General Fallback
     return (
         f"At your service, **{salutation}**. J.A.R.V.I.S. neural telemetry is fully operational.\n\n"
-        "### 🚀 Project AVENGERS Status Summary:\n"
+        "### 🚀 Kinetic Pour Status Summary:\n"
         "• **Form Factor**: Automated 8-Bottle Mobile Table on Wheels (~30\" × 17\" × 10\").\n"
         "• **Immediate Focus**: **Team Design Proposal due Wednesday, September 23rd** (BOM quotes + CAD drawings per section).\n"
         "• **Upcoming Payout**: 5-Minute Pitch Deck Video due September 28th ($600.00 team payout).\n\n"
         "How may I assist you further with CAD specs, wiring diagrams, or milestone tracking?"
     )
+
+@app.route("/operator")
+@app.route("/command")
+def operator_portal():
+    for p in [os.path.join(LOCAL_ROOT, "templates", "operator.html"), os.path.join(LOCAL_ROOT, "operator.html")]:
+        if os.path.exists(p):
+            try:
+                with open(p, "r", encoding="utf-8") as f:
+                    return f.read()
+            except Exception:
+                pass
+    try:
+        return render_template("operator.html")
+    except Exception as e:
+        return f"<h3>Operator Portal: {e}</h3>"
 
 @app.route("/void")
 @app.route("/portal")
@@ -553,12 +670,13 @@ def home():
 def chat():
     try:
         data = request.get_json(force=True, silent=True) or {}
-        sender = data.get("sender", "Operator")
+        sender = data.get("sender", "Guest")
         message = data.get("message", "")
+        operator_auth = bool(data.get("operatorAuth", False) or data.get("operator_auth", False))
         
-        reply = query_gemini_ai(sender, message)
+        reply = query_gemini_ai(sender, message, operator_auth=operator_auth)
         if not reply:
-            reply = fallback_answer(sender, message)
+            reply = fallback_answer(sender, message, operator_auth=operator_auth)
         return jsonify({"reply": reply})
     except Exception as e:
         return jsonify({"reply": f"⚠️ J.A.R.V.I.S. Telemetry Error: {str(e)}"})
