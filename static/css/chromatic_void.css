@@ -1,0 +1,910 @@
+/* ==========================================================================
+   PROJECT AVENGERS — AUTOMATED DRINK-DISPENSING TABLE
+   Senior Design Capstone (MECH5051 / EECE5001) — University of Cincinnati
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* Obsidian Void Palette */
+  --void-deep: #070709;
+  --void-bg: #0c0c10;
+  --void-card: #121217;
+  --void-surface: #181820;
+  --void-border: rgba(255, 255, 255, 0.08);
+
+  /* Spectral Accents (Infrared Vermilion & Ultraviolet Aura) */
+  --infrared: #ff3b14;
+  --infrared-glow: rgba(255, 59, 20, 0.45);
+  --infrared-dim: rgba(255, 59, 20, 0.14);
+  --vermilion-flame: #ff5722;
+  
+  --ultraviolet: #8b24e3;
+  --ultraviolet-glow: rgba(139, 36, 227, 0.45);
+  --ultraviolet-dim: rgba(139, 36, 227, 0.14);
+  --amber-warm: #ffb300;
+  --status-green: #00e676;
+
+  /* Text Colors */
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-infrared: #ff3b14;
+
+  /* Typography: Ultra-Clean Modern Tech */
+  --font-title: 'Space Grotesk', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --trans-smooth: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--void-deep);
+}
+
+body {
+  background-color: var(--void-deep);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  overflow-x: hidden;
+  position: relative;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Subtle Film Grain Texture */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Modern Clean Navbar */
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2.5rem;
+  background: rgba(12, 12, 16, 0.88);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 59, 20, 0.18);
+  z-index: 1000;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.8);
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.brand-badge {
+  background: linear-gradient(135deg, var(--infrared), var(--ultraviolet));
+  color: white;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.08em;
+  box-shadow: 0 0 12px var(--infrared-glow);
+}
+
+.brand-title {
+  font-family: var(--font-title);
+  font-size: 1.12rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #fff;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.4rem;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: var(--trans-smooth);
+  position: relative;
+  padding-bottom: 4px;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: #fff;
+}
+
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  bottom: 0; left: 0; width: 0; height: 2px;
+  background: var(--infrared);
+  box-shadow: 0 0 8px var(--infrared);
+  transition: var(--trans-smooth);
+}
+
+.nav-links a:hover::after,
+.nav-links a.active::after {
+  width: 100%;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--infrared), #d92600);
+  color: white;
+  border: none;
+  padding: 0.65rem 1.3rem;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: var(--trans-smooth);
+  box-shadow: 0 4px 18px var(--infrared-glow);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 26px var(--infrared-glow);
+  filter: brightness(1.12);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+  border: 1px solid var(--void-border);
+  padding: 0.65rem 1.2rem;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: var(--trans-smooth);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 59, 20, 0.12);
+  border-color: rgba(255, 59, 20, 0.45);
+  color: #fff;
+}
+
+/* ==========================================================================
+   HERO SECTION WITH CADENCE ANIMATED MOVING BACKGROUND
+   ========================================================================== */
+.hero-portal {
+  position: relative;
+  min-height: 85vh;
+  padding: 125px 2rem 55px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+  z-index: 1;
+}
+
+#cadence-canvas {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.88;
+}
+
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 6px 16px;
+  border-radius: 50px;
+  background: rgba(255, 59, 20, 0.12);
+  border: 1px solid rgba(255, 59, 20, 0.38);
+  color: var(--infrared);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 0 16px rgba(255, 59, 20, 0.25);
+}
+
+.hero-headline {
+  font-family: var(--font-title);
+  font-size: clamp(2.4rem, 5.2vw, 4.6rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.3rem;
+  max-width: 1100px;
+  color: #fff;
+  text-shadow: 0 0 35px rgba(255, 59, 20, 0.3);
+}
+
+.hero-headline span.accent {
+  background: linear-gradient(135deg, var(--infrared) 0%, var(--ultraviolet) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+  font-family: var(--font-body);
+  font-size: clamp(1.05rem, 1.8vw, 1.28rem);
+  color: var(--text-secondary);
+  max-width: 800px;
+  margin-bottom: 2.8rem;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+/* Telemetry Pills Bar */
+.hero-telemetry-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.2rem;
+  width: 100%;
+  max-width: 1050px;
+  margin: 0 auto;
+}
+
+.telemetry-pill {
+  background: rgba(18, 18, 24, 0.85);
+  border: 1px solid rgba(255, 59, 20, 0.22);
+  border-left: 4px solid var(--infrared);
+  border-radius: 12px;
+  padding: 0.95rem 1.25rem;
+  text-align: left;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+.telemetry-pill.ultraviolet {
+  border-left-color: var(--ultraviolet);
+  border-color: rgba(139, 36, 227, 0.25);
+}
+
+.telemetry-pill .label {
+  font-family: var(--font-body);
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.telemetry-pill .val {
+  font-family: var(--font-title);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 0.2rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.telemetry-pill .val span {
+  font-size: 0.8rem;
+  color: var(--infrared);
+  font-family: var(--font-mono);
+}
+
+/* ==========================================================================
+   INTERACTIVE 3D SIMULATION SECTION
+   ========================================================================== */
+.simulation-section {
+  position: relative;
+  padding: 75px 2rem;
+  max-width: 1650px;
+  margin: 0 auto;
+  z-index: 2;
+}
+
+.section-header {
+  margin-bottom: 2.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.section-title {
+  font-family: var(--font-title);
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #fff;
+  margin-bottom: 0.4rem;
+}
+
+.section-desc {
+  color: var(--text-secondary);
+  font-size: 1.02rem;
+  max-width: 650px;
+  font-weight: 500;
+}
+
+.sim-container {
+  display: grid;
+  grid-template-columns: 1fr 430px;
+  gap: 1.6rem;
+  background: var(--void-card);
+  border: 1px solid rgba(255, 59, 20, 0.2);
+  border-radius: 18px;
+  padding: 1.6rem;
+  position: relative;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.85);
+}
+
+@media (max-width: 1200px) {
+  .sim-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sim-viewport-wrapper {
+  position: relative;
+  width: 100%;
+  height: 680px;
+  background: #050507;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#three-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  outline: none;
+}
+
+.viewport-hud {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.hud-badge {
+  background: rgba(12, 12, 18, 0.9);
+  border: 1px solid var(--infrared);
+  backdrop-filter: blur(12px);
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--infrared);
+  letter-spacing: 0.06em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 0 14px var(--infrared-dim);
+}
+
+.hud-badge::before {
+  content: "";
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--infrared);
+  box-shadow: 0 0 10px var(--infrared);
+  animation: pulseBlink 1.2s infinite ease-in-out;
+}
+
+@keyframes pulseBlink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.7); }
+}
+
+.viewport-controls {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  right: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.focus-pills {
+  display: flex;
+  gap: 0.5rem;
+  pointer-events: auto;
+  flex-wrap: wrap;
+}
+
+.focus-btn {
+  background: rgba(16, 16, 22, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--trans-smooth);
+  backdrop-filter: blur(10px);
+}
+
+.focus-btn:hover,
+.focus-btn.active {
+  background: rgba(255, 59, 20, 0.2);
+  border-color: var(--infrared);
+  color: #fff;
+  box-shadow: 0 0 16px var(--infrared-dim);
+}
+
+/* User HMI Screen Styling */
+.hmi-control-deck {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.hmi-screen-card {
+  background: rgba(22, 22, 28, 0.78);
+  border: 1px solid rgba(255, 59, 20, 0.25);
+  border-radius: 14px;
+  padding: 1.4rem;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
+}
+
+.hmi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.2rem;
+}
+
+.hmi-title {
+  font-family: var(--font-title);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.hmi-mode-tag {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--infrared);
+  letter-spacing: 0.08em;
+}
+
+/* Touchscreen Drink Presets Grid */
+.hmi-drink-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem;
+  margin-bottom: 1.2rem;
+}
+
+.hmi-drink-btn {
+  background: rgba(14, 14, 18, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 0.85rem 0.75rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+  transition: var(--trans-smooth);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hmi-drink-btn::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; width: 3px; height: 100%;
+  background: var(--infrared);
+  opacity: 0;
+  transition: var(--trans-smooth);
+}
+
+.hmi-drink-btn:hover,
+.hmi-drink-btn.active {
+  border-color: var(--infrared);
+  background: rgba(255, 59, 20, 0.14);
+  box-shadow: 0 4px 20px var(--infrared-dim);
+}
+
+.hmi-drink-btn:hover::before,
+.hmi-drink-btn.active::before {
+  opacity: 1;
+}
+
+.hmi-drink-btn .drink-name {
+  font-family: var(--font-title);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.hmi-drink-btn .drink-spec {
+  font-family: var(--font-body);
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+/* 8-Bottle Reservoir Levels Monitor */
+.bottle-levels-monitor {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  background: rgba(10, 10, 14, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 0.75rem;
+  margin-bottom: 1.2rem;
+}
+
+.bottle-gauge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.gauge-bar-track {
+  width: 12px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+}
+
+.gauge-bar-fill {
+  width: 100%;
+  background: var(--infrared);
+  transition: height 0.3s ease;
+  box-shadow: 0 0 8px var(--infrared-glow);
+}
+
+.bottle-gauge-label {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.btn-dispense {
+  width: 100%;
+  padding: 1rem;
+  font-family: var(--font-title);
+  font-size: 0.96rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  justify-content: center;
+}
+
+.btn-dispense:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: grayscale(0.8);
+}
+
+/* Telemetry Logs Terminal */
+.telemetry-terminal {
+  background: #050507;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: #94a3b8;
+  height: 150px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.terminal-line {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.terminal-line .time {
+  color: var(--text-muted);
+}
+
+.terminal-line .status-ok {
+  color: var(--status-green);
+}
+
+.terminal-line .status-alert {
+  color: var(--infrared);
+}
+
+.terminal-line .status-info {
+  color: var(--ultraviolet);
+}
+
+/* ==========================================================================
+   PLC ALGORITHM & LOGIC FLOW SECTION
+   ========================================================================== */
+.plc-section {
+  position: relative;
+  padding: 75px 2rem;
+  max-width: 1650px;
+  margin: 0 auto;
+  z-index: 2;
+}
+
+.plc-card {
+  background: var(--void-card);
+  border: 1px solid rgba(255, 59, 20, 0.25);
+  border-radius: 18px;
+  padding: 2.4rem;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8);
+}
+
+.plc-step-chain {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.2rem;
+  margin-top: 2rem;
+}
+
+.plc-step-node {
+  background: rgba(22, 22, 28, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.2rem;
+  position: relative;
+  transition: var(--trans-smooth);
+}
+
+.plc-step-node.active {
+  border-color: var(--infrared);
+  background: rgba(255, 59, 20, 0.15);
+  box-shadow: 0 0 24px var(--infrared-dim);
+  transform: translateY(-4px);
+}
+
+.plc-step-num {
+  font-family: var(--font-title);
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--infrared);
+  margin-bottom: 0.35rem;
+}
+
+.plc-step-title {
+  font-family: var(--font-title);
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+  color: #fff;
+}
+
+.plc-step-desc {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+/* ==========================================================================
+   J.A.R.V.I.S. ONE-STOP AI ASSISTANT SECTION
+   ========================================================================== */
+.jarvis-section {
+  position: relative;
+  padding: 75px 2rem 120px;
+  max-width: 1650px;
+  margin: 0 auto;
+  z-index: 2;
+}
+
+.jarvis-container {
+  display: grid;
+  grid-template-columns: 1fr 370px;
+  gap: 1.6rem;
+  background: var(--void-card);
+  border: 1px solid rgba(255, 59, 20, 0.25);
+  border-radius: 18px;
+  padding: 1.6rem;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8);
+}
+
+@media (max-width: 1024px) {
+  .jarvis-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.jarvis-chat-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 580px;
+  background: #050507;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.chat-history {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.chat-msg {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-width: 85%;
+}
+
+.chat-msg.user {
+  align-self: flex-end;
+}
+
+.chat-msg.jarvis {
+  align-self: flex-start;
+}
+
+.chat-sender {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.chat-msg.user .chat-sender {
+  text-align: right;
+  color: var(--infrared);
+}
+
+.chat-bubble {
+  padding: 1rem 1.3rem;
+  border-radius: 12px;
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+
+.chat-msg.user .chat-bubble {
+  background: linear-gradient(135deg, rgba(255, 59, 20, 0.25), rgba(255, 87, 34, 0.15));
+  border: 1px solid var(--infrared);
+  color: #fff;
+}
+
+.chat-msg.jarvis .chat-bubble {
+  background: rgba(22, 22, 28, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.chat-input-row {
+  display: flex;
+  padding: 1rem;
+  gap: 0.75rem;
+  background: rgba(14, 14, 18, 0.95);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.chat-input {
+  flex: 1;
+  background: #08080c;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 0.8rem 1.1rem;
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  outline: none;
+  transition: var(--trans-smooth);
+}
+
+.chat-input:focus {
+  border-color: var(--infrared);
+  box-shadow: 0 0 12px var(--infrared-dim);
+}
+
+/* Quick Prompt Pills */
+.prompt-pills-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.prompt-pill {
+  background: rgba(18, 18, 24, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 0.8rem 1.1rem;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: var(--trans-smooth);
+}
+
+.prompt-pill:hover {
+  background: rgba(255, 59, 20, 0.12);
+  border-color: var(--infrared);
+  color: #fff;
+}
+
+/* Footer */
+footer {
+  padding: 2.5rem 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--void-deep);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.footer-info {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.footer-info span.uc {
+  color: var(--infrared);
+  font-weight: 700;
+}
