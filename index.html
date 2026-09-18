@@ -548,6 +548,294 @@
     .btn-dispense-glass:disabled::before {
       display: none !important;
     }
+
+    /* ==========================================================================
+       HOLOGRAPHIC J.A.R.V.I.S. AI CONSOLE & ARC REACTOR
+       ========================================================================== */
+    .jarvis-section {
+      position: relative;
+      padding: 75px 2rem 120px;
+      max-width: 1650px;
+      margin: 0 auto;
+      z-index: 2;
+    }
+
+    .jarvis-container {
+      display: grid !important;
+      grid-template-columns: 1fr 400px !important;
+      gap: 1.8rem !important;
+      background: radial-gradient(120% 120% at 20% 15%, rgba(26, 30, 44, 0.72) 0%, rgba(12, 14, 20, 0.9) 60%, rgba(6, 7, 10, 0.98) 100%) !important;
+      border: 1.5px solid rgba(0, 240, 255, 0.25) !important;
+      border-radius: 24px !important;
+      padding: 1.8rem !important;
+      backdrop-filter: blur(35px) saturate(200%) !important;
+      -webkit-backdrop-filter: blur(35px) saturate(200%) !important;
+      box-shadow: 
+        0 0 0 1px rgba(0, 240, 255, 0.1),
+        inset 0 2px 4px rgba(255, 255, 255, 0.35),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.8),
+        0 28px 64px rgba(0, 0, 0, 0.85),
+        0 0 50px rgba(0, 240, 255, 0.15) !important;
+      position: relative !important;
+      overflow: hidden;
+    }
+
+    /* Tactical HUD Corner Brackets */
+    .hud-corner-bracket {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #00f0ff;
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0.85;
+    }
+    .hud-corner-bracket.top-left { top: 12px; left: 12px; border-right: none; border-bottom: none; }
+    .hud-corner-bracket.top-right { top: 12px; right: 12px; border-left: none; border-bottom: none; }
+    .hud-corner-bracket.bottom-left { bottom: 12px; left: 12px; border-right: none; border-top: none; }
+    .hud-corner-bracket.bottom-right { bottom: 12px; right: 12px; border-left: none; border-top: none; }
+
+    /* Holographic Arc Reactor Card */
+    .jarvis-reactor-deck {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .jarvis-arc-reactor-card {
+      background: linear-gradient(180deg, rgba(16, 20, 30, 0.88) 0%, rgba(8, 10, 16, 0.96) 100%);
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      border-radius: 18px;
+      padding: 1.5rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.15rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 
+        inset 0 1px 2px rgba(255, 255, 255, 0.25),
+        0 8px 30px rgba(0, 0, 0, 0.55),
+        0 0 35px rgba(0, 240, 255, 0.18);
+    }
+
+    .arc-reactor-visualizer {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .arc-ring-outer {
+      position: absolute;
+      width: 116px;
+      height: 116px;
+      border: 2px dashed rgba(0, 240, 255, 0.55);
+      border-radius: 50%;
+      animation: arcSpinClockwise 14s linear infinite;
+    }
+
+    .arc-ring-middle {
+      position: absolute;
+      width: 90px;
+      height: 90px;
+      border: 2px solid transparent;
+      border-top: 2.5px solid #00f0ff;
+      border-bottom: 2.5px solid #ff3b14;
+      border-radius: 50%;
+      animation: arcSpinCounter 7s linear infinite;
+    }
+
+    .arc-ring-inner {
+      position: absolute;
+      width: 66px;
+      height: 66px;
+      border: 1.5px dotted rgba(255, 255, 255, 0.7);
+      border-radius: 50%;
+      animation: arcSpinClockwise 9s linear infinite;
+    }
+
+    .arc-core-glow {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffffff 0%, #00f0ff 40%, rgba(255, 59, 20, 0.6) 85%, transparent 100%);
+      box-shadow: 0 0 25px #00f0ff, 0 0 45px rgba(255, 59, 20, 0.55);
+      animation: arcCorePulse 2.2s ease-in-out infinite alternate;
+    }
+
+    @keyframes arcSpinClockwise {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes arcSpinCounter {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(-360deg); }
+    }
+
+    @keyframes arcCorePulse {
+      0% { transform: scale(0.9); opacity: 0.85; filter: drop-shadow(0 0 12px #00f0ff); }
+      100% { transform: scale(1.12); opacity: 1; filter: drop-shadow(0 0 30px #ff3b14); }
+    }
+
+    /* Live Audio Waveform Bars */
+    .jarvis-voice-waveform {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      height: 32px;
+      width: 100%;
+      padding: 0 1rem;
+    }
+
+    .wave-bar {
+      width: 3.5px;
+      height: 6px;
+      background: linear-gradient(180deg, #00f0ff 0%, #ff3b14 100%);
+      border-radius: 2px;
+      animation: waveOscillate 1.3s ease-in-out infinite alternate;
+      box-shadow: 0 0 6px rgba(0, 240, 255, 0.7);
+    }
+    .wave-bar:nth-child(1) { animation-delay: 0.1s; }
+    .wave-bar:nth-child(2) { animation-delay: 0.35s; }
+    .wave-bar:nth-child(3) { animation-delay: 0.55s; }
+    .wave-bar:nth-child(4) { animation-delay: 0.2s; }
+    .wave-bar:nth-child(5) { animation-delay: 0.65s; }
+    .wave-bar:nth-child(6) { animation-delay: 0.4s; }
+    .wave-bar:nth-child(7) { animation-delay: 0.75s; }
+    .wave-bar:nth-child(8) { animation-delay: 0.3s; }
+    .wave-bar:nth-child(9) { animation-delay: 0.5s; }
+    .wave-bar:nth-child(10) { animation-delay: 0.25s; }
+    .wave-bar:nth-child(11) { animation-delay: 0.6s; }
+    .wave-bar:nth-child(12) { animation-delay: 0.45s; }
+
+    @keyframes waveOscillate {
+      0% { height: 4px; }
+      100% { height: 26px; }
+    }
+
+    .arc-specs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
+      width: 100%;
+      font-size: 0.72rem;
+      font-family: 'JetBrains Mono', monospace;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 0.85rem;
+    }
+
+    .arc-specs-grid div {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .arc-specs-grid span {
+      color: #64748b;
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .arc-specs-grid strong {
+      color: #00f0ff;
+      font-size: 0.74rem;
+    }
+
+    /* Upgraded Chat Box & Bubbles */
+    .jarvis-chat-wrapper {
+      display: flex;
+      flex-direction: column;
+      height: 600px !important;
+      background: radial-gradient(130% 120% at 20% 10%, rgba(18, 20, 30, 0.95) 0%, rgba(8, 9, 14, 0.98) 100%) !important;
+      border-radius: 18px !important;
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      overflow: hidden;
+      box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.15) !important;
+    }
+
+    .chat-top-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.85rem 1.4rem;
+      background: rgba(14, 16, 24, 0.9);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      color: #94a3b8;
+    }
+
+    .chat-top-header .channel-tag {
+      color: #00f0ff;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chat-top-header .channel-tag::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #00f0ff;
+      box-shadow: 0 0 8px #00f0ff;
+    }
+
+    .chat-bubble {
+      padding: 1.1rem 1.4rem !important;
+      border-radius: 14px !important;
+      font-family: 'Plus Jakarta Sans', sans-serif !important;
+      font-size: 0.95rem !important;
+      line-height: 1.6 !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    .chat-msg.jarvis .chat-bubble {
+      background: linear-gradient(135deg, rgba(22, 26, 38, 0.92) 0%, rgba(14, 16, 24, 0.95) 100%) !important;
+      border: 1px solid rgba(0, 240, 255, 0.25) !important;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.1) !important;
+    }
+
+    .chat-msg.user .chat-bubble {
+      background: linear-gradient(135deg, rgba(255, 59, 20, 0.28) 0%, rgba(255, 87, 34, 0.18) 100%) !important;
+      border: 1px solid #ff3b14 !important;
+      box-shadow: 0 0 24px rgba(255, 59, 20, 0.25) !important;
+    }
+
+    /* Preset Holographic Cards */
+    .prompt-pill {
+      background: linear-gradient(135deg, rgba(22, 25, 36, 0.82) 0%, rgba(12, 14, 20, 0.92) 100%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      border-radius: 12px !important;
+      padding: 0.9rem 1.1rem !important;
+      color: #f8fafc !important;
+      font-family: 'Plus Jakarta Sans', sans-serif !important;
+      font-size: 0.82rem !important;
+      font-weight: 600 !important;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.25s ease !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      backdrop-filter: blur(14px) !important;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
+    }
+
+    .prompt-pill:hover {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.16) 0%, rgba(255, 59, 20, 0.2) 100%) !important;
+      border-color: #00f0ff !important;
+      transform: translateX(4px) !important;
+      box-shadow: 0 4px 18px rgba(0, 240, 255, 0.28) !important;
+    }
   </style>
   
   <!-- Three.js and OrbitControls -->
@@ -998,50 +1286,108 @@
     </div>
 
     <div class="jarvis-container">
-      <!-- Live Chat Terminal -->
+      <!-- Tactical Corner Brackets -->
+      <div class="hud-corner-bracket top-left"></div>
+      <div class="hud-corner-bracket top-right"></div>
+      <div class="hud-corner-bracket bottom-left"></div>
+      <div class="hud-corner-bracket bottom-right"></div>
+
+      <!-- Left Column: Holographic Chat Terminal -->
       <div class="jarvis-chat-wrapper">
+        <!-- Comms Header -->
+        <div class="chat-top-header">
+          <span class="channel-tag">TACTICAL SECURE COMM // CH-01</span>
+          <span>NEURAL ENCRYPTION: 100% // AES-256</span>
+        </div>
+
         <div id="chat-history" class="chat-history">
           <div class="chat-msg jarvis">
             <span class="chat-sender">J.A.R.V.I.S. // AI PROJECT LEAD</span>
             <div class="chat-bubble">
-              Good evening, Operator. All systems for the <strong>Kinetic Pour Automated Drink Table</strong> are nominal. I have indexed your 8-bottle fluidics, GROTHEN pumps, T8 elevator kinematics, and team deadlines. How may I assist your engineering work tonight?
+              Good evening, Operator. All systems for the <strong>Kinetic Pour Automated Drink Table</strong> are operational. I have indexed your 8-bottle fluidics, GROTHEN pumps, T8 elevator kinematics, and team deadlines. How may I assist your engineering work tonight?
             </div>
           </div>
         </div>
 
         <div class="chat-input-row">
-          <input type="text" id="chat-input" class="chat-input" placeholder="Ask J.A.R.V.I.S. about parts, BOM, fluidics, or dates..." onkeydown="if(event.key==='Enter') sendJarvisMessage()">
-          <button class="btn-primary" onclick="sendJarvisMessage()">SEND</button>
+          <input type="text" id="chat-input" class="chat-input" placeholder="Query J.A.R.V.I.S. about CAD, fluidics, grant deadlines, or code..." onkeydown="if(event.key==='Enter') sendJarvisMessage()">
+          <button class="btn-primary" onclick="sendJarvisMessage()" style="padding: 0.8rem 1.4rem; font-weight: 700;">TRANSMIT</button>
         </div>
       </div>
 
-      <!-- Quick Knowledge Pills -->
-      <div style="display: flex; flex-direction: column; gap: 1rem;">
-        <span style="font-family: var(--font-body); font-weight: 700; font-size: 0.76rem; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase;">
-          RAPID INQUIRY PRESETS
-        </span>
+      <!-- Right Column: Animated Arc Reactor Core & Rapid Inquiries -->
+      <div class="jarvis-reactor-deck">
+        <!-- Holographic Arc Reactor Core Card -->
+        <div class="jarvis-arc-reactor-card">
+          <div class="arc-reactor-visualizer">
+            <div class="arc-ring-outer"></div>
+            <div class="arc-ring-middle"></div>
+            <div class="arc-ring-inner"></div>
+            <div class="arc-core-glow"></div>
+          </div>
 
-        <div class="prompt-pills-stack">
-          <button class="prompt-pill" onclick="askPreset('What are the 8 bottle parameters and fluidic tubing specs?')">
-            ▸ 8-Bottle Fluidics &amp; Tubing Specs
-          </button>
-          <button class="prompt-pill" onclick="askPreset('Explain the T8 lead screw elevator lift mechanism')">
-            ▸ T8 Lead Screw Elevator Kinematics
-          </button>
-          <button class="prompt-pill" onclick="askPreset('What is the deadline for the 5-Minute Pitch Deck Video?')">
-            ▸ Pitch Video Deadline &amp; $600 Payout
-          </button>
-          <button class="prompt-pill" onclick="askPreset('Explain the CEAS Innovation Challenge $1,200 grant requirements')">
-            ▸ $1,200 Innovation Challenge Breakdown
-          </button>
-          <button class="prompt-pill" onclick="askPreset('Who is responsible for the electrical and PLC subsystems?')">
-            ▸ Team Roster &amp; Subsystem Responsibilities
-          </button>
+          <div style="text-align: center;">
+            <div style="font-family: 'Space Grotesk', sans-serif; font-weight: 800; font-size: 0.95rem; color: #fff; letter-spacing: 0.04em;">
+              STARK NEURAL CORE
+            </div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: #00f0ff; margin-top: 2px;">
+              AUDIO &amp; REASONING MATRIX
+            </div>
+          </div>
+
+          <!-- Live Audio Frequency Equalizer Waveform -->
+          <div class="jarvis-voice-waveform" id="jarvis-waveform">
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+          </div>
+
+          <!-- Arc Specs Grid -->
+          <div class="arc-specs-grid">
+            <div><span>AI REASONING</span><strong>GEMINI FLASH</strong></div>
+            <div><span>CYCLE LATENCY</span><strong>10ms TICK</strong></div>
+            <div><span>FLUIDIC INDEX</span><strong>8-BOTTLE TWIN</strong></div>
+            <div><span>CAPSTONE GRANT</span><strong>$1,200.00 CEAS</strong></div>
+          </div>
         </div>
 
-        <div style="background: rgba(18, 18, 24, 0.7); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 1rem; font-size: 0.85rem; color: var(--text-secondary);">
-          <span style="color: var(--infrared); font-family: var(--font-body); font-weight: 800;">CAPSTONE MILESTONE:</span><br>
-          Team Design Proposal &amp; CAD BOM due <strong>Wednesday, Sept 23</strong>.
+        <!-- Rapid Inquiry Presets -->
+        <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+          <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 0.74rem; color: #94a3b8; letter-spacing: 0.08em; text-transform: uppercase;">
+            TACTICAL MISSION PRESETS
+          </span>
+
+          <div class="prompt-pills-stack">
+            <button class="prompt-pill" onclick="askPreset('What are the 8 bottle parameters and fluidic tubing specs?')">
+              <span>▸ 8-Bottle Fluidics &amp; Tubing</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #00f0ff;">[SPEC]</span>
+            </button>
+            <button class="prompt-pill" onclick="askPreset('Explain the T8 lead screw elevator lift mechanism')">
+              <span>▸ T8 Lead Screw Elevator</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #ff3b14;">[CAD]</span>
+            </button>
+            <button class="prompt-pill" onclick="askPreset('What is the deadline for the 5-Minute Pitch Deck Video?')">
+              <span>▸ Pitch Video &amp; $600 Payout</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #ffd600;">[DATE]</span>
+            </button>
+            <button class="prompt-pill" onclick="askPreset('Explain the CEAS Innovation Challenge $1,200 grant requirements')">
+              <span>▸ $1,200 Grant Requirements</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #00e676;">[FUND]</span>
+            </button>
+            <button class="prompt-pill" onclick="askPreset('Who is responsible for the electrical and PLC subsystems?')">
+              <span>▸ Team Roster &amp; Responsibilities</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #a34ee8;">[TEAM]</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -1066,8 +1412,23 @@
 
   <script>
     /* ==========================================
-       J.A.R.V.I.S. AI CHAT CLIENT
+       J.A.R.V.I.S. AI CHAT CLIENT & WAVEFORM SURGE
        ========================================== */
+    function surgeWaveform(active) {
+      const bars = document.querySelectorAll('.wave-bar');
+      bars.forEach(b => {
+        if (active) {
+          b.style.animationDuration = '0.35s';
+          b.style.background = 'linear-gradient(180deg, #ffffff 0%, #00f0ff 50%, #ff3b14 100%)';
+          b.style.boxShadow = '0 0 12px #00f0ff';
+        } else {
+          b.style.animationDuration = '1.3s';
+          b.style.background = 'linear-gradient(180deg, #00f0ff 0%, #ff3b14 100%)';
+          b.style.boxShadow = '0 0 6px rgba(0, 240, 255, 0.7)';
+        }
+      });
+    }
+
     async function sendJarvisMessage(text) {
       const input = document.getElementById('chat-input');
       const message = text || input.value.trim();
@@ -1081,18 +1442,27 @@
       const userDiv = document.createElement('div');
       userDiv.className = 'chat-msg user';
       userDiv.innerHTML = `
-        <span class="chat-sender">OPERATOR</span>
+        <span class="chat-sender" style="color: #ff5722;">OPERATOR // COMMAND TRANSMIT</span>
         <div class="chat-bubble">${escapeHtml(message)}</div>
       `;
       history.appendChild(userDiv);
       history.scrollTop = history.scrollHeight;
 
+      // Pulse Arc Reactor & Audio Waveform
+      surgeWaveform(true);
+
       // Loading Bubble
       const loadingDiv = document.createElement('div');
       loadingDiv.className = 'chat-msg jarvis';
       loadingDiv.innerHTML = `
-        <span class="chat-sender">J.A.R.V.I.S. // PROCESSING</span>
-        <div class="chat-bubble" style="color: var(--infrared);">Analyzing query telemetry...</div>
+        <span class="chat-sender" style="color: #00f0ff; display: flex; align-items: center; gap: 6px;">
+          <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#00f0ff; box-shadow:0 0 8px #00f0ff; animation: pulseGreen 1s infinite alternate;"></span>
+          J.A.R.V.I.S. // SYNTHESIZING
+        </span>
+        <div class="chat-bubble" style="color: #00f0ff; display: flex; align-items: center; gap: 8px;">
+          <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#00f0ff; animation: pulseGreen 0.8s infinite alternate;"></span>
+          Computing neural telemetry &amp; Capstone knowledge index...
+        </div>
       `;
       history.appendChild(loadingDiv);
       history.scrollTop = history.scrollHeight;
@@ -1104,11 +1474,16 @@
           body: JSON.stringify({ sender: 'Operator', message: message })
         });
         const data = await res.json();
+        surgeWaveform(false);
         loadingDiv.innerHTML = `
-          <span class="chat-sender">J.A.R.V.I.S. // AI PROJECT LEAD</span>
+          <span class="chat-sender" style="color: #00f0ff; display: flex; align-items: center; gap: 6px;">
+            <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#00f0ff; box-shadow:0 0 8px #00f0ff;"></span>
+            J.A.R.V.I.S. // STARK TACTICAL AI
+          </span>
           <div class="chat-bubble">${formatReply(data.reply || "No response received.")}</div>
         `;
       } catch (err) {
+        surgeWaveform(false);
         // Intelligent Offline Knowledge Fallback
         const q = message.toLowerCase();
         let fallbackText = "";
