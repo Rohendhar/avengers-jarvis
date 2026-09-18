@@ -529,8 +529,27 @@ def fallback_answer(sender, query_text):
         "How may I assist you further with CAD specs, wiring diagrams, or milestone tracking?"
     )
 
+@app.route("/void")
+@app.route("/portal")
+@app.route("/simulation")
+def chromatic_void_portal():
+    for p in [os.path.join(LOCAL_ROOT, "templates", "chromatic_void.html"), os.path.join(LOCAL_ROOT, "chromatic_void.html")]:
+        if os.path.exists(p):
+            try:
+                with open(p, "r", encoding="utf-8") as f:
+                    return f.read()
+            except Exception:
+                pass
+    try:
+        return render_template("chromatic_void.html")
+    except Exception as e:
+        return f"<h3>Chromatic Void Engine: {e}</h3>"
+
 @app.route("/")
 def home():
+    # If user requests void view or default view, allow switching via query parameter
+    if request.args.get("view") == "void" or request.args.get("view") == "simulation":
+        return chromatic_void_portal()
     for p in [os.path.join(LOCAL_ROOT, "templates", "index.html"), os.path.join(LOCAL_ROOT, "index.html")]:
         if os.path.exists(p):
             try:
