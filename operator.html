@@ -3,1707 +3,1160 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kinetic Pour // J.A.R.V.I.S. Tactical Operator Command Deck</title>
+  <title>Kinetic Pour // J.A.R.V.I.S. Holographic Tactical HUD</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;0,800;1,400&family=Space+Grotesk:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-tactical: #04070e;
-      --bg-panel: #090f1d;
-      --bg-panel-sub: #0e172a;
-      --border-tactical: #1e293b;
-      --border-active: #00f0ff;
       --cyan: #00f0ff;
-      --cyan-dim: rgba(0, 240, 255, 0.2);
+      --cyan-bright: #6dfbff;
+      --cyan-glow: rgba(0, 240, 255, 0.45);
+      --cyan-dim: rgba(0, 240, 255, 0.15);
+      --cyan-dark: #07263d;
+      --blue-hud: #0a4c7a;
+      --bg-hud: #02060e;
+      --bg-panel: rgba(4, 16, 30, 0.88);
+      --border-hud: rgba(0, 240, 255, 0.35);
       --amber: #f59e0b;
-      --amber-dim: rgba(245, 158, 11, 0.2);
-      --red: #ef4444;
-      --green: #10b981;
-      --green-glow: rgba(16, 185, 129, 0.35);
-      --slate-text: #94a3b8;
-      --bright-text: #f8fafc;
-      --font-mono: 'JetBrains Mono', monospace;
-      --font-disp: 'Space Grotesk', sans-serif;
-      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --green: #00ff88;
+      --red: #ff3344;
+      --font-hud: 'Orbitron', sans-serif;
+      --font-mono: 'Share Tech Mono', monospace;
+      --font-code: 'JetBrains Mono', monospace;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background-color: var(--bg-tactical);
+      background-color: var(--bg-hud);
       background-image: 
-        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px),
-        radial-gradient(ellipse at 50% 0%, rgba(0, 240, 255, 0.08) 0%, transparent 70%);
-      background-size: 32px 32px, 32px 32px, 100% 100%;
-      color: var(--bright-text);
-      font-family: var(--font-body);
+        radial-gradient(circle at 50% 50%, rgba(0, 160, 255, 0.08) 0%, transparent 65%),
+        linear-gradient(rgba(0, 240, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.035) 1px, transparent 1px);
+      background-size: 100% 100%, 30px 30px, 30px 30px;
+      color: #d1f4ff;
+      font-family: var(--font-mono);
       min-height: 100vh;
+      overflow-x: hidden;
       display: flex;
       flex-direction: column;
-      overflow-x: hidden;
+      position: relative;
     }
 
-    /* Scanline effect */
-    body::after {
-      content: " ";
+    /* CRT scanlines overlay */
+    body::before {
+      content: "";
       position: fixed;
-      top: 0; left: 0; bottom: 0; right: 0;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
-      background-size: 100% 4px;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
+      background-size: 100% 3px;
       pointer-events: none;
       z-index: 999;
-      opacity: 0.45;
+      opacity: 0.35;
     }
 
-    /* TOP CLASSIFIED BANNER */
-    .classified-banner {
-      background: #020408;
-      border-bottom: 1px solid #1e293b;
-      padding: 0.35rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.12em;
-      color: #64748b;
-      text-transform: uppercase;
-    }
-    .classified-tag {
-      color: var(--amber);
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .classified-tag::before {
-      content: '';
-      display: inline-block;
-      width: 6px; height: 6px;
-      background: var(--amber);
-      border-radius: 50%;
-      box-shadow: 0 0 6px var(--amber);
-      animation: blinkAmber 1s infinite alternate;
-    }
-
-    /* TACTICAL HEADER */
-    header {
-      background: rgba(6, 10, 19, 0.95);
-      border-bottom: 1px solid var(--border-tactical);
-      padding: 0.85rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      backdrop-filter: blur(12px);
-    }
-
-    .brand-section {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .reticle-icon {
-      width: 32px;
-      height: 32px;
-      border: 2px solid var(--cyan);
-      border-radius: 6px;
+    /* Outer HUD Border Reticles */
+    .hud-screen-frame {
       position: relative;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 0.8rem 1.4rem;
+      max-width: 1920px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* TOP GLOBAL HUD BAR */
+    .top-hud-bar {
+      display: grid;
+      grid-template-columns: 320px 1fr 340px;
+      align-items: center;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border-hud);
+      position: relative;
+    }
+
+    .top-hud-bar::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 20%; right: 20%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      box-shadow: 0 0 10px var(--cyan);
+    }
+
+    /* Top Left Telemetry */
+    .top-left-telemetry {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      font-size: 0.65rem;
+      color: var(--cyan);
+      letter-spacing: 0.1em;
+    }
+    .top-left-telemetry .telemetry-val { color: #fff; font-weight: 700; }
+
+    /* Top Center Operator Profile Badge */
+    .top-center-badge {
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 14px rgba(0, 240, 255, 0.25);
+      gap: 16px;
     }
-    .reticle-icon::before {
+
+    .avatar-glow-ring {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      border: 2px solid var(--cyan);
+      box-shadow: 0 0 15px var(--cyan-glow), inset 0 0 10px var(--cyan-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: radial-gradient(circle, rgba(0, 240, 255, 0.25) 0%, #03101d 80%);
+    }
+    .avatar-glow-ring::after {
       content: '';
       position: absolute;
-      width: 14px; height: 14px;
+      width: 60px; height: 60px;
       border: 1px dashed var(--cyan);
       border-radius: 50%;
-      animation: spinClock 8s linear infinite;
+      animation: spinClockwise 15s linear infinite;
     }
-    .reticle-icon::after {
-      content: '';
-      width: 4px; height: 4px;
-      background: var(--cyan);
-      border-radius: 50%;
+    .avatar-icon-inner {
+      font-size: 1.3rem;
+      filter: drop-shadow(0 0 6px var(--cyan));
     }
 
-    .brand-titles {
+    .operator-info-box {
       display: flex;
       flex-direction: column;
+      border: 1px solid var(--border-hud);
+      background: rgba(0, 30, 50, 0.6);
+      padding: 0.35rem 0.9rem;
+      border-radius: 4px;
+      position: relative;
     }
-    .brand-main {
-      font-family: var(--font-disp);
-      font-size: 1.15rem;
+    .operator-info-box::before {
+      content: '';
+      position: absolute;
+      top: -2px; left: -2px; width: 6px; height: 6px;
+      border-top: 2px solid var(--cyan); border-left: 2px solid var(--cyan);
+    }
+    .operator-info-box::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; right: -2px; width: 6px; height: 6px;
+      border-bottom: 2px solid var(--cyan); border-right: 2px solid var(--cyan);
+    }
+
+    .op-title {
+      font-family: var(--font-hud);
+      font-size: 0.95rem;
       font-weight: 800;
-      letter-spacing: 0.08em;
       color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      letter-spacing: 0.12em;
+      text-shadow: 0 0 10px var(--cyan);
     }
-    .brand-sub {
-      font-family: var(--font-mono);
-      font-size: 0.68rem;
+    .op-user-tag {
+      font-size: 0.74rem;
       color: var(--cyan);
-      letter-spacing: 0.05em;
-    }
-
-    .header-telemetry {
       display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .telemetry-pill {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      background: rgba(15, 23, 42, 0.8);
-      border: 1px solid var(--border-tactical);
-      padding: 0.35rem 0.85rem;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: #94a3b8;
-    }
-    .telemetry-pill strong { color: var(--bright-text); }
-
-    .btn-audio-toggle {
-      background: rgba(0, 240, 255, 0.08);
-      border: 1px solid rgba(0, 240, 255, 0.3);
-      color: var(--cyan);
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 0.4rem 0.85rem;
-      border-radius: 6px;
-      cursor: pointer;
-      display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.2s;
-    }
-    .btn-audio-toggle:hover {
-      background: rgba(0, 240, 255, 0.2);
-      box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
     }
 
-    .btn-public-site {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      color: #cbd5e1;
-      font-family: var(--font-disp);
-      font-size: 0.74rem;
+    /* Top Right Action Buttons */
+    .top-right-actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-hud-small {
+      background: rgba(0, 40, 70, 0.6);
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      font-family: var(--font-hud);
+      font-size: 0.65rem;
       font-weight: 700;
-      padding: 0.4rem 0.95rem;
-      border-radius: 6px;
+      padding: 0.4rem 0.75rem;
+      border-radius: 4px;
+      cursor: pointer;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
     }
-    .btn-public-site:hover {
-      background: rgba(0, 240, 255, 0.15);
-      border-color: var(--cyan);
-      color: #fff;
-      box-shadow: 0 0 12px rgba(0, 240, 255, 0.25);
-    }
-
-    /* MAIN CONTAINER */
-    main {
-      flex: 1;
-      max-width: 1700px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 1.2rem 2rem 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
+    .btn-hud-small:hover {
+      background: var(--cyan);
+      color: #000;
+      box-shadow: 0 0 16px var(--cyan);
     }
 
-    /* TOP LIVE HARDWARE TELEMETRY ROW */
-    .tactical-telemetry-grid {
+    /* ========================================================================= */
+    /* MASTER HUD THREE-COLUMN COCKPIT LAYOUT */
+    /* ========================================================================= */
+    .hud-cockpit-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
+      grid-template-columns: 360px 1fr 380px;
+      gap: 1.2rem;
+      margin-top: 1rem;
+      flex: 1;
+      align-items: stretch;
     }
 
-    .tac-card {
+    /* HUD PANELS */
+    .hud-panel {
       background: var(--bg-panel);
-      border: 1px solid var(--border-tactical);
-      border-radius: 8px;
-      padding: 0.85rem 1.1rem;
+      border: 1px solid var(--border-hud);
+      border-radius: 6px;
+      padding: 0.9rem;
+      position: relative;
       display: flex;
       flex-direction: column;
-      gap: 5px;
-      position: relative;
-      overflow: hidden;
+      gap: 0.8rem;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(0, 240, 255, 0.04);
     }
-    .tac-card::before {
+    .hud-panel::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; width: 3px; height: 100%;
-      background: var(--border-tactical);
-      transition: background 0.3s;
+      top: -1px; left: -1px; width: 10px; height: 10px;
+      border-top: 2px solid var(--cyan); border-left: 2px solid var(--cyan);
     }
-    .tac-card:hover::before { background: var(--cyan); }
-    .tac-card.accent-amber:hover::before { background: var(--amber); }
-    .tac-card.accent-green:hover::before { background: var(--green); }
+    .hud-panel::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; right: -1px; width: 10px; height: 10px;
+      border-bottom: 2px solid var(--cyan); border-right: 2px solid var(--cyan);
+    }
 
-    .tac-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
+    .panel-header {
+      font-family: var(--font-hud);
+      font-size: 0.75rem;
       font-weight: 700;
-      color: #64748b;
-      letter-spacing: 0.06em;
-    }
-    .tac-val {
-      font-family: var(--font-mono);
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: #fff;
-      display: flex;
-      align-items: baseline;
-      gap: 6px;
-    }
-    .tac-val .unit { font-size: 0.72rem; color: var(--slate-text); font-weight: 400; }
-    .tac-footer {
-      font-family: var(--font-mono);
-      font-size: 0.68rem;
+      letter-spacing: 0.12em;
       color: var(--cyan);
       display: flex;
       justify-content: space-between;
-    }
-
-    /* TACTICAL TAB SWITCHBOARD */
-    .switchboard-nav {
-      display: flex;
-      gap: 6px;
-      border-bottom: 1px solid var(--border-tactical);
-      padding-bottom: 0.6rem;
-      overflow-x: auto;
-    }
-
-    .switch-tab {
-      background: rgba(14, 23, 42, 0.6);
-      border: 1px solid var(--border-tactical);
-      border-radius: 6px;
-      padding: 0.55rem 1.1rem;
-      font-family: var(--font-mono);
-      font-size: 0.74rem;
-      font-weight: 700;
-      color: #94a3b8;
-      cursor: pointer;
-      display: inline-flex;
       align-items: center;
-      gap: 8px;
-      white-space: nowrap;
-      transition: all 0.2s ease;
-    }
-    .switch-tab:hover {
-      background: rgba(0, 240, 255, 0.08);
-      border-color: rgba(0, 240, 255, 0.4);
-      color: #fff;
-    }
-    .switch-tab.active {
-      background: rgba(0, 240, 255, 0.15);
-      border-color: var(--cyan);
-      color: var(--cyan);
-      box-shadow: 0 0 14px rgba(0, 240, 255, 0.2);
-    }
-    .switch-tab .tab-badge {
-      font-size: 0.62rem;
-      padding: 1px 5px;
-      border-radius: 4px;
-      background: rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+      padding-bottom: 0.4rem;
     }
 
-    /* OPERATOR AUTH BAR */
-    .operator-auth-panel {
-      background: #080d19;
-      border: 1px solid var(--border-tactical);
-      border-radius: 8px;
-      padding: 0.8rem 1.3rem;
+    /* ========================================================================= */
+    /* LEFT FLANK WIDGETS */
+    /* ========================================================================= */
+    .left-flank {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
+      flex-direction: column;
       gap: 1rem;
     }
 
-    .auth-status-block {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-family: var(--font-mono);
-      font-size: 0.76rem;
+    /* Oscilloscope canvas */
+    .oscilloscope-box {
+      height: 95px;
+      background: #010811;
+      border: 1px solid var(--blue-hud);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
     }
-    .auth-radar-dot {
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      background: #64748b;
-      box-shadow: 0 0 8px rgba(100, 116, 139, 0.5);
-    }
-    .auth-radar-dot.authenticated {
-      background: var(--green);
-      box-shadow: 0 0 12px var(--green);
-      animation: pulseGreen 1.2s infinite alternate;
+    #oscilloscopeCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
 
-    .operator-selector-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .op-badge-btn {
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid var(--border-tactical);
-      border-radius: 6px;
-      padding: 0.4rem 0.9rem;
-      font-family: var(--font-disp);
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: #cbd5e1;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s;
-    }
-    .op-badge-btn:hover {
-      border-color: var(--cyan);
-      background: rgba(0, 240, 255, 0.12);
-      color: #fff;
-    }
-    .op-badge-btn.active {
-      background: rgba(0, 240, 255, 0.22);
-      border-color: var(--cyan);
-      color: var(--cyan);
-      box-shadow: 0 0 14px rgba(0, 240, 255, 0.3);
-    }
-
-    .op-exit-btn {
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.4);
-      color: #f87171;
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 0.4rem 0.85rem;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .op-exit-btn:hover {
-      background: rgba(239, 68, 68, 0.3);
-      border-color: var(--red);
-      color: #fff;
-    }
-
-    /* PASSCODE MODAL DRAWER */
-    .passcode-modal {
-      background: rgba(8, 12, 22, 0.98);
-      border: 1.5px solid var(--cyan);
-      border-radius: 8px;
-      padding: 1.1rem 1.4rem;
-      margin-top: 0.5rem;
-      box-shadow: 0 10px 30px rgba(0, 240, 255, 0.25);
-      display: none;
-    }
-    .passcode-title {
-      font-family: var(--font-disp);
-      font-size: 0.85rem;
-      font-weight: 800;
-      color: var(--cyan);
-      letter-spacing: 0.05em;
-      margin-bottom: 0.5rem;
-      display: flex;
-      justify-content: space-between;
-    }
-    .passcode-row {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      margin-top: 0.5rem;
-    }
-    .passcode-input {
-      background: #020408;
-      border: 1px solid rgba(0, 240, 255, 0.5);
-      border-radius: 6px;
-      color: #fff;
-      padding: 0.55rem 1rem;
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      outline: none;
-      width: 280px;
-    }
-    .passcode-input:focus {
-      border-color: var(--cyan);
-      box-shadow: 0 0 14px rgba(0, 240, 255, 0.4);
-    }
-    .btn-auth {
-      background: var(--cyan);
-      color: #020408;
-      font-family: var(--font-disp);
-      font-size: 0.78rem;
-      font-weight: 800;
-      padding: 0.55rem 1.2rem;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-auth:hover {
-      box-shadow: 0 0 16px var(--cyan);
-      transform: translateY(-1px);
-    }
-
-    /* TAB CONTENT WRAPPER */
-    .tab-content { display: none; }
-    .tab-content.active { display: block; animation: fadeIn 0.25s ease-out; }
-
-    /* TAB 1: JARVIS TACTICAL HUD */
-    .tactical-hud-deck {
-      display: grid;
-      grid-template-columns: 1fr 410px;
-      gap: 1.4rem;
-    }
-
-    .terminal-window {
-      background: var(--bg-panel);
-      border: 1px solid var(--border-tactical);
-      border-radius: 8px;
+    /* CPU / Subsystem Load Bars */
+    .metric-row {
       display: flex;
       flex-direction: column;
-      height: 640px;
+      gap: 4px;
+    }
+    .metric-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.68rem;
+      color: #94a3b8;
+    }
+    .metric-bar-track {
+      height: 6px;
+      background: rgba(0, 40, 70, 0.6);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      border-radius: 3px;
       overflow: hidden;
       position: relative;
     }
+    .metric-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #0088ff, var(--cyan));
+      box-shadow: 0 0 8px var(--cyan);
+      transition: width 0.4s ease;
+    }
 
-    .terminal-topbar {
-      background: #050913;
-      border-bottom: 1px solid var(--border-tactical);
-      padding: 0.6rem 1.2rem;
+    /* Grothen 8-Pump Matrix */
+    .pumps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+    .pump-chip {
+      background: rgba(0, 30, 55, 0.7);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      border-radius: 4px;
+      padding: 5px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .pump-chip .p-name { font-size: 0.62rem; color: #fff; font-weight: 700; }
+    .pump-chip .p-stat { font-size: 0.58rem; color: var(--green); }
+
+    /* Click PLC Pin Matrix */
+    .plc-live-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.66rem;
+    }
+    .plc-pin-row {
       display: flex;
       justify-content: space-between;
+      padding: 3px 6px;
+      background: rgba(0, 25, 45, 0.5);
+      border-left: 2px solid var(--cyan);
+    }
+
+    /* ========================================================================= */
+    /* CENTERPIECE: GIANT STARK ARC REACTOR & TACTICAL TERMINAL */
+    /* ========================================================================= */
+    .center-theater {
+      display: flex;
+      flex-direction: column;
       align-items: center;
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: #64748b;
-    }
-
-    .chat-history {
-      flex: 1;
-      padding: 1.2rem 1.4rem;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      background: radial-gradient(circle at top right, rgba(0, 240, 255, 0.02) 0%, transparent 60%);
-    }
-
-    .chat-msg {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      max-width: 90%;
-    }
-    .chat-msg.user {
-      align-self: flex-end;
-      align-items: flex-end;
-    }
-    .chat-msg.jarvis {
-      align-self: flex-start;
-      align-items: flex-start;
-    }
-
-    .chat-sender {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-    }
-
-    .chat-bubble {
-      padding: 0.85rem 1.1rem;
-      border-radius: 8px;
-      font-size: 0.86rem;
-      line-height: 1.55;
-      font-family: var(--font-body);
-    }
-    .chat-msg.user .chat-bubble {
-      background: rgba(0, 240, 255, 0.1);
-      border: 1px solid rgba(0, 240, 255, 0.35);
-      color: #e2e8f0;
-      border-bottom-right-radius: 2px;
-    }
-    .chat-msg.jarvis .chat-bubble {
-      background: #0d1527;
-      border: 1px solid #1e293b;
-      color: #f1f5f9;
-      border-bottom-left-radius: 2px;
-    }
-
-    .chat-bubble h3 {
-      font-family: var(--font-disp);
-      font-size: 0.95rem;
-      color: var(--cyan);
-      margin: 0.5rem 0 0.3rem;
-    }
-    .chat-bubble p { margin-bottom: 0.4rem; }
-    .chat-bubble ul { margin-left: 1.2rem; margin-bottom: 0.4rem; }
-    .chat-bubble li { margin-bottom: 0.25rem; }
-    .chat-bubble code {
-      font-family: var(--font-mono);
-      background: rgba(0, 240, 255, 0.12);
-      color: var(--cyan);
-      padding: 2px 5px;
-      border-radius: 4px;
-      font-size: 0.8em;
-    }
-
-    /* CLI Prompt Input */
-    .terminal-cli-bar {
-      background: #050812;
-      border-top: 1px solid var(--border-tactical);
-      padding: 0.8rem 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .cli-prefix {
-      font-family: var(--font-mono);
-      font-size: 0.78rem;
-      color: var(--green);
-      white-space: nowrap;
-    }
-    .cli-input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      color: #fff;
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      outline: none;
-    }
-    .cli-send-btn {
-      background: rgba(0, 240, 255, 0.15);
-      border: 1px solid var(--cyan);
-      color: var(--cyan);
-      font-family: var(--font-mono);
-      font-size: 0.74rem;
-      font-weight: 700;
-      padding: 0.45rem 1.1rem;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .cli-send-btn:hover {
-      background: var(--cyan);
-      color: #020408;
-      box-shadow: 0 0 12px var(--cyan);
-    }
-
-    /* RIGHT HUD DECK: Arc Reactor & Presets */
-    .hud-side-panel {
-      display: flex;
-      flex-direction: column;
       gap: 1.2rem;
-    }
-
-    .arc-reactor-box {
-      background: var(--bg-panel);
-      border: 1px solid var(--border-tactical);
-      border-radius: 8px;
-      padding: 1.4rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
       position: relative;
     }
 
-    .reactor-core-frame {
-      width: 170px;
-      height: 170px;
+    /* HUD Radial Guide Ring Overlay */
+    .hud-radial-dials-container {
+      width: 440px;
+      height: 440px;
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
+      margin: 0.5rem 0;
     }
 
-    .arc-ring {
+    /* Circular Degree Indicators */
+    .hud-compass-ring {
+      position: absolute;
+      width: 420px; height: 420px;
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .hud-compass-ring::before {
+      content: "0° // NORTH";
+      position: absolute;
+      top: -14px; left: 50%; transform: translateX(-50%);
+      font-size: 0.6rem; color: var(--cyan); letter-spacing: 0.1em;
+    }
+    .hud-compass-ring::after {
+      content: "180° // SOUTH";
+      position: absolute;
+      bottom: -14px; left: 50%; transform: translateX(-50%);
+      font-size: 0.6rem; color: var(--cyan); letter-spacing: 0.1em;
+    }
+
+    /* Rotating Segment Rings */
+    .arc-orbital-ring {
       position: absolute;
       border-radius: 50%;
     }
-    .arc-ring.r1 {
-      width: 160px; height: 160px;
-      border: 2px dashed var(--cyan);
-      animation: spinClock 20s linear infinite;
+
+    .arc-orbital-ring.o1 {
+      width: 380px; height: 380px;
+      border: 2px dashed rgba(0, 240, 255, 0.5);
+      animation: spinClockwise 35s linear infinite;
     }
-    .arc-ring.r2 {
-      width: 125px; height: 125px;
+    .arc-orbital-ring.o2 {
+      width: 340px; height: 340px;
       border: 2px solid transparent;
-      border-top-color: var(--amber);
+      border-top-color: var(--cyan);
       border-bottom-color: var(--cyan);
-      animation: spinCounter 12s linear infinite;
+      border-left-color: var(--cyan-bright);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+      animation: spinCounter 22s linear infinite;
     }
-    .arc-ring.r3 {
-      width: 90px; height: 90px;
+    .arc-orbital-ring.o3 {
+      width: 290px; height: 290px;
       border: 1px dotted rgba(0, 240, 255, 0.8);
-      animation: spinClock 8s linear infinite;
+      animation: spinClockwise 12s linear infinite;
     }
-    .arc-center-plasma {
-      width: 50px; height: 50px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #ffffff 10%, #00f0ff 65%, rgba(0, 240, 255, 0) 100%);
-      box-shadow: 0 0 25px #00f0ff, 0 0 45px rgba(0, 240, 255, 0.5);
-      animation: pulsePlasma 1.6s infinite alternate;
+    .arc-orbital-ring.o4 {
+      width: 250px; height: 250px;
+      border: 3px solid rgba(0, 240, 255, 0.25);
+      border-left-color: transparent;
+      border-right-color: transparent;
+      animation: spinCounter 8s linear infinite;
     }
 
-    /* Equalizer Waveform */
-    .equalizer-waveform {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      height: 36px;
-      padding: 0 10px;
+    /* Central Arc Reactor Core SVG */
+    .arc-core-svg {
+      width: 210px;
+      height: 210px;
+      position: relative;
+      filter: drop-shadow(0 0 25px #00f0ff) drop-shadow(0 0 50px rgba(0, 240, 255, 0.6));
+      animation: arcPulseGlow 2.5s infinite alternate ease-in-out;
     }
-    .eq-bar {
-      width: 4px;
-      height: 14px;
-      background: var(--cyan);
-      border-radius: 2px;
-      animation: eqOscillate 1.2s infinite ease-in-out alternate;
-    }
-    .eq-bar:nth-child(2) { animation-delay: 0.15s; }
-    .eq-bar:nth-child(3) { animation-delay: 0.3s; }
-    .eq-bar:nth-child(4) { animation-delay: 0.45s; }
-    .eq-bar:nth-child(5) { animation-delay: 0.6s; }
-    .eq-bar:nth-child(6) { animation-delay: 0.75s; }
-    .eq-bar:nth-child(7) { animation-delay: 0.9s; }
-    .eq-bar:nth-child(8) { animation-delay: 0.35s; }
-    .eq-bar:nth-child(9) { animation-delay: 0.5s; }
-    .eq-bar:nth-child(10) { animation-delay: 0.2s; }
 
-    /* Preset Actions */
-    .tactical-presets-box {
-      background: var(--bg-panel);
-      border: 1px solid var(--border-tactical);
-      border-radius: 8px;
-      padding: 1.1rem 1.2rem;
+    /* Center Output Percentage */
+    .core-output-label {
+      position: absolute;
       display: flex;
       flex-direction: column;
-      gap: 0.65rem;
+      align-items: center;
+      pointer-events: none;
     }
-    .preset-title {
-      font-family: var(--font-mono);
-      font-size: 0.68rem;
-      font-weight: 700;
-      color: #64748b;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+    .core-output-val {
+      font-family: var(--font-hud);
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 0 12px var(--cyan);
     }
-    .preset-btn {
-      background: rgba(14, 23, 42, 0.8);
-      border: 1px solid var(--border-tactical);
+    .core-output-sub {
+      font-size: 0.62rem;
+      color: var(--cyan-bright);
+      letter-spacing: 0.15em;
+    }
+
+    /* Horizontal Crosshair Laser Guide Lines */
+    .crosshair-laser-left {
+      position: absolute;
+      left: -20px; top: 50%;
+      width: 80px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--cyan));
+      box-shadow: 0 0 6px var(--cyan);
+    }
+    .crosshair-laser-right {
+      position: absolute;
+      right: -20px; top: 50%;
+      width: 80px; height: 1px;
+      background: linear-gradient(90deg, var(--cyan), transparent);
+      box-shadow: 0 0 6px var(--cyan);
+    }
+
+    /* Operator Selection Bar in Center */
+    .operator-selection-deck {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(0, 25, 45, 0.85);
+      border: 1px solid var(--border-hud);
+      padding: 0.5rem 1.2rem;
       border-radius: 6px;
-      padding: 0.55rem 0.85rem;
-      color: #e2e8f0;
-      font-family: var(--font-disp);
-      font-size: 0.74rem;
-      font-weight: 600;
+      box-shadow: 0 0 14px rgba(0, 240, 255, 0.15);
+    }
+
+    .op-btn {
+      background: rgba(0, 45, 75, 0.6);
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      color: #cbd5e1;
+      font-family: var(--font-hud);
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 0.45rem 1.1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .op-btn:hover {
+      background: rgba(0, 240, 255, 0.2);
+      border-color: var(--cyan);
+      color: #fff;
+      box-shadow: 0 0 12px var(--cyan);
+    }
+    .op-btn.active {
+      background: var(--cyan);
+      color: #000;
+      font-weight: 900;
+      box-shadow: 0 0 18px var(--cyan);
+    }
+
+    /* PASSCODE MODAL DIALOG */
+    .passcode-hud-box {
+      background: rgba(2, 12, 24, 0.98);
+      border: 2px solid var(--cyan);
+      border-radius: 6px;
+      padding: 1rem 1.4rem;
+      width: 100%;
+      max-width: 520px;
+      display: none;
+      box-shadow: 0 0 35px rgba(0, 240, 255, 0.3);
+      animation: fadeIn 0.2s ease;
+    }
+    .passcode-hud-input {
+      background: #010610;
+      border: 1px solid var(--cyan);
+      color: #fff;
+      padding: 0.5rem 0.8rem;
+      font-family: var(--font-code);
+      font-size: 0.85rem;
+      border-radius: 4px;
+      flex: 1;
+      outline: none;
+    }
+    .passcode-hud-input:focus {
+      box-shadow: 0 0 12px var(--cyan);
+    }
+
+    /* TERMINAL CHAT WINDOW */
+    .terminal-chat-deck {
+      width: 100%;
+      max-width: 720px;
+      background: rgba(2, 10, 20, 0.92);
+      border: 1px solid var(--border-hud);
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      height: 380px;
+      overflow: hidden;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.9);
+    }
+
+    .terminal-chat-header {
+      background: rgba(0, 25, 45, 0.9);
+      border-bottom: 1px solid var(--border-hud);
+      padding: 0.45rem 1rem;
+      font-family: var(--font-hud);
+      font-size: 0.68rem;
+      color: var(--cyan);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      cursor: pointer;
-      transition: all 0.2s;
     }
-    .preset-btn:hover {
-      background: rgba(0, 240, 255, 0.12);
+
+    .terminal-chat-body {
+      flex: 1;
+      padding: 0.9rem 1.1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      font-family: var(--font-code);
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+
+    .terminal-msg {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .terminal-msg.jarvis {
+      align-self: flex-start;
+      max-width: 92%;
+    }
+    .terminal-msg.user {
+      align-self: flex-end;
+      max-width: 92%;
+      align-items: flex-end;
+    }
+    .terminal-sender {
+      font-family: var(--font-hud);
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: var(--cyan);
+    }
+    .terminal-bubble {
+      background: rgba(0, 30, 55, 0.65);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      padding: 0.6rem 0.9rem;
+      border-radius: 4px;
+      color: #e2e8f0;
+    }
+    .terminal-msg.user .terminal-bubble {
+      background: rgba(0, 60, 100, 0.8);
       border-color: var(--cyan);
       color: #fff;
     }
 
-    /* TAB 2: PLC I/O REGISTER MATRIX */
-    .plc-matrix-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.4rem;
-    }
-    .plc-panel {
-      background: var(--bg-panel);
-      border: 1px solid var(--border-tactical);
-      border-radius: 8px;
-      padding: 1.4rem;
-    }
-    .plc-panel-header {
-      font-family: var(--font-mono);
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--cyan);
-      border-bottom: 1px solid var(--border-tactical);
-      padding-bottom: 0.6rem;
-      margin-bottom: 1rem;
+    /* CLI Prompt Input */
+    .terminal-input-bar {
+      background: #010610;
+      border-top: 1px solid var(--border-hud);
+      padding: 0.6rem 1rem;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      gap: 8px;
     }
-
-    .plc-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-    }
-    .plc-table th {
-      text-align: left;
-      padding: 0.5rem 0.6rem;
-      color: #64748b;
-      border-bottom: 1px solid var(--border-tactical);
-    }
-    .plc-table td {
-      padding: 0.6rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      color: #cbd5e1;
-    }
-    .plc-table tr:hover {
-      background: rgba(0, 240, 255, 0.04);
-    }
-    .pin-status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-weight: 700;
-    }
-    .pin-status-pill.high {
-      background: rgba(16, 185, 129, 0.2);
+    .cli-tag {
+      font-family: var(--font-code);
+      font-size: 0.76rem;
       color: var(--green);
-      border: 1px solid var(--green);
+      white-space: nowrap;
     }
-    .pin-status-pill.low {
-      background: rgba(100, 116, 139, 0.15);
-      color: #64748b;
-      border: 1px solid #475569;
+    .cli-text-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-family: var(--font-code);
+      font-size: 0.82rem;
+      outline: none;
     }
-    .btn-test-toggle {
-      background: rgba(0, 240, 255, 0.1);
-      border: 1px solid rgba(0, 240, 255, 0.3);
+    .btn-cli-exec {
+      background: rgba(0, 45, 75, 0.8);
+      border: 1px solid var(--cyan);
       color: var(--cyan);
-      padding: 2px 6px;
+      font-family: var(--font-hud);
+      font-size: 0.68rem;
+      padding: 0.35rem 0.85rem;
       border-radius: 4px;
       cursor: pointer;
-      font-size: 0.65rem;
+      transition: all 0.2s;
     }
-    .btn-test-toggle:hover {
+    .btn-cli-exec:hover {
       background: var(--cyan);
       color: #000;
     }
 
-    /* TAB 3: BOM LEDGER */
-    .bom-table-deck {
-      background: var(--bg-panel);
-      border: 1px solid var(--border-tactical);
-      border-radius: 8px;
-      padding: 1.4rem;
-      overflow-x: auto;
-    }
-    .bom-header-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-      padding-bottom: 0.6rem;
-      border-bottom: 1px solid var(--border-tactical);
-    }
-    .bom-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.76rem;
-      font-family: var(--font-body);
-    }
-    .bom-table th {
-      text-align: left;
-      padding: 0.6rem 0.8rem;
-      font-family: var(--font-mono);
-      font-size: 0.68rem;
-      color: #64748b;
-      border-bottom: 1px solid var(--border-tactical);
-      text-transform: uppercase;
-    }
-    .bom-table td {
-      padding: 0.7rem 0.8rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      color: #cbd5e1;
-    }
-    .bom-table tr:hover { background: rgba(0, 240, 255, 0.03); }
-
-    /* TAB 4: GANTT CRITICAL PATH */
-    .gantt-radar-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.4rem;
-    }
-    .countdown-card {
-      background: var(--bg-panel);
-      border: 1px solid var(--border-tactical);
-      border-radius: 8px;
-      padding: 1.2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      position: relative;
-    }
-    .countdown-timer {
-      font-family: var(--font-mono);
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: var(--amber);
-    }
-
-    /* TAB 5: KINEMATICS CALCULATOR */
-    .calculator-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.4rem;
-    }
-    .calc-card {
-      background: var(--bg-panel);
-      border: 1px solid var(--border-tactical);
-      border-radius: 8px;
-      padding: 1.4rem;
+    /* ========================================================================= */
+    /* RIGHT FLANK WIDGETS */
+    /* ========================================================================= */
+    .right-flank {
       display: flex;
       flex-direction: column;
       gap: 1rem;
     }
-    .calc-input-row {
+
+    /* Big Stark Clock & Environmental Telemetry */
+    .clock-weather-deck {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-hud);
+      border-radius: 6px;
+      padding: 0.9rem 1.1rem;
       display: flex;
       flex-direction: column;
       gap: 6px;
     }
-    .calc-input-row label {
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      color: #94a3b8;
-    }
-    .calc-input {
-      background: #03060d;
-      border: 1px solid var(--border-tactical);
-      border-radius: 6px;
-      padding: 0.55rem 0.9rem;
+
+    .stark-digital-clock {
+      font-family: var(--font-hud);
+      font-size: 1.7rem;
+      font-weight: 900;
       color: #fff;
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      outline: none;
-    }
-    .calc-input:focus { border-color: var(--cyan); }
-    .calc-result-box {
-      background: rgba(0, 240, 255, 0.08);
-      border: 1px dashed var(--cyan);
-      border-radius: 6px;
-      padding: 1rem;
-      font-family: var(--font-mono);
-      font-size: 0.82rem;
-      color: #e2e8f0;
+      letter-spacing: 0.08em;
+      text-shadow: 0 0 15px var(--cyan);
     }
 
-    /* OPERATOR CHECKLIST DRAWER */
-    .operator-dossier-deck {
-      background: #080d19;
-      border: 1px solid var(--border-tactical);
-      border-radius: 8px;
-      padding: 1.1rem 1.4rem;
-      display: none;
+    .environment-readout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      font-size: 0.68rem;
+      color: #94a3b8;
+      border-top: 1px solid rgba(0, 240, 255, 0.2);
+      padding-top: 6px;
     }
-    .dossier-checklist {
+    .env-item strong { color: var(--cyan); }
+
+    /* Mission Presets Styled Like Stark HUD Panels */
+    .stark-presets-deck {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .stark-preset-btn {
+      background: rgba(0, 30, 50, 0.7);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      color: #cbd5e1;
+      font-family: var(--font-hud);
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 0.55rem 0.85rem;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+    .stark-preset-btn:hover {
+      background: rgba(0, 240, 255, 0.25);
+      border-color: var(--cyan);
+      color: #fff;
+      transform: translateX(4px);
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+    }
+    .stark-preset-btn .badge {
+      font-family: var(--font-code);
+      font-size: 0.62rem;
+      color: var(--cyan);
+    }
+
+    /* Classified Operator Checklist */
+    .operator-dossier-card {
+      background: rgba(2, 15, 30, 0.95);
+      border: 1px solid var(--cyan);
+      border-radius: 6px;
+      padding: 0.9rem;
+      display: none;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+    }
+    .dossier-header {
+      font-family: var(--font-hud);
+      font-size: 0.76rem;
+      font-weight: 800;
+      color: var(--cyan);
+      border-bottom: 1px solid rgba(0, 240, 255, 0.25);
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .dossier-list {
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      margin-top: 0.8rem;
-    }
-    .dossier-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.82rem;
+      gap: 6px;
+      font-size: 0.72rem;
       color: #cbd5e1;
     }
-    .dossier-item input[type="checkbox"] {
-      width: 16px; height: 16px;
+    .dossier-list li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dossier-list input[type="checkbox"] {
       accent-color: var(--cyan);
       cursor: pointer;
     }
 
-    /* KEYFRAME ANIMATIONS */
-    @keyframes spinClock { 100% { transform: rotate(360deg); } }
-    @keyframes spinCounter { 100% { transform: rotate(-360deg); } }
-    @keyframes pulsePlasma {
-      0% { transform: scale(0.92); opacity: 0.8; }
-      100% { transform: scale(1.08); opacity: 1; }
+    /* ========================================================================= */
+    /* BOTTOM STARK INDUSTRIES FOOTER */
+    /* ========================================================================= */
+    .bottom-stark-footer {
+      margin-top: 1rem;
+      padding-top: 0.8rem;
+      border-top: 1px solid var(--border-hud);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
     }
-    @keyframes blinkAmber {
-      0% { opacity: 0.3; }
-      100% { opacity: 1; }
-    }
-    @keyframes pulseGreen {
-      0% { transform: scale(0.95); opacity: 0.7; }
-      100% { transform: scale(1.1); opacity: 1; }
-    }
-    @keyframes eqOscillate {
-      0% { height: 6px; }
-      100% { height: 28px; }
-    }
-    @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(4px); }
-      100% { opacity: 1; transform: translateY(0); }
+    .bottom-stark-footer::before {
+      content: '';
+      position: absolute;
+      top: -2px; left: 15%; right: 15%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      box-shadow: 0 0 10px var(--cyan);
     }
 
-    @media (max-width: 1100px) {
-      .tactical-telemetry-grid { grid-template-columns: repeat(2, 1fr); }
-      .tactical-hud-deck { grid-template-columns: 1fr; }
-      .plc-matrix-grid { grid-template-columns: 1fr; }
-      .gantt-radar-grid { grid-template-columns: 1fr; }
-      .calculator-grid { grid-template-columns: 1fr; }
+    .stark-logo-brand {
+      font-family: var(--font-hud);
+      font-size: 1.1rem;
+      font-weight: 900;
+      letter-spacing: 0.2em;
+      color: #fff;
+      text-shadow: 0 0 15px var(--cyan);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hud-laser-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(0, 240, 255, 0.4), transparent);
+      margin: 0 20px;
+    }
+
+    /* ANIMATIONS */
+    @keyframes spinClockwise { 100% { transform: rotate(360deg); } }
+    @keyframes spinCounter { 100% { transform: rotate(-360deg); } }
+    @keyframes arcPulseGlow {
+      0% { transform: scale(0.96); filter: drop-shadow(0 0 20px #00f0ff); }
+      100% { transform: scale(1.04); filter: drop-shadow(0 0 40px #00f0ff) drop-shadow(0 0 70px rgba(0, 240, 255, 0.8)); }
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    @media (max-width: 1200px) {
+      .hud-cockpit-grid { grid-template-columns: 1fr; }
+      .top-hud-bar { grid-template-columns: 1fr; gap: 10px; text-align: center; }
+      .top-center-badge { margin: 10px 0; }
     }
   </style>
 </head>
 <body>
 
-  <!-- TOP CLASSIFIED BANNER -->
-  <div class="classified-banner">
-    <div class="classified-tag">
-      RESTRICTED CLEARANCE // UC SENIOR DESIGN CAPSTONE
-    </div>
-    <div>
-      STATION: MECH5051 / EECE5001 // NODE: 192.168.1.120:5050
-    </div>
-    <div id="live-utc-clock">
-      EDT: --:--:--
-    </div>
-  </div>
+  <div class="hud-screen-frame">
 
-  <!-- TACTICAL HEADER -->
-  <header>
-    <div class="brand-section">
-      <div class="reticle-icon"></div>
-      <div class="brand-titles">
-        <div class="brand-main">
-          J.A.R.V.I.S.
-          <span style="font-size: 0.7rem; color: var(--cyan); font-family: var(--font-mono); font-weight: 700;">TACTICAL DECK MK-VII</span>
-        </div>
-        <div class="brand-sub">
-          KINETIC POUR // INDUSTRIAL SCADA &amp; MISSION CONTROL
-        </div>
+    <!-- ========================================================================= -->
+    <!-- TOP GLOBAL HUD BAR (Directly from Stark Industries HUD) -->
+    <!-- ========================================================================= -->
+    <div class="top-hud-bar">
+      <!-- Top Left: Audio / Telemetry Specs -->
+      <div class="top-left-telemetry">
+        <div>SAMPLERATE: <span class="telemetry-val">96.0 kHz</span> // BITRATE: <span class="telemetry-val">32-BIT FLOAT</span></div>
+        <div>CHANNELS: <span class="telemetry-val">8 CH (FLUIDICS BUS)</span> // LINK: <span class="telemetry-val" style="color: var(--green);">STABLE</span></div>
+        <div>BUS VOLTAGE: <span class="telemetry-val" style="color: var(--cyan);">24.18V DC</span> // CURRENT: <span class="telemetry-val" style="color: var(--green);">4.82A</span></div>
       </div>
-    </div>
 
-    <div class="header-telemetry">
-      <div class="telemetry-pill">
-        <span>BUS:</span>
-        <strong style="color: var(--cyan);">24.18V DC</strong>
-        <span>//</span>
-        <strong style="color: var(--green);">4.82A</strong>
-      </div>
-      <div class="telemetry-pill">
-        <span>PLC:</span>
-        <strong style="color: var(--green);">LINKED (115.2k)</strong>
-      </div>
-      <button class="btn-audio-toggle" id="btn-audio-toggle" onclick="toggleAudioFX()">
-        <span>🔊 AUDIO FX:</span>
-        <span id="audio-fx-state">ON</span>
-      </button>
-      <a href="https://rohendhar.github.io/kinetic-pour/" class="btn-public-site">
-        ← Public Kinetic Pour Site
-      </a>
-    </div>
-  </header>
-
-  <main>
-    <!-- TOP LIVE TELEMETRY CARDS -->
-    <div class="tactical-telemetry-grid">
-      <div class="tac-card">
-        <div class="tac-header">
-          <span>SUB-01 // FLUIDICS</span>
-          <span style="color: var(--cyan);">8x GROTHEN</span>
+      <!-- Top Center: Holographic Operator Identity Badge -->
+      <div class="top-center-badge">
+        <div class="avatar-glow-ring">
+          <span class="avatar-icon-inner" id="avatar-icon">🛡️</span>
         </div>
-        <div class="tac-val">
-          150 <span class="unit">mL/min per pump</span>
-        </div>
-        <div class="tac-footer">
-          <span>LEADS: RO &amp; ARON</span>
-          <span style="color: var(--green);">NOMINAL</span>
+        <div class="operator-info-box">
+          <div class="op-title">J.A.R.V.I.S. OS // MK-VII</div>
+          <div class="op-user-tag">
+            <span>OPERATOR:</span>
+            <strong id="badge-operator-name" style="color: #fff;">OBSERVER</strong>
+            <span style="font-size: 0.65rem; color: var(--green); margin-left: 6px;">[CLEARANCE: LVL 5]</span>
+          </div>
         </div>
       </div>
 
-      <div class="tac-card">
-        <div class="tac-header">
-          <span>SUB-02 // KINEMATICS</span>
-          <span style="color: var(--amber);">T8x8 LEAD SCREW</span>
-        </div>
-        <div class="tac-val">
-          400 <span class="unit">steps/mm @ 16x</span>
-        </div>
-        <div class="tac-footer">
-          <span>LEADS: SHYAM &amp; ELI</span>
-          <span style="color: var(--cyan);">HOMED</span>
-        </div>
-      </div>
-
-      <div class="tac-card accent-amber">
-        <div class="tac-header">
-          <span>SUB-03 // AUTOMATION</span>
-          <span style="color: var(--green);">CLICK PLC 24V</span>
-        </div>
-        <div class="tac-val">
-          14.6 <span class="unit">A (LRS-350-24)</span>
-        </div>
-        <div class="tac-footer">
-          <span>LEAD: ELI RADABAUGH</span>
-          <span style="color: var(--green);">ARMED</span>
-        </div>
-      </div>
-
-      <div class="tac-card accent-green">
-        <div class="tac-header">
-          <span>SUB-04 // CEAS GRANT</span>
-          <span style="color: var(--cyan);">$1,200 TOTAL</span>
-        </div>
-        <div class="tac-val">
-          $600 <span class="unit">payout on Sept 28</span>
-        </div>
-        <div class="tac-footer">
-          <span>LEAD: ARON JOSEPH</span>
-          <span style="color: var(--amber);">PITCH DUE</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- TACTICAL SWITCHBOARD TABS -->
-    <div class="switchboard-nav">
-      <button class="switch-tab active" onclick="switchTacticalTab('tab-jarvis')">
-        <span>[01] J.A.R.V.I.S. TACTICAL HUD</span>
-        <span class="tab-badge">CORE</span>
-      </button>
-      <button class="switch-tab" onclick="switchTacticalTab('tab-plc')">
-        <span>[02] PLC REGISTER &amp; I/O MATRIX</span>
-        <span class="tab-badge">HARDWARE</span>
-      </button>
-      <button class="switch-tab" onclick="switchTacticalTab('tab-bom')">
-        <span>[03] SOURCING LEDGER &amp; BOM</span>
-        <span class="tab-badge">FINANCE</span>
-      </button>
-      <button class="switch-tab" onclick="switchTacticalTab('tab-gantt')">
-        <span>[04] MILESTONES &amp; CRITICAL PATH</span>
-        <span class="tab-badge">SCHEDULE</span>
-      </button>
-      <button class="switch-tab" onclick="switchTacticalTab('tab-calc')">
-        <span>[05] HYDRAULICS &amp; KINEMATICS CALC</span>
-        <span class="tab-badge">MATH</span>
-      </button>
-    </div>
-
-    <!-- OPERATOR AUTHENTICATION PANEL -->
-    <div class="operator-auth-panel">
-      <div class="auth-status-block">
-        <span class="auth-radar-dot" id="auth-radar-dot"></span>
-        <span id="auth-status-text" style="color: #94a3b8;">
-          CLEARANCE: <strong style="color: #cbd5e1;">OBSERVER TELEMETRY</strong> // SELECT OPERATOR PROFILE
-        </span>
-      </div>
-
-      <div class="operator-selector-group">
-        <button class="op-badge-btn" id="btn-op-ro" onclick="promptOperatorLogin('Ro')">
-          👤 OP-01: Ro
+      <!-- Top Right: Audio FX & Public Site Jump -->
+      <div class="top-right-actions">
+        <button class="btn-hud-small" onclick="toggleAudioFx()">
+          <span>AUDIO FX:</span>
+          <strong id="audio-state-text">ON</strong>
         </button>
-        <button class="op-badge-btn" id="btn-op-aron" onclick="promptOperatorLogin('Aron')">
-          👤 OP-02: Aron
-        </button>
-        <button class="op-badge-btn" id="btn-op-eli" onclick="promptOperatorLogin('Eli')">
-          👤 OP-03: Eli
-        </button>
-        <button class="op-badge-btn" id="btn-op-shyam" onclick="promptOperatorLogin('Shyam')">
-          👤 OP-04: Shyam
-        </button>
-        <button class="op-exit-btn" id="btn-logout" onclick="logoutOperator()" style="display: none;">
-          LOGOUT // LOCK
-        </button>
+        <a href="https://rohendhar.github.io/kinetic-pour/" class="btn-hud-small">
+          ← Public Kinetic Pour
+        </a>
       </div>
     </div>
 
-    <!-- PASSCODE PROMPT DRAWER -->
-    <div class="passcode-modal" id="passcode-modal">
-      <div class="passcode-title">
-        <span>SECURITY INTERLOCK // CLEARANCE LEVEL 5 VERIFICATION</span>
-        <span style="font-family: var(--font-mono); font-size: 0.7rem; color: #94a3b8;">ENCRYPTION: AES-256</span>
-      </div>
-      <div style="font-size: 0.8rem; color: #cbd5e1;">
-        Enter authentication passcode for <strong id="target-op-name" style="color: var(--cyan);">Ro</strong>:
-        <span style="font-size: 0.72rem; color: #64748b; margin-left: 6px;">(Passcode = Operator Name)</span>
-      </div>
-      <div class="passcode-row">
-        <input type="password" id="passcode-input" class="passcode-input" placeholder="Passcode (e.g. Ro)" onkeydown="if(event.key==='Enter') verifyPasscode()">
-        <button class="btn-auth" onclick="verifyPasscode()">AUTHENTICATE</button>
-        <button onclick="cancelPasscode()" style="background: transparent; border: 1px solid #334155; color: #94a3b8; padding: 0.55rem 0.9rem; border-radius: 6px; cursor: pointer;">CANCEL</button>
-      </div>
-      <div id="passcode-error" style="color: var(--red); font-family: var(--font-mono); font-size: 0.72rem; margin-top: 6px; display: none;">
-        ⚠️ AUTHENTICATION DENIED: Passcode does not match operator credential.
-      </div>
-    </div>
+    <!-- ========================================================================= -->
+    <!-- MASTER THREE-COLUMN HUD COCKPIT -->
+    <!-- ========================================================================= -->
+    <div class="hud-cockpit-grid">
 
-    <!-- OPERATOR PERSONAL DOSSIER & CHECKLIST (UNLOCKED) -->
-    <div class="operator-dossier-deck" id="operator-dossier-deck">
-      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-tactical); padding-bottom: 0.5rem;">
-        <div style="font-family: var(--font-disp); font-size: 0.88rem; font-weight: 800; color: var(--cyan);">
-          OPERATOR DOSSIER // <span id="dossier-operator-name">ROHENDHAR</span> [LEVEL 5 CLEARANCE]
-        </div>
-        <div style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--green);">
-          ● BIOMETRIC SYNCHRONIZED
-        </div>
-      </div>
-      <div style="margin-top: 0.6rem; font-size: 0.78rem; color: #94a3b8; font-family: var(--font-mono);" id="dossier-role-desc">
-        ROLE: Systems Integration Lead &amp; Project Manager
-      </div>
-      <ul class="dossier-checklist" id="dossier-checklist">
-        <!-- Injected via JS -->
-      </ul>
-    </div>
-
-    <!-- ================================================================= -->
-    <!-- TAB 1: JARVIS TACTICAL HUD -->
-    <!-- ================================================================= -->
-    <div class="tab-content active" id="tab-jarvis">
-      <div class="tactical-hud-deck">
+      <!-- ===================================================================== -->
+      <!-- LEFT FLANK WING -->
+      <!-- ===================================================================== -->
+      <div class="left-flank">
         
-        <!-- Terminal Window -->
-        <div class="terminal-window">
-          <div class="terminal-topbar">
-            <span>TERMINAL: /dev/ttyS0 [115200 8N1]</span>
-            <span id="terminal-clearance-badge" style="color: var(--amber);">[SECURITY: OBSERVER TELEMETRY]</span>
+        <!-- Live Audio Oscilloscope Canvas -->
+        <div class="hud-panel">
+          <div class="panel-header">
+            <span>NEURAL FREQUENCY // OSCILLOSCOPE</span>
+            <span style="color: var(--green);">14.8 MHz</span>
+          </div>
+          <div class="oscilloscope-box">
+            <canvas id="oscilloscopeCanvas"></canvas>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.62rem; color: #64748b;">
+            <span>DSP GAIN: +12dB</span>
+            <span>VAD: ACTIVE</span>
+            <span>NOISE FLOOR: -64dBm</span>
+          </div>
+        </div>
+
+        <!-- 8-Bottle Fluidics Matrix -->
+        <div class="hud-panel">
+          <div class="panel-header">
+            <span>SUB-01 // 8-BOTTLE FLUIDICS MATRIX</span>
+            <span style="color: var(--cyan);">GROTHEN 24V</span>
+          </div>
+          <div class="pumps-grid">
+            <div class="pump-chip"><span class="p-name">P1 BOURBON</span><span class="p-stat">150 mL/m</span></div>
+            <div class="pump-chip"><span class="p-name">P2 VODKA</span><span class="p-stat">150 mL/m</span></div>
+            <div class="pump-chip"><span class="p-name">P3 GIN</span><span class="p-stat">150 mL/m</span></div>
+            <div class="pump-chip"><span class="p-name">P4 TEQUILA</span><span class="p-stat">150 mL/m</span></div>
+            <div class="pump-chip"><span class="p-name">P5 TRIPLE</span><span class="p-stat">150 mL/m</span></div>
+            <div class="pump-chip"><span class="p-name">P6 CRAN</span><span class="p-stat">150 mL/m</span></div>
+            <div class="pump-chip"><span class="p-name">P7 TONIC</span><span class="p-stat">150 mL/m</span></div>
+            <div class="pump-chip"><span class="p-name">P8 CITRUS</span><span class="p-stat">150 mL/m</span></div>
+          </div>
+          <div style="font-size: 0.64rem; color: #94a3b8; display: flex; justify-content: space-between;">
+            <span>PRESSURE: 0.85 BAR</span>
+            <span>CHECK VALVES: PRIMED</span>
+          </div>
+        </div>
+
+        <!-- Subsystem Resource Monitors -->
+        <div class="hud-panel">
+          <div class="panel-header">
+            <span>CORE PROCESSING // TELEMETRY</span>
+            <span style="color: var(--cyan);">CLICK PLC</span>
+          </div>
+          <div class="metric-row">
+            <div class="metric-label-row"><span>CPU LOAD (PLC I/O CYCLE)</span><span>32%</span></div>
+            <div class="metric-bar-track"><div class="metric-bar-fill" style="width: 32%;"></div></div>
+          </div>
+          <div class="metric-row">
+            <div class="metric-label-row"><span>MEAN WELL 24V LOAD (LRS-350)</span><span>48%</span></div>
+            <div class="metric-bar-track"><div class="metric-bar-fill" style="width: 48%;"></div></div>
+          </div>
+          <div class="metric-row">
+            <div class="metric-label-row"><span>CAN-BUS SERIAL BUFFER</span><span>14%</span></div>
+            <div class="metric-bar-track"><div class="metric-bar-fill" style="width: 14%;"></div></div>
+          </div>
+          <div class="plc-live-list" style="margin-top: 4px;">
+            <div class="plc-pin-row"><span>X001 E-STOP [NC]</span><span style="color: var(--green);">CLOSED (24V)</span></div>
+            <div class="plc-pin-row"><span>X002 CUP DETECT</span><span style="color: var(--green);">VERIFIED (24V)</span></div>
+            <div class="plc-pin-row"><span>X003/X004 LIMIT SW</span><span style="color: var(--cyan);">HOMED (0.0mm)</span></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- CENTERPIECE THEATER: GIANT STARK ARC REACTOR + TACTICAL TERMINAL -->
+      <!-- ===================================================================== -->
+      <div class="center-theater">
+        
+        <!-- Stark Holographic Arc Reactor Dial Assembly -->
+        <div class="hud-radial-dials-container">
+          <div class="crosshair-laser-left"></div>
+          <div class="crosshair-laser-right"></div>
+          
+          <div class="hud-compass-ring"></div>
+          <div class="arc-orbital-ring o1"></div>
+          <div class="arc-orbital-ring o2"></div>
+          <div class="arc-orbital-ring o3"></div>
+          <div class="arc-orbital-ring o4"></div>
+
+          <!-- High-detail SVG Arc Reactor -->
+          <svg class="arc-core-svg" viewBox="0 0 200 200">
+            <defs>
+              <linearGradient id="arcGlowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ffffff"/>
+                <stop offset="50%" stop-color="#00f0ff"/>
+                <stop offset="100%" stop-color="#0044aa"/>
+              </linearGradient>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+
+            <!-- Outer beveled ring -->
+            <circle cx="100" cy="100" r="92" fill="none" stroke="#00f0ff" stroke-width="3" opacity="0.6"/>
+            <circle cx="100" cy="100" r="82" fill="none" stroke="#0a4c7a" stroke-width="8"/>
+            
+            <!-- 10 Segmented Arc Coils -->
+            <g stroke="#00f0ff" stroke-width="4" fill="none">
+              <circle cx="100" cy="100" r="76" stroke-dasharray="24 16"/>
+              <circle cx="100" cy="100" r="62" stroke-dasharray="14 10" stroke-width="2"/>
+            </g>
+
+            <!-- Triangular Palladium Arc Core Frame (Mark VI / Mark VII) -->
+            <polygon points="100,38 152,130 48,130" fill="none" stroke="#00f0ff" stroke-width="4" filter="url(#glow)"/>
+            <polygon points="100,50 142,122 58,122" fill="url(#arcGlowGrad)" opacity="0.85"/>
+            <polygon points="100,60 132,116 68,116" fill="#ffffff" opacity="0.95"/>
+            
+            <!-- Central Glowing Power Nucleus -->
+            <circle cx="100" cy="98" r="16" fill="#ffffff" filter="url(#glow)"/>
+            <circle cx="100" cy="98" r="8" fill="#00f0ff"/>
+          </svg>
+
+          <!-- Core Output Badge -->
+          <div class="core-output-label">
+            <span class="core-output-val">100%</span>
+            <span class="core-output-sub">CORE NOMINAL</span>
+          </div>
+        </div>
+
+        <!-- Operator Selection Deck -->
+        <div class="operator-selection-deck">
+          <span style="font-family: var(--font-hud); font-size: 0.72rem; color: #94a3b8; letter-spacing: 0.1em;">
+            OPERATOR SELECT:
+          </span>
+          <button class="op-btn" id="btn-ro" onclick="promptOperator('Ro')">RO</button>
+          <button class="op-btn" id="btn-aron" onclick="promptOperator('Aron')">ARON</button>
+          <button class="op-btn" id="btn-eli" onclick="promptOperator('Eli')">ELI</button>
+          <button class="op-btn" id="btn-shyam" onclick="promptOperator('Shyam')">SHYAM</button>
+          <button class="op-btn" id="btn-logout" onclick="logoutOperator()" style="display: none; border-color: var(--red); color: var(--red);">
+            LOGOUT
+          </button>
+        </div>
+
+        <!-- Passcode Prompt Dialog -->
+        <div class="passcode-hud-box" id="passcode-box">
+          <div style="display: flex; justify-content: space-between; font-size: 0.76rem; color: var(--cyan); margin-bottom: 6px;">
+            <span>SECURITY INTERLOCK // CLEARANCE LEVEL 5</span>
+            <span>ENCRYPTION: 4096-BIT</span>
+          </div>
+          <div style="font-size: 0.78rem; color: #cbd5e1; margin-bottom: 8px;">
+            Enter security passcode to authenticate as <strong id="passcode-target-name" style="color: var(--cyan);">RO</strong>:
+            <span style="font-size: 0.7rem; color: #64748b;">(Passcode = Operator Name)</span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <input type="password" id="passcode-field" class="passcode-hud-input" placeholder="Enter operator name..." onkeydown="if(event.key==='Enter') submitPasscode()">
+            <button class="btn-cli-exec" onclick="submitPasscode()" style="padding: 0.5rem 1.1rem;">VERIFY</button>
+            <button onclick="cancelPasscode()" style="background: transparent; border: 1px solid #475569; color: #94a3b8; padding: 0.5rem 0.8rem; border-radius: 4px; cursor: pointer;">CANCEL</button>
+          </div>
+          <div id="passcode-error-tag" style="color: var(--red); font-size: 0.7rem; margin-top: 6px; display: none;">
+            ⚠️ INVALID PASSCODE: Verification failed.
+          </div>
+        </div>
+
+        <!-- Terminal Chat Console -->
+        <div class="terminal-chat-deck">
+          <div class="terminal-chat-header">
+            <span>TACTICAL HUD CHAT // J.A.R.V.I.S. NEURAL LINK</span>
+            <span id="chat-clearance-indicator" style="color: var(--amber);">[SECURITY: OBSERVER GUEST]</span>
           </div>
 
-          <div class="chat-history" id="chat-history">
-            <div class="chat-msg jarvis">
-              <span class="chat-sender" style="color: var(--cyan);">J.A.R.V.I.S. // TACTICAL CORE ONLINE</span>
-              <div class="chat-bubble">
-                Good day. Tactical telemetry link established.<br><br>
-                To decrypt internal Capstone deliverables, CEAS grant allocations ($1,200), or milestone schedules, select your <strong>Operator Profile</strong> above and authenticate with your passcode.<br><br>
-                <em>Command shortcut: Type <code>help</code>, <code>status</code>, <code>bom</code>, or <code>deadlines</code> into the CLI prompt below.</em>
+          <div class="terminal-chat-body" id="chat-body">
+            <div class="terminal-msg jarvis">
+              <span class="terminal-sender">J.A.R.V.I.S. // TACTICAL TELEMETRY</span>
+              <div class="terminal-bubble">
+                Good day. Tactical systems linked.<br><br>
+                To decrypt internal Capstone deliverables, CEAS grant finances ($1,200), or milestone schedules, select your <strong>Operator Profile</strong> above and authenticate with your passcode.<br><br>
+                <em>Quick actions: Click any preset on the right flank or type directly into the terminal prompt.</em>
               </div>
             </div>
           </div>
 
-          <!-- CLI Prompt Bar -->
-          <div class="terminal-cli-bar">
-            <span class="cli-prefix" id="cli-prompt-prefix">OP@JARVIS:~$</span>
-            <input type="text" id="cli-input" class="cli-input" placeholder="Enter query or CLI command (e.g. 'status', 'deliverables', 'bom', 'payout')..." onkeydown="if(event.key==='Enter') executeCliCommand()">
-            <button class="cli-send-btn" onclick="executeCliCommand()">EXECUTE</button>
+          <div class="terminal-input-bar">
+            <span class="cli-tag" id="cli-operator-tag">OP@JARVIS:~$</span>
+            <input type="text" id="cli-user-input" class="cli-text-input" placeholder="Query J.A.R.V.I.S. or enter CLI command (e.g. 'status', 'deliverables', 'bom', 'payout')..." onkeydown="if(event.key==='Enter') sendJarvisCommand()">
+            <button class="btn-cli-exec" onclick="sendJarvisCommand()">TRANSMIT</button>
           </div>
         </div>
 
-        <!-- Right Tactical Deck: Arc Reactor & Presets -->
-        <div class="hud-side-panel">
-          <div class="arc-reactor-box">
-            <div class="reactor-core-frame">
-              <div class="arc-ring r1"></div>
-              <div class="arc-ring r2"></div>
-              <div class="arc-ring r3"></div>
-              <div class="arc-center-plasma"></div>
-            </div>
+      </div>
 
-            <div class="equalizer-waveform" id="equalizer-waveform">
-              <span class="eq-bar"></span>
-              <span class="eq-bar"></span>
-              <span class="eq-bar"></span>
-              <span class="eq-bar"></span>
-              <span class="eq-bar"></span>
-              <span class="eq-bar"></span>
-              <span class="eq-bar"></span>
-              <span class="eq-bar"></span>
-              <span class="eq-bar"></span>
-              <span class="eq-bar"></span>
-            </div>
-
-            <div style="font-family: var(--font-mono); font-size: 0.68rem; color: #64748b; letter-spacing: 0.08em; text-align: center;">
-              ARC REACTOR CORE // FREQ: 14.8 MHz<br>
-              <span style="color: var(--cyan);">NEURAL SYNAPSE STABLE</span>
-            </div>
+      <!-- ===================================================================== -->
+      <!-- RIGHT FLANK WIDGETS -->
+      <!-- ===================================================================== -->
+      <div class="right-flank">
+        
+        <!-- Big Stark Digital Clock & Local Sensor Readouts -->
+        <div class="clock-weather-deck">
+          <div style="font-size: 0.65rem; color: var(--cyan); letter-spacing: 0.1em;">
+            CINCINNATI, OH // 39.1031° N, 84.5120° W
           </div>
+          <div class="stark-digital-clock" id="stark-clock">
+            --:--:--
+          </div>
+          <div class="environment-readout">
+            <div class="env-item">TEMP: <strong>22°C / 72°F</strong></div>
+            <div class="env-item">HUMIDITY: <strong>54%</strong></div>
+            <div class="env-item">PRESSURE: <strong>1015 hPa</strong></div>
+            <div class="env-item">PRECIP: <strong>0% (CLEAR)</strong></div>
+          </div>
+        </div>
 
-          <!-- Presets -->
-          <div class="tactical-presets-box">
-            <div class="preset-title">MISSION QUERY PRESETS</div>
-            <button class="preset-btn" onclick="runPreset('What are my priority deliverables and action items?')">
+        <!-- Operator Mission Presets -->
+        <div class="hud-panel">
+          <div class="panel-header">
+            <span>OPERATOR MISSION PRESETS</span>
+            <span style="color: var(--amber);">[EXECUTE]</span>
+          </div>
+          <div class="stark-presets-deck">
+            <button class="stark-preset-btn" onclick="executePreset('What are my priority deliverables and action items?')">
               <span>▸ Priority Action Items</span>
-              <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--cyan);">[TODO]</span>
+              <span class="badge">[TODO]</span>
             </button>
-            <button class="preset-btn" onclick="runPreset('What are our milestone deadlines and Gantt schedule?')">
+            <button class="stark-preset-btn" onclick="executePreset('What are our milestone deadlines and Gantt schedule?')">
               <span>▸ Master Milestone Schedule</span>
-              <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--amber);">[DATES]</span>
+              <span class="badge" style="color: var(--amber);">[DATES]</span>
             </button>
-            <button class="preset-btn" onclick="runPreset('What is the deadline for the 5-Minute Pitch Deck Video and $600 payout?')">
+            <button class="stark-preset-btn" onclick="executePreset('What is the deadline for the 5-Minute Pitch Deck Video and $600 payout?')">
               <span>▸ Pitch Video &amp; $600 Payout</span>
-              <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--green);">[CASH]</span>
+              <span class="badge" style="color: var(--green);">[CASH]</span>
             </button>
-            <button class="preset-btn" onclick="runPreset('Explain the CEAS Innovation Challenge $1,200 grant requirements')">
+            <button class="stark-preset-btn" onclick="executePreset('Explain the CEAS Innovation Challenge $1,200 grant requirements')">
               <span>▸ $1,200 Grant Requirements</span>
-              <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--cyan);">[RULES]</span>
+              <span class="badge">[RULES]</span>
             </button>
-            <button class="preset-btn" onclick="runPreset('What are the 8 bottle parameters and fluidic tubing specs?')">
-              <span>▸ 8-Bottle Fluidics &amp; Tubing</span>
-              <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--amber);">[SPEC]</span>
+            <button class="stark-preset-btn" onclick="executePreset('What are the 8 bottle parameters and fluidic tubing specs?')">
+              <span>▸ 8-Bottle Fluidics Specs</span>
+              <span class="badge" style="color: var(--cyan);">[FLUID]</span>
             </button>
-            <button class="preset-btn" onclick="runPreset('What are the electrical PLC and relay specifications?')">
-              <span>▸ Click PLC &amp; Power Supply</span>
-              <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--green);">[ELEC]</span>
+            <button class="stark-preset-btn" onclick="executePreset('What are the electrical PLC and relay specifications?')">
+              <span>▸ Click PLC &amp; 24V PSU</span>
+              <span class="badge" style="color: var(--green);">[ELEC]</span>
             </button>
           </div>
         </div>
 
-      </div>
-    </div>
-
-    <!-- ================================================================= -->
-    <!-- TAB 2: PLC REGISTER & I/O PIN MATRIX -->
-    <!-- ================================================================= -->
-    <div class="tab-content" id="tab-plc">
-      <div class="plc-matrix-grid">
-        
-        <!-- INPUTS -->
-        <div class="plc-panel">
-          <div class="plc-panel-header">
-            <span>AUTOMATIONDIRECT CLICK PLC // DIGITAL INPUTS (24V SINKING)</span>
-            <span style="color: var(--green);">6 CHANNELS</span>
+        <!-- Operator Classified Dossier & Checklist (Appears upon login) -->
+        <div class="operator-dossier-card" id="operator-dossier-card">
+          <div class="dossier-header">
+            <span id="dossier-name-tag">RO [OP-01]</span>
+            <span style="color: var(--green);">● LEVEL 5 ACTIVE</span>
           </div>
-          <table class="plc-table">
-            <thead>
-              <tr>
-                <th>ADDRESS</th>
-                <th>SIGNAL</th>
-                <th>HARDWARE COMPONENT</th>
-                <th>STATE</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style="color: var(--cyan);">X001</td>
-                <td>E_STOP_NC</td>
-                <td>Mushroom Emergency Pushbutton</td>
-                <td><span class="pin-status-pill high" id="pin-x001">CLOSED (24V)</span></td>
-              </tr>
-              <tr>
-                <td style="color: var(--cyan);">X002</td>
-                <td>CUP_SENSE</td>
-                <td>Infrared Photocell Centering Ring</td>
-                <td><span class="pin-status-pill high" id="pin-x002">DETECTED (24V)</span></td>
-              </tr>
-              <tr>
-                <td style="color: var(--cyan);">X003</td>
-                <td>LIMIT_UP</td>
-                <td>Normally-Closed Optical Microswitch</td>
-                <td><span class="pin-status-pill high" id="pin-x003">UNTRIPPED</span></td>
-              </tr>
-              <tr>
-                <td style="color: var(--cyan);">X004</td>
-                <td>LIMIT_DN</td>
-                <td>Normally-Closed Optical Microswitch</td>
-                <td><span class="pin-status-pill high" id="pin-x004">UNTRIPPED</span></td>
-              </tr>
-              <tr>
-                <td style="color: var(--cyan);">X005</td>
-                <td>FLOAT_BUS_1_4</td>
-                <td>Liquid Level Sensors (Bays 1-4)</td>
-                <td><span class="pin-status-pill high" id="pin-x005">OK (&gt;20%)</span></td>
-              </tr>
-              <tr>
-                <td style="color: var(--cyan);">X006</td>
-                <td>FLOAT_BUS_5_8</td>
-                <td>Liquid Level Sensors (Bays 5-8)</td>
-                <td><span class="pin-status-pill high" id="pin-x006">OK (&gt;20%)</span></td>
-              </tr>
-            </tbody>
-          </table>
+          <div style="font-size: 0.68rem; color: #94a3b8; margin-bottom: 6px;" id="dossier-role-text">
+            ROLE: Systems Lead &amp; Project Manager
+          </div>
+          <ul class="dossier-list" id="dossier-task-list">
+            <!-- Injected via JavaScript -->
+          </ul>
         </div>
 
-        <!-- OUTPUTS -->
-        <div class="plc-panel">
-          <div class="plc-panel-header">
-            <span>RELAY &amp; STEPPER OUTPUT MATRIX (24V RELAY / 1N4007 SNUBBER)</span>
-            <span style="color: var(--amber);">10 ACTUATORS</span>
+        <!-- T8 Kinematics / Elevator Subsystem -->
+        <div class="hud-panel">
+          <div class="panel-header">
+            <span>SUB-02 // T8 ELEVATOR KINEMATICS</span>
+            <span style="color: var(--green);">NEMA 17</span>
           </div>
-          <table class="plc-table">
-            <thead>
-              <tr>
-                <th>ADDRESS</th>
-                <th>ACTUATOR</th>
-                <th>LOAD CURRENT</th>
-                <th>STATUS / TEST</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style="color: var(--cyan);">Y001</td>
-                <td>Pump 1: Bourbon</td>
-                <td>24V DC / 0.45A</td>
-                <td><button class="btn-test-toggle" onclick="togglePlcOutput(this, 'Y001')">OFF</button></td>
-              </tr>
-              <tr>
-                <td style="color: var(--cyan);">Y002</td>
-                <td>Pump 2: Vodka</td>
-                <td>24V DC / 0.45A</td>
-                <td><button class="btn-test-toggle" onclick="togglePlcOutput(this, 'Y002')">OFF</button></td>
-              </tr>
-              <tr>
-                <td style="color: var(--cyan);">Y003</td>
-                <td>Pump 3: Gin</td>
-                <td>24V DC / 0.45A</td>
-                <td><button class="btn-test-toggle" onclick="togglePlcOutput(this, 'Y003')">OFF</button></td>
-              </tr>
-              <tr>
-                <td style="color: var(--cyan);">Y004</td>
-                <td>Pump 4: Tequila</td>
-                <td>24V DC / 0.45A</td>
-                <td><button class="btn-test-toggle" onclick="togglePlcOutput(this, 'Y004')">OFF</button></td>
-              </tr>
-              <tr>
-                <td style="color: var(--cyan);">Y005</td>
-                <td>Pump 5: Triple Sec</td>
-                <td>24V DC / 0.45A</td>
-                <td><button class="btn-test-toggle" onclick="togglePlcOutput(this, 'Y005')">OFF</button></td>
-              </tr>
-              <tr>
-                <td style="color: var(--cyan);">Y006</td>
-                <td>Pump 6: Cranberry</td>
-                <td>24V DC / 0.45A</td>
-                <td><button class="btn-test-toggle" onclick="togglePlcOutput(this, 'Y006')">OFF</button></td>
-              </tr>
-              <tr>
-                <td style="color: var(--cyan);">Y007</td>
-                <td>Pump 7: Tonic Water</td>
-                <td>24V DC / 0.45A</td>
-                <td><button class="btn-test-toggle" onclick="togglePlcOutput(this, 'Y007')">OFF</button></td>
-              </tr>
-              <tr>
-                <td style="color: var(--cyan);">Y008</td>
-                <td>Pump 8: Citrus Juice</td>
-                <td>24V DC / 0.45A</td>
-                <td><button class="btn-test-toggle" onclick="togglePlcOutput(this, 'Y008')">OFF</button></td>
-              </tr>
-              <tr>
-                <td style="color: var(--amber);">Y009</td>
-                <td>Z-Stepper DIR (CW/CCW)</td>
-                <td>TTL Logic 5V</td>
-                <td><span class="pin-status-pill low">STANDBY</span></td>
-              </tr>
-              <tr>
-                <td style="color: var(--amber);">Y010</td>
-                <td>Z-Stepper PULSE</td>
-                <td>PWM 20 kHz</td>
-                <td><span class="pin-status-pill low">HOLD (0 kHz)</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ================================================================= -->
-    <!-- TAB 3: SOURCING LEDGER & BOM ROLLUP -->
-    <!-- ================================================================= -->
-    <div class="tab-content" id="tab-bom">
-      <div class="bom-table-deck">
-        <div class="bom-header-bar">
-          <div>
-            <span style="font-family: var(--font-disp); font-size: 1rem; font-weight: 800; color: #fff;">
-              ITEMIZED BILL OF MATERIALS (BOM) &amp; REQUISITIONS
-            </span>
-            <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--cyan);">
-              CEAS INNOVATION CHALLENGE GRANT ALLOCATION // LEAD: ARON JOSEPH
+          <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.68rem;">
+            <div style="display: flex; justify-content: space-between;">
+              <span>TRAVEL STROKE:</span><strong style="color: #fff;">100.0 mm</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span>CALIBRATION:</span><strong style="color: var(--cyan);">400.0 steps / mm</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span>TRANSIT TIME:</span><strong style="color: var(--green);">4.00 SEC (25 mm/s)</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span>PWM FREQUENCY:</span><strong style="color: var(--amber);">10,000 Hz</strong>
             </div>
           </div>
-          <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--green); text-align: right;">
-            GRANT: $1,200.00 &nbsp;|&nbsp; UPFRONT CAPITAL: $600.00
-          </div>
-        </div>
-
-        <table class="bom-table">
-          <thead>
-            <tr>
-              <th>REF #</th>
-              <th>SUB</th>
-              <th>ITEM DESCRIPTION</th>
-              <th>SUPPLIER / VENDOR</th>
-              <th>QTY</th>
-              <th>EST. UNIT</th>
-              <th>SUBTOTAL</th>
-              <th>PRE-APPROVAL STATUS</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style="color: var(--cyan);">BOM-01</td>
-              <td>FLUID</td>
-              <td>GROTHEN 24V Peristaltic Dosing Pumps (3-Roller)</td>
-              <td>Amazon Business</td>
-              <td>8</td>
-              <td>$14.50</td>
-              <td>$116.00</td>
-              <td><span class="pin-status-pill high">PRE-APPROVED</span></td>
-            </tr>
-            <tr>
-              <td style="color: var(--cyan);">BOM-02</td>
-              <td>FLUID</td>
-              <td>750ml Flat-Bottom Glass Liquor Bottles &amp; Rubber Bungs</td>
-              <td>Uline / Specialized Glass</td>
-              <td>8</td>
-              <td>$6.20</td>
-              <td>$49.60</td>
-              <td><span class="pin-status-pill high">PRE-APPROVED</span></td>
-            </tr>
-            <tr>
-              <td style="color: var(--cyan);">BOM-03</td>
-              <td>FLUID</td>
-              <td>Food-Grade Silicone Tubing (3mm ID × 5mm OD, 50ft)</td>
-              <td>McMaster-Carr</td>
-              <td>1</td>
-              <td>$28.50</td>
-              <td>$28.50</td>
-              <td><span class="pin-status-pill high">PRE-APPROVED</span></td>
-            </tr>
-            <tr>
-              <td style="color: var(--cyan);">BOM-04</td>
-              <td>FLUID</td>
-              <td>1/4" Inline PVDF One-Way Check Valves</td>
-              <td>McMaster-Carr</td>
-              <td>8</td>
-              <td>$3.80</td>
-              <td>$30.40</td>
-              <td><span class="pin-status-pill high">PRE-APPROVED</span></td>
-            </tr>
-            <tr>
-              <td style="color: var(--amber);">BOM-05</td>
-              <td>ELEC</td>
-              <td>Mean Well LRS-350-24 (24V DC, 14.6A Enclosed PSU)</td>
-              <td>AutomationDirect</td>
-              <td>1</td>
-              <td>$42.00</td>
-              <td>$42.00</td>
-              <td><span class="pin-status-pill high">PRE-APPROVED</span></td>
-            </tr>
-            <tr>
-              <td style="color: var(--amber);">BOM-06</td>
-              <td>ELEC</td>
-              <td>AutomationDirect CLICK C0-00DR-D PLC (or Siemens LOGO!)</td>
-              <td>AutomationDirect</td>
-              <td>1</td>
-              <td>$119.00</td>
-              <td>$119.00</td>
-              <td><span class="pin-status-pill high">CANVAS REQ PENDING</span></td>
-            </tr>
-            <tr>
-              <td style="color: var(--amber);">BOM-07</td>
-              <td>ELEC</td>
-              <td>8-Channel 24V Optoisolated Relay Module + 1N4007 Diodes</td>
-              <td>Amazon Business</td>
-              <td>1</td>
-              <td>$16.80</td>
-              <td>$16.80</td>
-              <td><span class="pin-status-pill high">PRE-APPROVED</span></td>
-            </tr>
-            <tr>
-              <td style="color: var(--green);">BOM-08</td>
-              <td>MECH</td>
-              <td>NEMA 17 Stepper Motor + T8x8 Lead Screw (100mm travel)</td>
-              <td>SteppersOnline</td>
-              <td>1</td>
-              <td>$24.50</td>
-              <td>$24.50</td>
-              <td><span class="pin-status-pill high">PRE-APPROVED</span></td>
-            </tr>
-            <tr>
-              <td style="color: var(--green);">BOM-09</td>
-              <td>MECH</td>
-              <td>MGN12H Linear Rail &amp; Dual Bearing Carriage (350mm)</td>
-              <td>Amazon Business</td>
-              <td>1</td>
-              <td>$22.00</td>
-              <td>$22.00</td>
-              <td><span class="pin-status-pill high">PRE-APPROVED</span></td>
-            </tr>
-            <tr>
-              <td style="color: var(--green);">BOM-10</td>
-              <td>MECH</td>
-              <td>Custom PETG 8-Nozzle Dispensing Manifold &amp; Cup Ring</td>
-              <td>1819 Makerspace (3D Print)</td>
-              <td>1</td>
-              <td>$0.00</td>
-              <td>$0.00</td>
-              <td><span class="pin-status-pill high">IN-HOUSE</span></td>
-            </tr>
-            <tr style="background: rgba(0, 240, 255, 0.08); font-weight: 700;">
-              <td colspan="6" style="text-align: right; font-family: var(--font-mono); color: #fff;">ESTIMATED HARDWARE PROTOTYPE ROLLUP:</td>
-              <td style="font-family: var(--font-mono); color: var(--cyan); font-size: 0.95rem;">$448.80</td>
-              <td style="font-family: var(--font-mono); color: var(--green);">UNDER $600 WORKING CAPITAL</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ================================================================= -->
-    <!-- TAB 4: MILESTONES & CRITICAL PATH -->
-    <!-- ================================================================= -->
-    <div class="tab-content" id="tab-gantt">
-      <div class="gantt-radar-grid">
-        
-        <div class="countdown-card">
-          <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--red); font-weight: 700;">
-            🚨 CRITICAL MILESTONE 01 // 6 DAYS REMAINING
-          </div>
-          <div style="font-family: var(--font-disp); font-size: 1.1rem; font-weight: 800; color: #fff;">
-            Team Design Proposal Submission
-          </div>
-          <div class="countdown-timer" id="timer-m1">
-            05d : 14h : 22m : 18s
-          </div>
-          <p style="font-size: 0.8rem; color: #94a3b8;">
-            Requires complete itemized BOM vendor quotes from Aron, Electrical layout from Eli, Elevator kinematics from Shyam, and 8-nozzle CAD routing from Ro.
-          </p>
-        </div>
-
-        <div class="countdown-card">
-          <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--green); font-weight: 700;">
-            💰 FINANCIAL MILESTONE 02 // CAPITAL UNLOCK
-          </div>
-          <div style="font-family: var(--font-disp); font-size: 1.1rem; font-weight: 800; color: #fff;">
-            5-Minute Pitch Deck Video Submission ($600 Payout)
-          </div>
-          <div class="countdown-timer" id="timer-m2" style="color: var(--green);">
-            10d : 18h : 45m : 00s
-          </div>
-          <p style="font-size: 0.8rem; color: #94a3b8;">
-            Submitting this 5-minute video presentation unlocks the upfront <strong>$600.00 team payout ($150/person)</strong> deposited directly into team accounts for hardware purchasing.
-          </p>
-        </div>
-
-        <div class="countdown-card">
-          <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--cyan); font-weight: 700;">
-            🔬 ENGINEERING BENCHMARK 03
-          </div>
-          <div style="font-family: var(--font-disp); font-size: 1.1rem; font-weight: 800; color: #fff;">
-            Innovation Challenge Prototype Day
-          </div>
-          <div class="countdown-timer" id="timer-m3" style="color: var(--cyan);">
-            47d : 12h : 00m : 00s
-          </div>
-          <p style="font-size: 0.8rem; color: #94a3b8;">
-            Target date: Wednesday, Nov 4, 2026. Live in-person hardware demonstration of the automated 8-bottle pump matrix and elevator cup lift at UC 1819 Innovation Hub.
-          </p>
-        </div>
-
-        <div class="countdown-card">
-          <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--amber); font-weight: 700;">
-            🏆 COMPETITION GALA &amp; FINAL DEFENSE 04
-          </div>
-          <div style="font-family: var(--font-disp); font-size: 1.1rem; font-weight: 800; color: #fff;">
-            Final Awards Gala &amp; Senior Design Course Defense
-          </div>
-          <div class="countdown-timer" id="timer-m4" style="color: var(--amber);">
-            61d : 16h : 30m : 00s
-          </div>
-          <p style="font-size: 0.8rem; color: #94a3b8;">
-            Wednesday, Nov 18: Final Gala ($600 second stipend + $1,200 top 25% bonus). Tuesday, Dec 1: Formal Senior Design Course Defense before faculty panel.
-          </p>
         </div>
 
       </div>
+
     </div>
 
-    <!-- ================================================================= -->
-    <!-- TAB 5: HYDRAULICS & KINEMATICS CALCULATOR -->
-    <!-- ================================================================= -->
-    <div class="tab-content" id="tab-calc">
-      <div class="calculator-grid">
-        
-        <!-- Peristaltic Fluid Flow Calculator -->
-        <div class="calc-card">
-          <div style="font-family: var(--font-disp); font-size: 1rem; font-weight: 800; color: var(--cyan);">
-            PERISTALTIC DOSING &amp; SHOT DISPENSE CALCULATOR
-          </div>
-          <p style="font-size: 0.78rem; color: #94a3b8;">
-            Calibrated for GROTHEN 24V DC 3-Roller pumps with 3mm ID food-grade silicone tubing (~150 mL/min).
-          </p>
-
-          <div class="calc-input-row">
-            <label>TARGET SHOT VOLUME (mL):</label>
-            <input type="number" id="calc-volume-ml" class="calc-input" value="44.3" step="0.5" oninput="calculateFluidDosing()">
-          </div>
-
-          <div class="calc-input-row">
-            <label>PUMP CALIBRATED FLOW RATE (mL / min):</label>
-            <input type="number" id="calc-flowrate" class="calc-input" value="150" step="5" oninput="calculateFluidDosing()">
-          </div>
-
-          <div class="calc-result-box" id="calc-dosing-result">
-            ⏱️ Required Run Time: <strong>17.72 seconds</strong><br>
-            ⚡ Energy Consumed: <strong>10.70 Joules</strong> (at 24V, 0.45A)<br>
-            📦 Liquid Volume: <strong>1.50 fl oz</strong> (Standard Jigger Shot)
-          </div>
-        </div>
-
-        <!-- Stepper Elevator Travel Calculator -->
-        <div class="calc-card">
-          <div style="font-family: var(--font-disp); font-size: 1rem; font-weight: 800; color: var(--amber);">
-            T8 LEAD SCREW &amp; NEMA 17 KINEMATICS CALCULATOR
-          </div>
-          <p style="font-size: 0.78rem; color: #94a3b8;">
-            Calibrated for T8x8 Lead Screw (2mm pitch, 4 starts = 8mm lead/rev) &amp; 1.8° stepper with 1/16 microstepping.
-          </p>
-
-          <div class="calc-input-row">
-            <label>VERTICAL TRAVEL STROKE (mm):</label>
-            <input type="number" id="calc-travel-mm" class="calc-input" value="100" step="5" oninput="calculateStepperKinematics()">
-          </div>
-
-          <div class="calc-input-row">
-            <label>DESIRED CARRIAGE TRANSIT SPEED (mm / sec):</label>
-            <input type="number" id="calc-speed-mms" class="calc-input" value="25" step="5" oninput="calculateStepperKinematics()">
-          </div>
-
-          <div class="calc-result-box" id="calc-stepper-result">
-            ⚙️ Steps Per Millimeter: <strong>400.0 steps / mm</strong><br>
-            🔄 Total Step Pulses: <strong>40,000 steps</strong><br>
-            ⏱️ Transit Duration: <strong>4.00 seconds</strong> (PLC PWM freq: 10,000 Hz)
-          </div>
-        </div>
-
+    <!-- ========================================================================= -->
+    <!-- BOTTOM STARK INDUSTRIES LOGO BAR -->
+    <!-- ========================================================================= -->
+    <div class="bottom-stark-footer">
+      <div class="stark-logo-brand">
+        STARK INDUSTRIES <span style="font-size: 0.72rem; color: var(--cyan); font-family: var(--font-mono); font-weight: 400;">// KINETIC POUR CAPSTONE MATRIX</span>
+      </div>
+      <div class="hud-laser-line"></div>
+      <div style="font-size: 0.68rem; color: #64748b; letter-spacing: 0.12em;">
+        CLASSIFIED COMMAND DECK // MECH5051 &amp; EECE5001 // FALL 2026
       </div>
     </div>
 
-  </main>
+  </div>
 
+  <!-- ========================================================================= -->
+  <!-- JAVASCRIPT: AUDIO SYNTHESIZER, CANVAS OSCILLOSCOPE, LOGIC & AUTH -->
+  <!-- ========================================================================= -->
   <script>
-    // ==========================================
-    // AUDIO SYNTHESIZER (WEB AUDIO API)
-    // ==========================================
+    // Audio Synthesizer (Web Audio API)
     let audioCtx = null;
-    let audioEnabled = true;
+    let audioActive = true;
 
     function initAudio() {
       if (!audioCtx) {
@@ -1711,8 +1164,8 @@
       }
     }
 
-    function playTacticalBeep(freq = 880, type = 'sine', duration = 0.05) {
-      if (!audioEnabled) return;
+    function playBeep(freq = 900, type = 'sine', duration = 0.05) {
+      if (!audioActive) return;
       try {
         initAudio();
         const osc = audioCtx.createOscillator();
@@ -1728,330 +1181,320 @@
       } catch (e) {}
     }
 
-    function toggleAudioFX() {
-      audioEnabled = !audioEnabled;
-      const el = document.getElementById('audio-fx-state');
-      if (el) el.innerText = audioEnabled ? 'ON' : 'OFF';
-      playTacticalBeep(audioEnabled ? 1200 : 400);
+    function toggleAudioFx() {
+      audioActive = !audioActive;
+      document.getElementById('audio-state-text').innerText = audioActive ? 'ON' : 'OFF';
+      playBeep(audioActive ? 1200 : 400);
     }
 
-    // ==========================================
-    // REAL-TIME CLOCK & MISSION COUNTDOWNS
-    // ==========================================
-    function updateMissionClocks() {
-      const now = new Date();
-      const timeStr = now.toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour12: false });
-      const ms = String(now.getMilliseconds()).padStart(3, '0');
-      const clockEl = document.getElementById('live-utc-clock');
-      if (clockEl) clockEl.innerText = `EDT: ${timeStr}.${ms}`;
+    // Oscilloscope Waveform Animation
+    const oscCanvas = document.getElementById('oscilloscopeCanvas');
+    const oscCtx = oscCanvas.getContext('2d');
+    let waveOffset = 0;
 
-      // Target Dates
-      const deadlines = {
-        'timer-m1': new Date('2026-09-23T13:30:00-04:00'), // Proposal
-        'timer-m2': new Date('2026-09-28T23:59:59-04:00'), // Video $600
-        'timer-m3': new Date('2026-11-04T12:00:00-05:00'), // Demo Day
-        'timer-m4': new Date('2026-11-18T18:00:00-05:00'), // Gala
-      };
+    function resizeOsc() {
+      oscCanvas.width = oscCanvas.offsetWidth;
+      oscCanvas.height = oscCanvas.offsetHeight;
+    }
+    window.addEventListener('resize', resizeOsc);
+    resizeOsc();
 
-      for (const [id, date] of Object.entries(deadlines)) {
-        const diff = date - now;
-        const el = document.getElementById(id);
-        if (el) {
-          if (diff <= 0) {
-            el.innerText = "00d : 00h : 00m : 00s [DEADLINE PASSED]";
-          } else {
-            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
-            const m = Math.floor((diff / (1000 * 60)) % 60);
-            const s = Math.floor((diff / 1000) % 60);
-            el.innerText = `${String(d).padStart(2, '0')}d : ${String(h).padStart(2, '0')}h : ${String(m).padStart(2, '0')}m : ${String(s).padStart(2, '0')}s`;
-          }
-        }
+    function drawOscilloscope() {
+      const w = oscCanvas.width;
+      const h = oscCanvas.height;
+      oscCtx.clearRect(0, 0, w, h);
+
+      // Gridlines
+      oscCtx.strokeStyle = 'rgba(0, 240, 255, 0.12)';
+      oscCtx.lineWidth = 1;
+      for (let x = 0; x < w; x += 20) {
+        oscCtx.beginPath();
+        oscCtx.moveTo(x, 0);
+        oscCtx.lineTo(x, h);
+        oscCtx.stroke();
       }
+      for (let y = 0; y < h; y += 15) {
+        oscCtx.beginPath();
+        oscCtx.moveTo(0, y);
+        oscCtx.lineTo(w, y);
+        oscCtx.stroke();
+      }
+
+      // Neon Wave
+      oscCtx.strokeStyle = '#00f0ff';
+      oscCtx.lineWidth = 2;
+      oscCtx.shadowColor = '#00f0ff';
+      oscCtx.shadowBlur = 8;
+      oscCtx.beginPath();
+
+      const midY = h / 2;
+      for (let x = 0; x < w; x++) {
+        const rad = (x * 0.04) + waveOffset;
+        const y = midY + Math.sin(rad) * 16 + Math.cos(rad * 2.1) * 8;
+        if (x === 0) oscCtx.moveTo(x, y);
+        else oscCtx.lineTo(x, y);
+      }
+      oscCtx.stroke();
+      oscCtx.shadowBlur = 0;
+
+      waveOffset += 0.06;
+      requestAnimationFrame(drawOscilloscope);
     }
-    setInterval(updateMissionClocks, 80);
+    requestAnimationFrame(drawOscilloscope);
 
-    // ==========================================
-    // TAB SWITCHING
-    // ==========================================
-    function switchTacticalTab(tabId) {
-      playTacticalBeep(920);
-      document.querySelectorAll('.switch-tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-      event.currentTarget.classList.add('active');
-      const target = document.getElementById(tabId);
-      if (target) target.classList.add('active');
+    // Stark Digital Clock
+    function updateStarkClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour12: true });
+      const ms = String(now.getMilliseconds()).padStart(3, '0');
+      const el = document.getElementById('stark-clock');
+      if (el) el.innerText = `${timeStr}`;
     }
+    setInterval(updateStarkClock, 200);
+    updateStarkClock();
 
-    // ==========================================
-    // OPERATOR AUTHENTICATION & DOSSIERS
-    // ==========================================
-    let authenticatedOperator = sessionStorage.getItem('kp_op_name') || null;
-    let targetPromptOperator = 'Ro';
+    // Operator Authentication State
+    let activeOperator = sessionStorage.getItem('kp_stark_op') || null;
+    let targetPromptOp = 'Ro';
 
-    const OPERATOR_DOSSIERS = {
+    const OPERATOR_DATA = {
       'Ro': {
+        icon: '👨‍✈️',
         code: 'OP-RO-01',
-        title: 'Project Manager & Systems Integration Lead',
+        role: 'Project Manager & Systems Integration Lead',
         tasks: [
-          '8-Nozzle Manifold CAD: Complete fluid convergence routing in Fusion 360/SolidWorks.',
-          'Jacob Cress Documentation: Finalize and submit neutral Sponsor 101 description.',
-          'Proposal Synthesis: Consolidate BOM vendor quotes and CAD layouts by Sept 23.',
-          'Pitch Deck Video: Script and storyboard 5-minute video for Sept 28 ($600 payout).'
+          '8-Nozzle Manifold CAD: Finalize fluid convergence geometry in Fusion 360.',
+          'Jacob Cress Documentation: Submit finalized Team Lead / Sponsor introductory doc.',
+          'Team Proposal Synthesis: Consolidate BOM vendor quotes and CAD by Sept 23.',
+          '5-Minute Pitch Deck Video: Direct slides & script for Sept 28 ($600 payout).'
         ]
       },
       'Aron': {
+        icon: '💰',
         code: 'OP-AJ-02',
-        title: 'Finance, Procurement & Bottling Co-Lead',
+        role: 'Finance, Procurement & Bottling Co-Lead',
         tasks: [
-          'Itemized BOM Rollup: Compile exact vendor quotes for the Sept 23 Team Proposal.',
-          'Bottling Hardware: Finalize specs for 8 glass bottles, silicone check valves & bungs.',
+          'Itemized BOM Rollup: Compile exact vendor quotes for Sept 23 Proposal.',
+          'Bottling Hardware Quotes: Finalize 8 bottles, silicone bungs & Grothen pumps.',
           'Canvas Purchase Requests: Prepare pre-approval request forms for Innovation Chair.',
-          'Canvas Course Check: Verify enrollment for $300 individual student stipend.'
+          'Grant Capital Ledger: Manage $600 upfront working capital disbursements.'
         ]
       },
       'Eli': {
+        icon: '⚡',
         code: 'OP-ER-03',
-        title: 'Electrical & Industrial Automation Lead',
+        role: 'Electrical & Industrial Automation Lead',
         tasks: [
-          'BOM Quotes: Finalize datasheets for Click PLC, Mean Well 24V PSU, and 8ch relays.',
-          'Single-Line Schematic: Create full electrical wiring diagram with E-stop cut.',
-          'Lift Limit Switches: Mount and verify NC optical homing switches with Shyam.',
-          'Bulkhead Layout: Finalize IP65 enclosure gland sizing and thermal venting.'
+          'BOM Quotes: Finalize datasheets for Click PLC, Mean Well 24V PSU & relays.',
+          'Electrical Schematic: Complete single-line wiring diagram with E-stop cut.',
+          'Lift Limit Switches: Mount & verify NC optical homing switches with Shyam.',
+          'Bulkhead Layout: Finalize IP65 enclosure gland sizing & thermal venting.'
         ]
       },
       'Shyam': {
+        icon: '📐',
         code: 'OP-SP-04',
-        title: 'Operations & Kinematics Lead',
+        role: 'Operations & Kinematics Lead',
         tasks: [
-          'Elevator CAD: Complete MGN12H linear rail and T8 lead screw mount bracket layout.',
-          'Master Gantt Chart: Update Excel critical path for Sept 23 Proposal & Sept 28 Video.',
-          'Ice Study: Document recommendation on stainless steel stones vs Peltier plate.',
-          'Makerspace 3D Prints: Queue PETG test prints at UC 1819 Innovation Hub.'
+          'Elevator CAD: Complete MGN12H linear rail & T8 lead screw assembly.',
+          'Master Gantt Schedule: Maintain Excel critical path for Sept 23 & Sept 28.',
+          'Thermal Study: Document recommendation on stainless steel stones vs Peltier.',
+          '3D Print Queue: Queue elevator brackets & carriage test prints at 1819 Hub.'
         ]
       }
     };
 
-    function promptOperatorLogin(name) {
-      playTacticalBeep(1100);
-      targetPromptOperator = name;
-      document.getElementById('target-op-name').innerText = name;
-      const modal = document.getElementById('passcode-modal');
-      modal.style.display = 'block';
-      const input = document.getElementById('passcode-input');
-      input.value = '';
-      input.placeholder = `Passcode (e.g. ${name})`;
-      input.focus();
-      document.getElementById('passcode-error').style.display = 'none';
+    function promptOperator(name) {
+      playBeep(1100);
+      targetPromptOp = name;
+      document.getElementById('passcode-target-name').innerText = name.toUpperCase();
+      document.getElementById('passcode-box').style.display = 'block';
+      const f = document.getElementById('passcode-field');
+      f.value = '';
+      f.placeholder = `Passcode (e.g. ${name})`;
+      f.focus();
+      document.getElementById('passcode-error-tag').style.display = 'none';
     }
 
     function cancelPasscode() {
-      playTacticalBeep(600);
-      document.getElementById('passcode-modal').style.display = 'none';
+      playBeep(600);
+      document.getElementById('passcode-box').style.display = 'none';
     }
 
-    function verifyPasscode() {
-      const input = document.getElementById('passcode-input');
+    function submitPasscode() {
+      const input = document.getElementById('passcode-field');
       const val = (input ? input.value : '').trim();
-      const err = document.getElementById('passcode-error');
+      const err = document.getElementById('passcode-error-tag');
 
-      if (val.toLowerCase() === targetPromptOperator.toLowerCase()) {
-        playTacticalBeep(1400);
-        authenticatedOperator = targetPromptOperator;
-        sessionStorage.setItem('kp_op_name', targetPromptOperator);
-        document.getElementById('passcode-modal').style.display = 'none';
-        applyOperatorUI();
-        appendSystemMessage(`ACCESS GRANTED: Level 5 Tactical Telemetry Unlocked for Operator ${targetPromptOperator.toUpperCase()}.`);
+      if (val.toLowerCase() === targetPromptOp.toLowerCase()) {
+        playBeep(1500, 'sine', 0.1);
+        activeOperator = targetPromptOp;
+        sessionStorage.setItem('kp_stark_op', targetPromptOp);
+        document.getElementById('passcode-box').style.display = 'none';
+        applyStarkOperatorUI();
+        appendTerminalNotice(`SECURITY CLEARANCE GRANTED: Level 5 Dossier Decrypted for Operator ${targetPromptOp.toUpperCase()}.`);
       } else {
-        playTacticalBeep(350, 'sawtooth', 0.2);
+        playBeep(320, 'sawtooth', 0.25);
         if (err) err.style.display = 'block';
       }
     }
 
     function logoutOperator() {
-      playTacticalBeep(500);
-      authenticatedOperator = null;
-      sessionStorage.removeItem('kp_op_name');
-      applyOperatorUI();
-      appendSystemMessage("OPERATOR SECURE LOGOUT: Terminal returned to restricted Observer mode.");
+      playBeep(450);
+      activeOperator = null;
+      sessionStorage.removeItem('kp_stark_op');
+      applyStarkOperatorUI();
+      appendTerminalNotice("SECURITY LOCK ENGAGED: Returned to Guest Observer Telemetry.");
     }
 
-    function applyOperatorUI() {
-      const dot = document.getElementById('auth-radar-dot');
-      const statusText = document.getElementById('auth-status-text');
+    function applyStarkOperatorUI() {
+      const nameBadge = document.getElementById('badge-operator-name');
+      const avatarIcon = document.getElementById('avatar-icon');
       const logoutBtn = document.getElementById('btn-logout');
-      const badgePrefix = document.getElementById('cli-prompt-prefix');
-      const clearanceBadge = document.getElementById('terminal-clearance-badge');
-      const dossierDeck = document.getElementById('operator-dossier-deck');
+      const cliTag = document.getElementById('cli-operator-tag');
+      const indicator = document.getElementById('chat-clearance-indicator');
+      const dossierCard = document.getElementById('operator-dossier-card');
 
-      document.querySelectorAll('.op-badge-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.op-btn').forEach(b => b.classList.remove('active'));
 
-      if (authenticatedOperator) {
-        dot.className = 'auth-radar-dot authenticated';
-        statusText.innerHTML = `OPERATOR: <strong style="color: var(--cyan);">${authenticatedOperator.toUpperCase()}</strong> // LEVEL 5 CLEARANCE GRANTED`;
-        logoutBtn.style.display = 'inline-block';
-        badgePrefix.innerText = `${authenticatedOperator.toUpperCase()}@JARVIS:~$`;
-        clearanceBadge.innerText = `[SECURITY: LEVEL 5 CLEARANCE // ${authenticatedOperator.toUpperCase()}]`;
-        clearanceBadge.style.color = 'var(--green)';
+      if (activeOperator && OPERATOR_DATA[activeOperator]) {
+        const data = OPERATOR_DATA[activeOperator];
+        nameBadge.innerText = activeOperator.toUpperCase();
+        avatarIcon.innerText = data.icon;
+        logoutBtn.style.display = 'inline-flex';
+        cliTag.innerText = `${activeOperator.toUpperCase()}@JARVIS:~$`;
+        indicator.innerText = `[SECURITY: LEVEL 5 // ${activeOperator.toUpperCase()}]`;
+        indicator.style.color = 'var(--green)';
 
-        const activeBtn = document.getElementById(`btn-op-${authenticatedOperator.toLowerCase()}`);
+        const activeBtn = document.getElementById(`btn-${activeOperator.toLowerCase()}`);
         if (activeBtn) activeBtn.classList.add('active');
 
-        // Render Dossier Checklist
-        const dossier = OPERATOR_DOSSIERS[authenticatedOperator];
-        if (dossier) {
-          dossierDeck.style.display = 'block';
-          document.getElementById('dossier-operator-name').innerText = `${authenticatedOperator.toUpperCase()} [${dossier.code}]`;
-          document.getElementById('dossier-role-desc').innerText = `ROLE: ${dossier.title}`;
-          const list = document.getElementById('dossier-checklist');
-          list.innerHTML = '';
-          dossier.tasks.forEach((task, idx) => {
-            const savedKey = `kp_task_${authenticatedOperator}_${idx}`;
-            const checked = localStorage.getItem(savedKey) === 'true';
-            const li = document.createElement('li');
-            li.className = 'dossier-item';
-            li.innerHTML = `
-              <input type="checkbox" id="${savedKey}" ${checked ? 'checked' : ''} onchange="localStorage.setItem('${savedKey}', this.checked); playTacticalBeep(1000);">
-              <label for="${savedKey}" style="${checked ? 'text-decoration: line-through; color: #64748b;' : ''}">${task}</label>
-            `;
-            list.appendChild(li);
-          });
-        }
+        // Dossier Card
+        dossierCard.style.display = 'block';
+        document.getElementById('dossier-name-tag').innerText = `${activeOperator.toUpperCase()} [${data.code}]`;
+        document.getElementById('dossier-role-text').innerText = `ROLE: ${data.role}`;
+        const list = document.getElementById('dossier-task-list');
+        list.innerHTML = '';
+        data.tasks.forEach((t, i) => {
+          const key = `kp_stark_${activeOperator}_${i}`;
+          const checked = localStorage.getItem(key) === 'true';
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <input type="checkbox" id="${key}" ${checked ? 'checked' : ''} onchange="localStorage.setItem('${key}', this.checked); playBeep(1100);">
+            <label for="${key}" style="${checked ? 'text-decoration: line-through; color: #64748b;' : ''}">${t}</label>
+          `;
+          list.appendChild(li);
+        });
       } else {
-        dot.className = 'auth-radar-dot';
-        statusText.innerHTML = `CLEARANCE: <strong style="color: #cbd5e1;">OBSERVER TELEMETRY</strong> // SELECT OPERATOR PROFILE`;
+        nameBadge.innerText = 'OBSERVER';
+        avatarIcon.innerText = '🛡️';
         logoutBtn.style.display = 'none';
-        badgePrefix.innerText = `OP@JARVIS:~$`;
-        clearanceBadge.innerText = `[SECURITY: OBSERVER TELEMETRY]`;
-        clearanceBadge.style.color = 'var(--amber)';
-        dossierDeck.style.display = 'none';
+        cliTag.innerText = 'OP@JARVIS:~$';
+        indicator.innerText = '[SECURITY: OBSERVER GUEST]';
+        indicator.style.color = 'var(--amber)';
+        dossierCard.style.display = 'none';
       }
     }
 
-    // ==========================================
-    // TERMINAL CHAT & CLI ENGINE
-    // ==========================================
-    function appendSystemMessage(text) {
-      const history = document.getElementById('chat-history');
+    function appendTerminalNotice(text) {
+      const body = document.getElementById('chat-body');
       const div = document.createElement('div');
-      div.className = 'chat-msg jarvis';
+      div.className = 'terminal-msg jarvis';
       div.innerHTML = `
-        <span class="chat-sender" style="color: var(--amber);">SYSTEM NOTIFICATION</span>
-        <div class="chat-bubble" style="border-color: rgba(245, 158, 11, 0.4);">${text}</div>
+        <span class="terminal-sender" style="color: var(--amber);">SYSTEM NOTIFICATION</span>
+        <div class="terminal-bubble" style="border-color: var(--amber); color: #fef08a;">${text}</div>
       `;
-      history.appendChild(div);
-      history.scrollTop = history.scrollHeight;
+      body.appendChild(div);
+      body.scrollTop = body.scrollHeight;
     }
 
-    async function executeCliCommand(cmdText) {
-      const input = document.getElementById('cli-input');
-      const message = cmdText || (input ? input.value.trim() : '');
+    async function sendJarvisCommand(overrideText) {
+      const input = document.getElementById('cli-user-input');
+      const message = overrideText || (input ? input.value.trim() : '');
       if (!message) return;
       if (input) input.value = '';
 
-      playTacticalBeep(1050);
+      playBeep(950);
 
-      const history = document.getElementById('chat-history');
+      const body = document.getElementById('chat-body');
       const userDiv = document.createElement('div');
-      userDiv.className = 'chat-msg user';
-      const senderTag = authenticatedOperator ? `OPERATOR [${authenticatedOperator.toUpperCase()}]` : 'OBSERVER';
+      userDiv.className = 'terminal-msg user';
+      const sender = activeOperator ? `OPERATOR: ${activeOperator.toUpperCase()}` : 'OBSERVER';
       userDiv.innerHTML = `
-        <span class="chat-sender" style="color: var(--cyan);">${senderTag}</span>
-        <div class="chat-bubble">${escapeHtml(message)}</div>
+        <span class="terminal-sender">${sender}</span>
+        <div class="terminal-bubble">${escapeHtml(message)}</div>
       `;
-      history.appendChild(userDiv);
-      history.scrollTop = history.scrollHeight;
+      body.appendChild(userDiv);
+      body.scrollTop = body.scrollHeight;
 
-      // Handle direct local CLI shortcuts
-      const lower = message.toLowerCase().trim();
-      if (lower === 'clear') {
-        history.innerHTML = '';
-        appendSystemMessage("Terminal buffer cleared.");
-        return;
-      }
-      if (lower === 'help') {
-        appendSystemMessage(
-          "<strong>AVAILABLE CLI COMMANDS:</strong><br>" +
-          "• <code>status</code> : System health and hardware telemetry<br>" +
-          "• <code>whoami</code> : Current authenticated operator clearance<br>" +
-          "• <code>bom</code> : Requisitions and procurement rundown<br>" +
-          "• <code>deadlines</code> : Critical milestone countdown radar<br>" +
-          "• <code>plc</code> : I/O pin mapping matrix summary<br>" +
-          "• <code>clear</code> : Clear terminal logs<br>" +
-          "<em>Or enter any natural language question for J.A.R.V.I.S.</em>"
-        );
-        return;
-      }
-
-      // Live synthesis loader
-      const loadingDiv = document.createElement('div');
-      loadingDiv.className = 'chat-msg jarvis';
-      loadingDiv.innerHTML = `
-        <span class="chat-sender" style="color: var(--cyan);">J.A.R.V.I.S. // PROCESSING</span>
-        <div class="chat-bubble" style="color: var(--cyan);">Querying Capstone encrypted database...</div>
+      // Loading bubble
+      const loadDiv = document.createElement('div');
+      loadDiv.className = 'terminal-msg jarvis';
+      loadDiv.innerHTML = `
+        <span class="terminal-sender">J.A.R.V.I.S. // PROCESSING</span>
+        <div class="terminal-bubble" style="color: var(--cyan);">Accessing Capstone encrypted database...</div>
       `;
-      history.appendChild(loadingDiv);
-      history.scrollTop = history.scrollHeight;
+      body.appendChild(loadDiv);
+      body.scrollTop = body.scrollHeight;
 
       try {
         const res = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            sender: authenticatedOperator || 'Guest',
-            operatorAuth: !!authenticatedOperator,
+            sender: activeOperator || 'Guest',
+            operatorAuth: !!activeOperator,
             message: message
           })
         });
         const data = await res.json();
-        loadingDiv.innerHTML = `
-          <span class="chat-sender" style="color: var(--cyan);">J.A.R.V.I.S. // RESPONSE</span>
-          <div class="chat-bubble">${formatReply(data.reply || 'No response telemetry received.')}</div>
+        loadDiv.innerHTML = `
+          <span class="terminal-sender">J.A.R.V.I.S. // TACTICAL INTELLIGENCE</span>
+          <div class="terminal-bubble">${formatReply(data.reply || 'No telemetry received.')}</div>
         `;
-        playTacticalBeep(850);
+        playBeep(850);
       } catch (e) {
         // Zero-PC Static Fallback
-        playTacticalBeep(780);
-        const reply = generateStaticOperatorReply(message);
-        loadingDiv.innerHTML = `
-          <span class="chat-sender" style="color: var(--cyan);">J.A.R.V.I.S. // TACTICAL INTELLIGENCE</span>
-          <div class="chat-bubble">${formatReply(reply)}</div>
+        const fallback = generateFallback(message);
+        loadDiv.innerHTML = `
+          <span class="terminal-sender">J.A.R.V.I.S. // TACTICAL TELEMETRY</span>
+          <div class="terminal-bubble">${formatReply(fallback)}</div>
         `;
+        playBeep(800);
       }
-      history.scrollTop = history.scrollHeight;
+      body.scrollTop = body.scrollHeight;
     }
 
-    function runPreset(q) {
-      executeCliCommand(q);
+    function executePreset(q) {
+      sendJarvisCommand(q);
     }
 
-    function generateStaticOperatorReply(msg) {
+    function generateFallback(msg) {
       const q = msg.toLowerCase();
-      const isAuth = !!authenticatedOperator;
-      const op = (authenticatedOperator || '').toLowerCase();
+      const isAuth = !!activeOperator;
+      const op = (activeOperator || '').toLowerCase();
 
       if (!isAuth) {
         if (q.includes('task') || q.includes('todo') || q.includes('action') || q.includes('deadline') || q.includes('grant') || q.includes('payout') || q.includes('money') || q.includes('fund')) {
-          return "🔒 **Security Interlock Active**: Observer clearance insufficient for Capstone internal deliverables or CEAS grant records.\n\n" +
+          return "🔒 **Security Interlock Active**: Observer clearance insufficient for internal Capstone task checklists or CEAS grant disbursements.\n\n" +
                  "Please select an **Operator Profile** (Ro, Aron, Eli, Shyam) above and authenticate with your passcode.";
         }
-        return "Welcome to the **Kinetic Pour Tactical Command Deck**.\n\n" +
-               "Operating in **Observer Mode**. I can answer general system architecture, fluidics telemetry, and elevator kinematics.\n\n" +
-               "Authenticate as a team operator to decrypt internal task lists and financial grant budgets.";
+        return "Welcome to the **Stark Industries Kinetic Pour Tactical HUD**.\n\n" +
+               "Operating in **Observer Guest Mode**. I can answer general system architecture, fluidics specs, and elevator kinematics.\n\n" +
+               "Authenticate as a team operator to decrypt internal task lists and grant budgets.";
       }
 
-      // Authenticated Responses
-      if (q.includes('task') || q.includes('todo') || q.includes('action') || q.includes('deliverable') || q.includes('whoami')) {
+      // Authenticated Deliverables
+      if (q.includes('task') || q.includes('todo') || q.includes('action') || q.includes('deliverable')) {
         if (op.includes('eli')) {
-          return "Good day, **Mr. Radabaugh**. Here are your active engineering directives as **Electrical & Automation Lead**:\n\n" +
+          return "Good day, **Mr. Radabaugh**. Here are your active engineering directives as **Electrical Lead**:\n\n" +
                  "### ⚡ Eli's Priority Deliverables (Target: Wednesday, Sept 23):\n" +
                  "1. **BOM Vendor Quotes**: Finalize exact quotes for the Click PLC, Mean Well 24V PSU, 8-channel relay board, and 1N4007 flyback diodes.\n" +
                  "2. **Wiring Schematic**: Produce single-line electrical schematic with physical mushroom E-stop cut on 24V rail.\n" +
                  "3. **Homing Sensors**: Calibrate NC optical limit switches for carriage homing with Shyam.\n" +
                  "4. **Canvas Enrollment**: Verify enrollment in Innovation Challenge Canvas course for $300 student stipend.";
         } else if (op.includes('aron')) {
-          return "Good day, **Mr. Joseph**. Here are your active deliverables as **Finance & Procurement Lead**:\n\n" +
+          return "Good day, **Mr. Joseph**. Here are your active deliverables as **Finance Lead**:\n\n" +
                  "### 💰 Aron's Priority Deliverables (Target: Wednesday, Sept 23):\n" +
                  "1. **BOM Cost Rollup**: Consolidate quotes from all 4 section leads for the Team Proposal submission.\n" +
                  "2. **Bottling Quotes**: Finalize vendor quotes for 8 uniform glass bottles, silicone bungs, check valves, and Grothen peristaltic pumps.\n" +
@@ -2092,25 +1535,25 @@
                "• **100% Hardware Reimbursement**: All itemized receipts eligible upon prior Canvas purchase pre-approval.";
       }
 
-      if (q.includes('plc') || q.includes('wire') || q.includes('relay') || q.includes('power')) {
-        return "### ⚡ Electrical & Control System Telemetry:\n\n" +
-               "• **PLC**: AutomationDirect CLICK C0-00DR-D (or Siemens LOGO! 24RCE) with 24V sinking I/O.\n" +
-               "• **Power Supply**: Mean Well LRS-350-24 (24V DC, 14.6A, 350W).\n" +
-               "• **Relays**: 8-channel optoisolated relay board with 1N4007 flyback diodes across inductive pump coils.\n" +
-               "• **Safety**: Physical mushroom E-Stop cutting 24V actuator power while maintaining PLC logic.";
+      if (q.includes('bottle') || q.includes('fluid') || q.includes('pump') || q.includes('tube')) {
+        return "### 🚰 8-Bottle Fluidics & Peristaltic Pump Specifications:\n\n" +
+               "• **Pumps**: 8x GROTHEN 24V DC 3-Roller Peristaltic Dosing Pumps (~150 mL/min calibrated).\n" +
+               "• **Tubing**: Food-grade 3mm ID × 5mm OD silicone tubing.\n" +
+               "• **Check Valves**: 1/4\" PVDF inline one-way check valves (prevents line drain & backflow).\n" +
+               "• **Manifold**: Custom 3D-printed PETG 8-to-1 dispensing nozzle converging into a 2.5\" diameter cup ring.";
       }
 
-      return `Operational directive acknowledged, **${authenticatedOperator}**. All telemetry feeds nominal. How may I assist you further with CAD specs, wiring diagrams, or milestone tracking?`;
+      return `Operational telemetry acknowledged, **${activeOperator}**. All tactical links nominal. How may I assist you further?`;
     }
 
     function formatReply(text) {
       let f = text
-        .replace(/### (.*?)\n/g, '<h3>$1</h3>')
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/### (.*?)\n/g, '<strong style="color: var(--cyan); display: block; margin: 4px 0;">$1</strong>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong style="color: #fff;">$1</strong>')
         .replace(/\*(.*?)\*/g, '<em>$1</em>')
         .replace(/• (.*?)\n/g, '<li>$1</li>')
-        .replace(/`([^`]+)`/g, '<code>$1</code>');
-      if (f.includes('<li>')) f = f.replace(/(<li>.*?<\/li>)+/g, '<ul>$&</ul>');
+        .replace(/`([^`]+)`/g, '<code style="color: var(--cyan); background: rgba(0,240,255,0.1); padding: 1px 4px; border-radius: 3px;">$1</code>');
+      if (f.includes('<li>')) f = f.replace(/(<li>.*?<\/li>)+/g, '<ul style="margin-left: 1.2rem; margin-top: 4px;">$&</ul>');
       return f.replace(/\n\n/g, '<br><br>');
     }
 
@@ -2118,61 +1561,9 @@
       return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
-    // ==========================================
-    // PLC INTERACTIVE OUTPUT TOGGLER
-    // ==========================================
-    function togglePlcOutput(btn, address) {
-      playTacticalBeep(1250);
-      const isOff = btn.innerText === 'OFF';
-      btn.innerText = isOff ? 'ON (ACTIVE)' : 'OFF';
-      btn.style.background = isOff ? 'var(--cyan)' : 'rgba(0, 240, 255, 0.1)';
-      btn.style.color = isOff ? '#000' : 'var(--cyan)';
-      btn.style.fontWeight = isOff ? '800' : '400';
-    }
-
-    // ==========================================
-    // ENGINEERING CALCULATORS
-    // ==========================================
-    function calculateFluidDosing() {
-      const vol = parseFloat(document.getElementById('calc-volume-ml').value) || 0;
-      const rate = parseFloat(document.getElementById('calc-flowrate').value) || 150;
-      const res = document.getElementById('calc-dosing-result');
-      if (!res) return;
-
-      const timeSec = (vol / rate) * 60;
-      const joules = 24 * 0.45 * timeSec;
-      const oz = vol * 0.033814;
-
-      res.innerHTML = `
-        ⏱️ Required Run Time: <strong>${timeSec.toFixed(2)} seconds</strong><br>
-        ⚡ Energy Consumed: <strong>${joules.toFixed(2)} Joules</strong> (at 24V, 0.45A)<br>
-        📦 Liquid Volume: <strong>${oz.toFixed(2)} fl oz</strong> (${(vol/44.3).toFixed(1)} Standard Shots)
-      `;
-    }
-
-    function calculateStepperKinematics() {
-      const dist = parseFloat(document.getElementById('calc-travel-mm').value) || 0;
-      const speed = parseFloat(document.getElementById('calc-speed-mms').value) || 25;
-      const res = document.getElementById('calc-stepper-result');
-      if (!res) return;
-
-      const stepsPerMm = 400.0;
-      const totalSteps = dist * stepsPerMm;
-      const duration = speed > 0 ? (dist / speed) : 0;
-      const pwmFreq = speed * stepsPerMm;
-
-      res.innerHTML = `
-        ⚙️ Steps Per Millimeter: <strong>${stepsPerMm.toFixed(1)} steps / mm</strong><br>
-        🔄 Total Step Pulses: <strong>${totalSteps.toLocaleString()} steps</strong><br>
-        ⏱️ Transit Duration: <strong>${duration.toFixed(2)} seconds</strong> (PLC PWM freq: ${pwmFreq.toLocaleString()} Hz)
-      `;
-    }
-
-    // Initialize UI on load
+    // Initial setup on load
     window.addEventListener('DOMContentLoaded', () => {
-      applyOperatorUI();
-      calculateFluidDosing();
-      calculateStepperKinematics();
+      applyStarkOperatorUI();
     });
   </script>
 </body>
