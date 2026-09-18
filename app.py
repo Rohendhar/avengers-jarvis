@@ -547,20 +547,7 @@ def chromatic_void_portal():
 
 @app.route("/")
 def home():
-    # If user requests void view or default view, allow switching via query parameter
-    if request.args.get("view") == "void" or request.args.get("view") == "simulation":
-        return chromatic_void_portal()
-    for p in [os.path.join(LOCAL_ROOT, "templates", "index.html"), os.path.join(LOCAL_ROOT, "index.html")]:
-        if os.path.exists(p):
-            try:
-                with open(p, "r", encoding="utf-8") as f:
-                    return f.read()
-            except Exception:
-                pass
-    try:
-        return render_template("index.html")
-    except Exception as e:
-        return f"<h3>J.A.R.V.I.S. Core Online: {e}</h3>"
+    return chromatic_void_portal()
 
 @app.route("/api/chat", methods=["POST"])
 def chat():
