@@ -1,5 +1,5 @@
 /**
- * BAR-BOTIC OS // 3D DIGITAL TWIN & FLUIDICS SIMULATION ENGINE
+ * KINETIC POUR OS // 3D DIGITAL TWIN & FLUIDICS SIMULATION ENGINE
  * 8-Bottle Automated Drink-Dispensing Table with Physical Fluid Animation
  * Features:
  *  - 8 Bordeaux-style bottles in a 2x4 in-house 3D printed modular crate
