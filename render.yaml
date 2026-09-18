@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: avengers-jarvis
+    name: kinetic-pour
     runtime: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app --timeout 60
