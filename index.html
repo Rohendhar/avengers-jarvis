@@ -3,815 +3,528 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>J.A.R.V.I.S. // Senior Design Tactical HUD</title>
+  <title>KINETIC POUR // Automated Drink-Dispensing Table (Team Avengers)</title>
+  
+  <!-- Fonts: Plus Jakarta Sans, Space Grotesk, JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <style>
-    :root {
-      --bg-dark: #020712;
-      --arc-cyan: #00f0ff;
-      --arc-blue: #0077ff;
-      --arc-glow: rgba(0, 240, 255, 0.45);
-      --arc-glow-intense: rgba(0, 240, 255, 0.85);
-      --hud-panel-bg: rgba(4, 16, 35, 0.78);
-      --hud-border: rgba(0, 240, 255, 0.35);
-      --hud-border-bright: rgba(0, 240, 255, 0.8);
-      --text-glow: #e0faff;
-      --text-muted: #5e8ca6;
-      --warning-amber: #ffaa00;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-    }
-
-    body {
-      background: radial-gradient(circle at 50% 15%, #051630 0%, #020712 60%, #01040a 100%);
-      color: var(--text-glow);
-      font-family: 'Rajdhani', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 14px;
-      overflow-x: hidden;
-      position: relative;
-    }
-
-    /* Sci-Fi Grid Overlay */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: 
-        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
-      background-size: 36px 36px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* Scanline Animation */
-    body::after {
-      content: "";
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
-      background-size: 100% 4px;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.6;
-    }
-
-    .hud-container {
-      width: 100%;
-      max-width: 1000px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      position: relative;
-      z-index: 2;
-    }
-
-    /* Top HUD Telemetry Bar */
-    .hud-topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 18px;
-      background: var(--hud-panel-bg);
-      border: 1px solid var(--hud-border);
-      border-radius: 12px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 0 25px rgba(0, 240, 255, 0.15), inset 0 0 15px rgba(0, 240, 255, 0.05);
-      position: relative;
-    }
-
-    .hud-corner-tl, .hud-corner-tr, .hud-corner-bl, .hud-corner-br {
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      border: 2px solid var(--arc-cyan);
-    }
-    .hud-corner-tl { top: -2px; left: -2px; border-right: 0; border-bottom: 0; }
-    .hud-corner-tr { top: -2px; right: -2px; border-left: 0; border-bottom: 0; }
-    .hud-corner-bl { bottom: -2px; left: -2px; border-right: 0; border-top: 0; }
-    .hud-corner-br { bottom: -2px; right: -2px; border-left: 0; border-top: 0; }
-
-    .sys-info {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 12px;
-      color: var(--arc-cyan);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      letter-spacing: 0.08em;
-    }
-
-    .pulse-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--arc-cyan);
-      border-radius: 50%;
-      box-shadow: 0 0 10px var(--arc-cyan);
-      animation: blink 1.4s infinite alternate;
-    }
-
-    @keyframes blink {
-      0% { opacity: 0.3; transform: scale(0.8); }
-      100% { opacity: 1; transform: scale(1.2); }
-    }
-
-    .operator-select {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .operator-select select {
-      background: rgba(0, 240, 255, 0.08);
-      border: 1px solid var(--hud-border);
-      color: var(--arc-cyan);
-      font-family: 'Orbitron', sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 6px;
-      outline: none;
-      cursor: pointer;
-      text-transform: uppercase;
-    }
-
-    .operator-select select option {
-      background: #020a17;
-      color: #fff;
-    }
-
-    /* Center Arc Reactor Header */
-    .reactor-header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 24px;
-      padding: 10px 0;
-    }
-
-    .arc-reactor {
-      width: 90px;
-      height: 90px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      filter: drop-shadow(0 0 16px var(--arc-cyan));
-    }
-
-    .reactor-ring-outer {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      border: 2px dashed var(--arc-cyan);
-      border-radius: 50%;
-      animation: rotateCw 20s linear infinite;
-    }
-
-    .reactor-ring-inner {
-      position: absolute;
-      width: 70%;
-      height: 70%;
-      border: 2px dotted rgba(0, 240, 255, 0.7);
-      border-radius: 50%;
-      animation: rotateCcw 10s linear infinite;
-    }
-
-    .reactor-core {
-      width: 44%;
-      height: 44%;
-      background: radial-gradient(circle, #ffffff 10%, #00f0ff 60%, transparent 100%);
-      border-radius: 50%;
-      box-shadow: 0 0 25px #ffffff, 0 0 45px var(--arc-cyan);
-      animation: corePulse 2s ease-in-out infinite alternate;
-    }
-
-    @keyframes rotateCw { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    @keyframes rotateCcw { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
-    @keyframes corePulse {
-      0% { transform: scale(0.9); opacity: 0.85; }
-      100% { transform: scale(1.08); opacity: 1; filter: brightness(1.3); }
-    }
-
-    .reactor-title {
-      text-align: left;
-    }
-
-    .reactor-title h1 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 26px;
-      font-weight: 900;
-      letter-spacing: 0.12em;
-      color: #ffffff;
-      text-shadow: 0 0 15px var(--arc-cyan), 0 0 30px rgba(0, 240, 255, 0.5);
-    }
-
-    .reactor-title p {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 12px;
-      color: var(--arc-cyan);
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-    }
-
-    /* Tactical Grid Options */
-    .tactical-section-label {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      color: var(--arc-cyan);
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .tactical-section-label::after {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(90deg, var(--hud-border), transparent);
-    }
-
-    .tactical-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 12px;
-    }
-
-    .tactical-card {
-      background: var(--hud-panel-bg);
-      border: 1px solid var(--hud-border);
-      border-radius: 8px;
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      cursor: pointer;
-      position: relative;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      overflow: hidden;
-      backdrop-filter: blur(10px);
-    }
-
-    .tactical-card::before {
-      content: "";
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 3px;
-      background: var(--arc-cyan);
-      opacity: 0.4;
-      transition: all 0.2s;
-    }
-
-    .tactical-card:hover {
-      border-color: var(--arc-cyan);
-      background: rgba(0, 240, 255, 0.08);
-      transform: translateY(-2px);
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.3), inset 0 0 15px rgba(0, 240, 255, 0.1);
-    }
-
-    .tactical-card:hover::before {
-      width: 5px;
-      opacity: 1;
-      box-shadow: 0 0 12px var(--arc-cyan);
-    }
-
-    .tactical-card.active {
-      border-color: var(--arc-cyan);
-      background: rgba(0, 240, 255, 0.12);
-      box-shadow: 0 0 25px rgba(0, 240, 255, 0.4), inset 0 0 20px rgba(0, 240, 255, 0.15);
-    }
-
-    .tactical-card.active::before {
-      width: 6px;
-      opacity: 1;
-      box-shadow: 0 0 15px var(--arc-cyan);
-    }
-
-    .tactical-code {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--arc-cyan);
-      background: rgba(0, 240, 255, 0.1);
-      border: 1px solid var(--hud-border);
-      border-radius: 4px;
-      padding: 6px 8px;
-      flex-shrink: 0;
-    }
-
-    .tactical-info h3 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      color: #ffffff;
-      margin-bottom: 2px;
-    }
-
-    .tactical-info p {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 11px;
-      color: var(--text-muted);
-      letter-spacing: 0.04em;
-    }
-
-    /* Main Holographic Terminal Display */
-    .hud-terminal {
-      background: var(--hud-panel-bg);
-      border: 1px solid var(--hud-border-bright);
-      border-radius: 12px;
-      padding: 22px;
-      position: relative;
-      box-shadow: 0 0 35px rgba(0, 240, 255, 0.2), inset 0 0 25px rgba(0, 240, 255, 0.06);
-      min-height: 240px;
-      display: flex;
-      flex-direction: column;
-      backdrop-filter: blur(16px);
-    }
-
-    .terminal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--hud-border);
-      margin-bottom: 16px;
-    }
-
-    .terminal-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 15px;
-      font-weight: 800;
-      letter-spacing: 0.1em;
-      color: var(--arc-cyan);
-      text-shadow: 0 0 12px var(--arc-cyan);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .terminal-badge {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 10px;
-      color: #000;
-      background: var(--arc-cyan);
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 4px;
-      box-shadow: 0 0 10px var(--arc-cyan);
-    }
-
-    .terminal-content {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 16px;
-      line-height: 1.7;
-      color: #d8f4ff;
-      flex: 1;
-    }
-
-    .terminal-content p {
-      margin-bottom: 14px;
-    }
-
-    .terminal-content strong {
-      color: #ffffff;
-      text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
-      font-weight: 700;
-    }
-
-    .terminal-content h1, .terminal-content h2, .terminal-content h3 {
-      font-family: 'Orbitron', sans-serif;
-      color: var(--arc-cyan);
-      margin: 18px 0 8px 0;
-      font-weight: 800;
-      letter-spacing: 0.05em;
-      text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
-    }
-
-    .terminal-content h3 {
-      font-size: 15px;
-      border-left: 3px solid var(--arc-cyan);
-      padding-left: 10px;
-    }
-
-    .terminal-content ul, .terminal-content ol {
-      margin: 10px 0 16px 24px;
-    }
-
-    .terminal-content li {
-      margin-bottom: 8px;
-    }
-
-    .terminal-content a {
-      color: var(--arc-cyan);
-      text-decoration: underline;
-      font-weight: 700;
-    }
-
-    .terminal-content code {
-      font-family: 'Share Tech Mono', monospace;
-      background: rgba(0, 240, 255, 0.1);
-      border: 1px solid var(--hud-border);
-      color: var(--arc-cyan);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 14px;
-    }
-
-    /* Command Prompt Bar */
-    .command-bar {
-      display: flex;
-      gap: 10px;
-      margin-top: 4px;
-    }
-
-    .prompt-prefix {
-      display: flex;
-      align-items: center;
-      padding: 0 14px;
-      background: rgba(0, 240, 255, 0.08);
-      border: 1px solid var(--hud-border);
-      border-radius: 8px;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 13px;
-      color: var(--arc-cyan);
-      letter-spacing: 0.05em;
-    }
-
-    .command-input {
-      flex: 1;
-      background: var(--hud-panel-bg);
-      border: 1px solid var(--hud-border);
-      border-radius: 8px;
-      padding: 12px 16px;
-      color: #ffffff;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 14px;
-      outline: none;
-      transition: all 0.2s;
-    }
-
-    .command-input:focus {
-      border-color: var(--arc-cyan);
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.4), inset 0 0 10px rgba(0, 240, 255, 0.1);
-    }
-
-    .command-btn {
-      background: linear-gradient(135deg, rgba(0, 240, 255, 0.9), rgba(0, 119, 255, 0.9));
-      border: none;
-      color: #000;
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 900;
-      font-size: 13px;
-      padding: 0 24px;
-      border-radius: 8px;
-      cursor: pointer;
-      letter-spacing: 0.1em;
-      transition: all 0.2s;
-      box-shadow: 0 0 18px rgba(0, 240, 255, 0.4);
-    }
-
-    .command-btn:hover {
-      filter: brightness(1.2);
-      transform: scale(1.02);
-      box-shadow: 0 0 30px var(--arc-cyan);
-    }
-
-    /* Bottom Telemetry Footer */
-    .hud-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 16px;
-      background: rgba(2, 8, 20, 0.8);
-      border: 1px solid rgba(0, 240, 255, 0.2);
-      border-radius: 8px;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 11px;
-      color: var(--text-muted);
-      letter-spacing: 0.06em;
-    }
-
-    .hud-footer span {
-      color: var(--arc-cyan);
-    }
-
-    /* Mobile */
-    @media (max-width: 650px) {
-      .reactor-header { flex-direction: column; text-align: center; gap: 12px; }
-      .reactor-title { text-align: center; }
-      .tactical-grid { grid-template-columns: 1fr; }
-      .hud-topbar { flex-direction: column; gap: 8px; align-items: flex-start; }
-      .operator-select { width: 100%; justify-content: space-between; }
-      .hud-footer { flex-direction: column; gap: 6px; text-align: center; }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="static/css/chromatic_void.css">
+  
+  <!-- Three.js and OrbitControls -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
 
-<div class="hud-container">
-
-  <!-- Top Telemetry Bar -->
-  <div class="hud-topbar">
-    <div class="hud-corner-tl"></div><div class="hud-corner-tr"></div>
-    <div class="hud-corner-bl"></div><div class="hud-corner-br"></div>
-    <div class="sys-info">
-      <div class="pulse-dot"></div>
-      <span>J.A.R.V.I.S. OS // VER 3.6.1</span>
-      <span>•</span>
-      <span>STATUS: ONLINE</span>
-      <span>•</span>
-      <span id="liveClock">00:00:00</span>
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <span class="brand-badge">CAPSTONE 2026</span>
+      <span class="brand-title">KINETIC POUR</span>
     </div>
-    <div class="operator-select">
-      <label>OPERATOR:</label>
-      <select id="userSelect" onchange="onUserChange()">
-        <option value="Ro" selected>RO // LEAD & AI</option>
-        <option value="Aron">ARON // FINANCE & BUDGET</option>
-        <option value="Eli">ELI // INVENTORY & HARDWARE</option>
-        <option value="Shyam">SHYAM // TIMELINE & GANTT</option>
-      </select>
-    </div>
-  </div>
 
-  <!-- Arc Reactor Centerpiece -->
-  <div class="reactor-header">
-    <div class="arc-reactor">
-      <div class="reactor-ring-outer"></div>
-      <div class="reactor-ring-inner"></div>
-      <div class="reactor-core"></div>
-    </div>
-    <div class="reactor-title">
-      <h1>J.A.R.V.I.S.</h1>
-      <p>AVENGERS DIRECTORY // UC SENIOR DESIGN CAPSTONE</p>
-      <p style="color: #79a6c4; font-size: 11px; margin-top: 3px;">PROJECT: AUTOMATED DRINK-DISPENSING TABLE • CEAS MECH/EECE</p>
-    </div>
-  </div>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#portal" class="active">PORTAL</a></li>
+        <li><a href="#simulation">3D TWIN &amp; HMI</a></li>
+        <li><a href="#plc-algorithm">PLC ALGORITHM</a></li>
+        <li><a href="#jarvis-ai">J.A.R.V.I.S. AI</a></li>
+      </ul>
+    </nav>
 
-  <!-- Tactical Option Cards -->
-  <div>
-    <div class="tactical-section-label">TACTICAL MODULE SELECTION</div>
-    <div class="tactical-grid">
+    <div class="nav-actions">
+      <button class="btn-secondary" onclick="focusSubsystem('bottling'); document.getElementById('simulation').scrollIntoView();">
+        8-BOTTLE CRATE
+      </button>
+      <button class="btn-primary" onclick="focusSubsystem('all'); document.getElementById('simulation').scrollIntoView();">
+        LAUNCH 3D TWIN
+      </button>
+    </div>
+  </header>
 
-      <!-- Mod 1: Tasks -->
-      <div class="tactical-card active" onclick="selectOption('tasks', this)">
-        <div class="tactical-code">[01]</div>
-        <div class="tactical-info">
-          <h3>OPERATOR DELIVERABLES</h3>
-          <p id="taskSubtext">Active deliverables for RO</p>
+  <!-- ==========================================================================
+       1. HERO SECTION WITH CADENCE ANIMATED MOVING BACKGROUND
+       ========================================================================== -->
+  <section id="portal" class="hero-portal">
+    <!-- Cadence Animated Canvas -->
+    <canvas id="cadence-canvas"></canvas>
+
+    <div class="hero-tag">
+      <span>AUTONOMOUS FLUIDIC SYSTEM // UC SENIOR DESIGN CAPSTONE</span>
+    </div>
+
+    <h1 class="hero-headline">
+      AUTOMATED DRINK TABLE <br>
+      <span class="accent">KINETIC POUR</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      Engineered by Team Avengers for University of Cincinnati Senior Design (MECH5051 / EECE5001). Precision 8-bottle cocktail synthesizer featuring an in-house 3D printed reservoir crate, GROTHEN 24V peristaltic pumps, inline check-valves, custom mixing manifold, and stepper-driven linear elevator.
+    </p>
+
+    <!-- Real-Time Telemetry Status Bar -->
+    <div class="hero-telemetry-bar">
+      <div class="telemetry-pill">
+        <div class="label">RESERVOIR STATUS</div>
+        <div class="val">8 BOTTLES <span>750ml</span></div>
+      </div>
+
+      <div class="telemetry-pill ultraviolet">
+        <div class="label">DOSING PUMP ARRAY</div>
+        <div class="val">8x GROTHEN <span>24V PWM</span></div>
+      </div>
+
+      <div class="telemetry-pill">
+        <div class="label">LINEAR ELEVATOR</div>
+        <div class="val">T8 SCREW <span>100mm</span></div>
+      </div>
+
+      <div class="telemetry-pill ultraviolet">
+        <div class="label">PLC FIRMWARE</div>
+        <div class="val" style="color: var(--status-green);">ESP32 BUS <span>ONLINE</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       2. INTERACTIVE 3D DIGITAL TWIN & TOUCHSCREEN HMI SCREEN
+       ========================================================================== -->
+  <section id="simulation" class="simulation-section">
+    <div class="section-header">
+      <div>
+        <span style="font-family: var(--font-body); font-weight: 700; color: var(--infrared); font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase;">
+          ENGINEERING DIGITAL TWIN // 8-BOTTLE PHYSICAL FLUID DYNAMICS
+        </span>
+        <h2 class="section-title">Interactive 3D Simulation &amp; HMI</h2>
+        <p class="section-desc">
+          Live 3D kinematics with real fluid drain and tube flow animation. Pick a drink on the touchscreen HMI to watch the elevator descend, active bottles drain, fluid pulses flow through silicone tubes, and the cocktail dispense!
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem;">
+        <button id="btn-xray" class="btn-secondary" onclick="toggleXRay()">
+          X-RAY: ACTIVE
+        </button>
+      </div>
+    </div>
+
+    <div class="sim-container">
+      <!-- 3D Viewport -->
+      <div class="sim-viewport-wrapper" id="three-viewport">
+        <canvas id="three-canvas"></canvas>
+
+        <div class="viewport-hud">
+          <div class="hud-badge">
+            <span id="view-badge">FULL SYSTEM // TABLE CUTAWAY</span>
+          </div>
+        </div>
+
+        <div class="viewport-controls">
+          <div class="focus-pills">
+            <button id="btn-focus-all" class="focus-btn active" onclick="focusSubsystem('all')">
+              TABLE OVERVIEW
+            </button>
+            <button id="btn-focus-bottling" class="focus-btn" onclick="focusSubsystem('bottling')">
+              8-BOTTLE 3D CRATE
+            </button>
+            <button id="btn-focus-manifold" class="focus-btn" onclick="focusSubsystem('manifold')">
+              PERISTALTIC &amp; MANIFOLD
+            </button>
+            <button id="btn-focus-lift" class="focus-btn" onclick="focusSubsystem('lift')">
+              LIFT ELEVATOR
+            </button>
+            <button id="btn-focus-plc" class="focus-btn" onclick="focusSubsystem('plc')">
+              PLC &amp; SENSORS
+            </button>
+          </div>
         </div>
       </div>
 
-      <!-- Mod 2: Meeting -->
-      <div class="tactical-card" onclick="selectOption('meeting', this)">
-        <div class="tactical-code">[02]</div>
-        <div class="tactical-info">
-          <h3>INNOVATION CHALLENGE</h3>
-          <p>Next: Pitch Video Sept 28 ($600)</p>
+      <!-- Right Column: User HMI Touchscreen & Controls -->
+      <div class="hmi-control-deck">
+        <!-- Touchscreen Ordering Panel -->
+        <div class="hmi-screen-card">
+          <div class="hmi-header">
+            <span class="hmi-title">DRINK SELECTION HMI</span>
+            <span class="hmi-mode-tag">TOUCHSCREEN ACTIVE</span>
+          </div>
+
+          <!-- 6 Preset Cocktail Cards -->
+          <div class="hmi-drink-grid">
+            <button class="hmi-drink-btn active" onclick="selectRecipeHmi('Old Fashioned', [0, 7], 'a84200', this)">
+              <span class="drink-name">Old Fashioned</span>
+              <span class="drink-spec">Bourbon + Citrus Sour</span>
+            </button>
+
+            <button class="hmi-drink-btn" onclick="selectRecipeHmi('Cosmopolitan', [1, 4, 5, 7], 'd61a3c', this)">
+              <span class="drink-name">Cosmopolitan</span>
+              <span class="drink-spec">Vodka + Triple Sec + Cran</span>
+            </button>
+
+            <button class="hmi-drink-btn" onclick="selectRecipeHmi('Gin & Tonic', [2, 6, 7], '00f0ff', this)">
+              <span class="drink-name">Gin &amp; Tonic</span>
+              <span class="drink-spec">Gin + Tonic + Citrus</span>
+            </button>
+
+            <button class="hmi-drink-btn" onclick="selectRecipeHmi('Tequila Sunrise', [3, 4, 5, 7], 'ff5722', this)">
+              <span class="drink-name">Tequila Sunrise</span>
+              <span class="drink-spec">Tequila + Citrus + Cran</span>
+            </button>
+
+            <button class="hmi-drink-btn" onclick="selectRecipeHmi('Cyber Long Island', [0, 1, 2, 3, 4, 7], 'ff9900', this)">
+              <span class="drink-name">Cyber Long Island</span>
+              <span class="drink-spec">Vodka + Gin + Teq + Rum</span>
+            </button>
+
+            <button class="hmi-drink-btn" onclick="selectRecipeHmi('Kinetic Reserve', [0, 1, 2, 3, 4, 5, 6, 7], '8b24e3', this)">
+              <span class="drink-name">Kinetic Reserve</span>
+              <span class="drink-spec">All 8 Botanical Spirits</span>
+            </button>
+          </div>
+
+          <!-- Real-Time 8-Bottle Fill Gauges -->
+          <div style="font-family: var(--font-body); font-weight: 700; font-size: 0.74rem; color: var(--text-muted); margin-bottom: 0.45rem; letter-spacing: 0.04em;">
+            RESERVOIR INVENTORY GAUGES (REAL-TIME DRAIN)
+          </div>
+          <div class="bottle-levels-monitor">
+            <div class="bottle-gauge">
+              <div class="gauge-bar-track"><div id="gauge-fill-0" class="gauge-bar-fill" style="height: 100%;"></div></div>
+              <span class="bottle-gauge-label">BOURBON</span>
+            </div>
+            <div class="bottle-gauge">
+              <div class="gauge-bar-track"><div id="gauge-fill-1" class="gauge-bar-fill" style="height: 100%;"></div></div>
+              <span class="bottle-gauge-label">VODKA</span>
+            </div>
+            <div class="bottle-gauge">
+              <div class="gauge-bar-track"><div id="gauge-fill-2" class="gauge-bar-fill" style="height: 100%;"></div></div>
+              <span class="bottle-gauge-label">GIN</span>
+            </div>
+            <div class="bottle-gauge">
+              <div class="gauge-bar-track"><div id="gauge-fill-3" class="gauge-bar-fill" style="height: 100%;"></div></div>
+              <span class="bottle-gauge-label">TEQUILA</span>
+            </div>
+            <div class="bottle-gauge">
+              <div class="gauge-bar-track"><div id="gauge-fill-4" class="gauge-bar-fill" style="height: 100%;"></div></div>
+              <span class="bottle-gauge-label">TRIPLE SEC</span>
+            </div>
+            <div class="bottle-gauge">
+              <div class="gauge-bar-track"><div id="gauge-fill-5" class="gauge-bar-fill" style="height: 100%;"></div></div>
+              <span class="bottle-gauge-label">CRANBERRY</span>
+            </div>
+            <div class="bottle-gauge">
+              <div class="gauge-bar-track"><div id="gauge-fill-6" class="gauge-bar-fill" style="height: 100%;"></div></div>
+              <span class="bottle-gauge-label">TONIC</span>
+            </div>
+            <div class="bottle-gauge">
+              <div class="gauge-bar-track"><div id="gauge-fill-7" class="gauge-bar-fill" style="height: 100%;"></div></div>
+              <span class="bottle-gauge-label">CITRUS</span>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div style="display: flex; flex-direction: column; gap: 0.65rem;">
+            <button id="btn-place-cup" class="btn-secondary" style="width: 100%; justify-content: center;" onclick="placeDrinkCup()">
+              PLACE DRINK CUP
+            </button>
+
+            <button id="btn-dispense" class="btn-primary btn-dispense" disabled onclick="startDispenseCycle()">
+              START DISPENSE SEQUENCE
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Telemetry Terminal -->
+        <div class="hmi-screen-card" style="padding: 1.15rem;">
+          <div style="display: flex; justify-content: space-between; font-family: var(--font-body); font-weight: 700; font-size: 0.76rem; margin-bottom: 0.6rem;">
+            <span>TELEMETRY BUS</span>
+            <span style="color: var(--status-green);">ESP32 I2C // 400kHz</span>
+          </div>
+
+          <div id="telemetry-terminal" class="telemetry-terminal">
+            <div class="terminal-line">
+              <span class="time">[21:12:00.000]</span>
+              <span class="status-ok">[PLC]</span>
+              <span>Kinetic Pour OS initialized. Place cup to begin.</span>
+            </div>
+          </div>
         </div>
       </div>
-
-      <!-- Mod 3: Budget -->
-      <div class="tactical-card" onclick="selectOption('budget', this)">
-        <div class="tactical-code">[03]</div>
-        <div class="tactical-info">
-          <h3>FINANCIAL // BOM SPECS</h3>
-          <p>Target: $1,200 Grant (<$1,500 Cap)</p>
-        </div>
-      </div>
-
-      <!-- Mod 4: Funding -->
-      <div class="tactical-card" onclick="selectOption('funding', this)">
-        <div class="tactical-code">[04]</div>
-        <div class="tactical-info">
-          <h3>CAPITAL // GRANTS</h3>
-          <p>Pre-Approval & 1819 Reimbursement</p>
-        </div>
-      </div>
-
-      <!-- Mod 5: Mechanism -->
-      <div class="tactical-card" onclick="selectOption('mechanism', this)">
-        <div class="tactical-code">[05]</div>
-        <div class="tactical-info">
-          <h3>HARDWARE // TRADE STUDY</h3>
-          <p>8-Bottle Mobile Table & Linear Rail</p>
-        </div>
-      </div>
-
-      <!-- Mod 6: Drive -->
-      <div class="tactical-card" onclick="selectOption('drive', this)">
-        <div class="tactical-code">[06]</div>
-        <div class="tactical-info">
-          <h3>MAINFRAME // GOOGLE DRIVE</h3>
-          <p>Direct Link to Synchronized Repository</p>
-        </div>
-      </div>
-
     </div>
-  </div>
+  </section>
 
-  <!-- Holographic Terminal Output -->
-  <div class="hud-terminal">
-    <div class="hud-corner-tl"></div><div class="hud-corner-tr"></div>
-    <div class="hud-corner-bl"></div><div class="hud-corner-br"></div>
-    <div class="terminal-header">
-      <div class="terminal-title">
-        <span id="panelTitle">OPERATOR DELIVERABLES // RO</span>
+  <!-- ==========================================================================
+       3. PLC ALGORITHM & STATE MACHINE VISUALIZER
+       ========================================================================== -->
+  <section id="plc-algorithm" class="plc-section">
+    <div class="plc-card">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <span style="font-family: var(--font-body); font-weight: 700; color: var(--infrared); font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase;">
+            AUTOMATION FIRMWARE ARCHITECTURE
+          </span>
+          <h3 style="font-family: var(--font-title); font-size: 1.8rem; margin: 0.3rem 0;">
+            PLC &amp; Embedded State Machine
+          </h3>
+          <p style="color: var(--text-secondary); max-width: 700px; font-size: 0.95rem;">
+            Deterministic execution sequence running on the ESP32 / Arduino controller. Each step guarantees optical safety verification, zero fluid backflow, and precision volumetric dosing.
+          </p>
+        </div>
+
+        <div style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted);">
+          CYCLE CLOCK: <span style="color: var(--infrared);">10ms TICK</span>
+        </div>
       </div>
-      <div class="terminal-badge" id="panelTag" onclick="resyncCurrentOption()" style="cursor:pointer;" title="Click to refresh telemetry">TELEMETRY SYNC ⟳</div>
+
+      <!-- Interactive 8-Step Node Chain -->
+      <div class="plc-step-chain">
+        <div class="plc-step-node active" data-step="1">
+          <div class="plc-step-num">01</div>
+          <div class="plc-step-title">IR VESSEL DETECT</div>
+          <div class="plc-step-desc">Photocell optical beam checks cup seated on coaster.</div>
+        </div>
+
+        <div class="plc-step-node" data-step="2">
+          <div class="plc-step-num">02</div>
+          <div class="plc-step-title">SAFETY LATCH</div>
+          <div class="plc-step-desc">Latching relay enabled. Platform encoders re-zeroed.</div>
+        </div>
+
+        <div class="plc-step-node" data-step="3">
+          <div class="plc-step-num">03</div>
+          <div class="plc-step-title">STEPPER DESCENT</div>
+          <div class="plc-step-desc">T8 lead screw lowers platform to bottom limit switch.</div>
+        </div>
+
+        <div class="plc-step-node" data-step="4">
+          <div class="plc-step-num">04</div>
+          <div class="plc-step-title">CHECK-VALVE PRIME</div>
+          <div class="plc-step-desc">Inline non-return valves unseat under head pressure.</div>
+        </div>
+
+        <div class="plc-step-node" data-step="5">
+          <div class="plc-step-num">05</div>
+          <div class="plc-step-title">PERISTALTIC DOSING</div>
+          <div class="plc-step-desc">24V PWM pulses calibrate active pump rollers by mL.</div>
+        </div>
+
+        <div class="plc-step-node" data-step="6">
+          <div class="plc-step-num">06</div>
+          <div class="plc-step-title">ANTI-DRIP PURGE</div>
+          <div class="plc-step-desc">0.2s reverse pump pulse prevents nozzle droplet runoff.</div>
+        </div>
+
+        <div class="plc-step-node" data-step="7">
+          <div class="plc-step-num">07</div>
+          <div class="plc-step-title">STEPPER ASCENT</div>
+          <div class="plc-step-desc">Lead screw elevates finished drink flush with tabletop.</div>
+        </div>
+
+        <div class="plc-step-node" data-step="8">
+          <div class="plc-step-num">08</div>
+          <div class="plc-step-title">CYCLE COMPLETE</div>
+          <div class="plc-step-desc">Audible chime sounded. Telemetry bus released.</div>
+        </div>
+      </div>
     </div>
-    <div class="terminal-content" id="panelBody">
-      Initializing J.A.R.V.I.S. neural link...
+  </section>
+
+  <!-- ==========================================================================
+       4. J.A.R.V.I.S. ONE-STOP AI ASSISTANT CONSOLE
+       ========================================================================== -->
+  <section id="jarvis-ai" class="jarvis-section">
+    <div class="section-header">
+      <div>
+        <span style="font-family: var(--font-body); font-weight: 700; color: var(--infrared); font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase;">
+          TEAM AI INTEGRATION // GEMINI POWERED
+        </span>
+        <h2 class="section-title">J.A.R.V.I.S. Capstone Intelligence</h2>
+        <p class="section-desc">
+          Your unified engineering hub. Ask J.A.R.V.I.S. about the 8-bottle fluidics, BOM procurement, Innovation Challenge grants, meeting minutes, and CAD deadlines with instant AI answers!
+        </p>
+      </div>
+
+      <div style="font-family: var(--font-body); font-weight: 700; font-size: 0.82rem; color: var(--status-green);">
+        J.A.R.V.I.S. MARK VII // ONLINE
+      </div>
     </div>
-  </div>
 
-  <!-- Command Prompt -->
-  <div>
-    <div class="tactical-section-label">DIRECT OPERATOR INTERROGATION</div>
-    <div class="command-bar">
-      <div class="prompt-prefix">JARVIS://CMD&gt;</div>
-      <input type="text" class="command-input" id="customQuery" placeholder="Enter voice/text prompt (e.g. 'Calculate NEMA 17 stepper torque', 'Draft pitch outline')..." onkeypress="if(event.key==='Enter') sendCustom()">
-      <button class="command-btn" onclick="sendCustom()">EXECUTE</button>
+    <div class="jarvis-container">
+      <!-- Live Chat Terminal -->
+      <div class="jarvis-chat-wrapper">
+        <div id="chat-history" class="chat-history">
+          <div class="chat-msg jarvis">
+            <span class="chat-sender">J.A.R.V.I.S. // AI PROJECT LEAD</span>
+            <div class="chat-bubble">
+              Good evening, Operator. All systems for the <strong>Kinetic Pour Automated Drink Table</strong> are nominal. I have indexed your 8-bottle fluidics, GROTHEN pumps, T8 elevator kinematics, and team deadlines. How may I assist your engineering work tonight?
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-input-row">
+          <input type="text" id="chat-input" class="chat-input" placeholder="Ask J.A.R.V.I.S. about parts, BOM, fluidics, or dates..." onkeydown="if(event.key==='Enter') sendJarvisMessage()">
+          <button class="btn-primary" onclick="sendJarvisMessage()">SEND</button>
+        </div>
+      </div>
+
+      <!-- Quick Knowledge Pills -->
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <span style="font-family: var(--font-body); font-weight: 700; font-size: 0.76rem; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase;">
+          RAPID INQUIRY PRESETS
+        </span>
+
+        <div class="prompt-pills-stack">
+          <button class="prompt-pill" onclick="askPreset('What are the 8 bottle parameters and fluidic tubing specs?')">
+            ▸ 8-Bottle Fluidics &amp; Tubing Specs
+          </button>
+          <button class="prompt-pill" onclick="askPreset('Explain the T8 lead screw elevator lift mechanism')">
+            ▸ T8 Lead Screw Elevator Kinematics
+          </button>
+          <button class="prompt-pill" onclick="askPreset('What is the deadline for the 5-Minute Pitch Deck Video?')">
+            ▸ Pitch Video Deadline &amp; $600 Payout
+          </button>
+          <button class="prompt-pill" onclick="askPreset('Explain the CEAS Innovation Challenge $1,200 grant requirements')">
+            ▸ $1,200 Innovation Challenge Breakdown
+          </button>
+          <button class="prompt-pill" onclick="askPreset('Who is responsible for the electrical and PLC subsystems?')">
+            ▸ Team Roster &amp; Subsystem Responsibilities
+          </button>
+        </div>
+
+        <div style="background: rgba(18, 18, 24, 0.7); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 1rem; font-size: 0.85rem; color: var(--text-secondary);">
+          <span style="color: var(--infrared); font-family: var(--font-body); font-weight: 800;">CAPSTONE MILESTONE:</span><br>
+          Team Design Proposal &amp; CAD BOM due <strong>Wednesday, Sept 23</strong>.
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Bottom Telemetry Footer -->
-  <div class="hud-footer">
-    <div>NEURAL CORE: <span>GEMINI 3.1 FLASH</span> • LATENCY: <span>18ms</span></div>
-    <div>FLUIDICS MANIFOLD: <span>STANDBY</span> • ACTUATION: <span>CALIBRATED</span></div>
-    <div>AVENGERS DIRECTORY // UNIV OF CINCINNATI CEAS</div>
-  </div>
+  <!-- Footer -->
+  <footer>
+    <div class="footer-info">
+      <div style="font-weight: 700; color: #fff;">KINETIC POUR // PROJECT AVENGERS</div>
+      <div style="color: var(--text-muted); font-size: 0.78rem; margin-top: 0.25rem;">
+        MECH5051 / EECE5001 &bull; <span class="uc">UNIVERSITY OF CINCINNATI</span> &bull; 2026
+      </div>
+    </div>
 
-</div>
+    <div style="font-family: var(--font-body); font-weight: 600; color: var(--text-muted); font-size: 0.82rem;">
+      8-BOTTLE RESERVOIR &bull; 24V PERISTALTIC &bull; LEAD SCREW LIFT &bull; J.A.R.V.I.S. AI
+    </div>
+  </footer>
 
-<script>
-  // Live Clock
-  function updateClock() {
-    const now = new Date();
-    document.getElementById('liveClock').innerText = now.toLocaleTimeString();
-  }
-  setInterval(updateClock, 1000);
-  updateClock();
+  <!-- Scripts -->
+  <script src="static/js/simulation.js"></script>
 
-  const queries = {
-    tasks: "What are my current active tasks?",
-    meeting: "When is the next meeting and deadline?",
-    budget: "What is our budget and BOM breakdown?",
-    funding: "What funding opportunities and grants are available?",
-    mechanism: "Show me the mechanical design concepts and trade study",
-    drive: "Give me the link to our Google Drive folder"
-  };
+  <script>
+    /* ==========================================
+       J.A.R.V.I.S. AI CHAT CLIENT
+       ========================================== */
+    async function sendJarvisMessage(text) {
+      const input = document.getElementById('chat-input');
+      const message = text || input.value.trim();
+      if (!message) return;
 
-  const titles = {
-    tasks: "OPERATOR DELIVERABLES // RO",
-    meeting: "TACTICAL EVENT // INNOVATION CHALLENGE",
-    budget: "FINANCIAL TELEMETRY // BOM ESTIMATE",
-    funding: "CAPITAL RECONNAISSANCE // GRANTS",
-    mechanism: "HARDWARE ARCHITECTURE // TRADE STUDY",
-    drive: "MAINFRAME // GOOGLE DRIVE REPOSITORY"
-  };
+      if (!text) input.value = '';
 
-  function onUserChange() {
-    const user = document.getElementById('userSelect').value;
-    document.getElementById('taskSubtext').innerText = `Active deliverables for ${user.toUpperCase()}`;
-    titles['tasks'] = `OPERATOR DELIVERABLES // ${user.toUpperCase()}`;
-    selectOption('tasks', document.querySelector('.tactical-grid .tactical-card'));
-  }
+      const history = document.getElementById('chat-history');
 
-  let currentKey = 'tasks';
-  let lastCustomQuery = '';
+      // User Message
+      const userDiv = document.createElement('div');
+      userDiv.className = 'chat-msg user';
+      userDiv.innerHTML = `
+        <span class="chat-sender">OPERATOR</span>
+        <div class="chat-bubble">${escapeHtml(message)}</div>
+      `;
+      history.appendChild(userDiv);
+      history.scrollTop = history.scrollHeight;
 
-  async function fetchWithRetry(url, options, maxRetries = 3) {
-    const panelBody = document.getElementById('panelBody');
-    for (let i = 0; i < maxRetries; i++) {
+      // Loading Bubble
+      const loadingDiv = document.createElement('div');
+      loadingDiv.className = 'chat-msg jarvis';
+      loadingDiv.innerHTML = `
+        <span class="chat-sender">J.A.R.V.I.S. // PROCESSING</span>
+        <div class="chat-bubble" style="color: var(--infrared);">Analyzing query telemetry...</div>
+      `;
+      history.appendChild(loadingDiv);
+      history.scrollTop = history.scrollHeight;
+
       try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 20000);
-        const fetchOptions = { ...options, signal: controller.signal };
-        const res = await fetch(url, fetchOptions);
-        clearTimeout(timeoutId);
-        if (res.ok) return await res.json();
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sender: 'Operator', message: message })
+        });
+        const data = await res.json();
+        loadingDiv.innerHTML = `
+          <span class="chat-sender">J.A.R.V.I.S. // AI PROJECT LEAD</span>
+          <div class="chat-bubble">${formatReply(data.reply || "No response received.")}</div>
+        `;
       } catch (err) {
-        if (i < maxRetries - 1) {
-          panelBody.innerHTML = `<em>J.A.R.V.I.S. neural telemetry synchronizing (Attempt ${i + 2}/${maxRetries})...</em>`;
-          await new Promise(r => setTimeout(r, 1200));
+        // Intelligent Offline Knowledge Fallback
+        const q = message.toLowerCase();
+        let fallbackText = "";
+
+        if (q.includes("bottle") || q.includes("fluid") || q.includes("tube") || q.includes("pump")) {
+          fallbackText = "Here are the engineering parameters for the **8-Bottle Fluidics Subsystem**, Sir:\n\n" +
+            "• **Reservoirs:** 8x 750ml Bordeaux-style modular bottles in a 2x4 3D-printed caddy.\n" +
+            "• **Check Valves:** 1/4\" inline one-way valves to prevent backflow and keep lines primed.\n" +
+            "• **Dosing Pumps:** 8x GROTHEN 24V peristaltic pumps with 3-roller rotor heads.\n" +
+            "• **Tubing:** High-temperature food-grade 3x5mm silicone tubing converging at the 3D printed manifold.\n" +
+            "• **Leads:** Rohendhar & Aron Joseph.";
+        } else if (q.includes("lift") || q.includes("elevator") || q.includes("screw") || q.includes("stepper")) {
+          fallbackText = "Regarding the **T8 Linear Elevator Subsystem**, Sir:\n\n" +
+            "• **Mechanism:** NEMA 17 stepper motor driving a T8 stainless lead screw with dual precision guide rods.\n" +
+            "• **Stroke Travel:** 100 mm vertical stroke (lowers cup into dispensing bay, then lifts flush with tabletop).\n" +
+            "• **Sensors:** IR optical photocell cup-presence check and optical microswitch endstops.\n" +
+            "• **Status:** Kinematics calibrated to 10ms cycle clock.";
+        } else if (q.includes("deadline") || q.includes("date") || q.includes("pitch") || q.includes("video")) {
+          fallbackText = "Here are the critical **Senior Design Milestone Deadlines**, Sir:\n\n" +
+            "• **Wednesday, Sept 23:** Team Design Proposal & CAD BOM submission.\n" +
+            "• **Monday, Sept 28:** 5-Minute Pitch Deck Video due (**$600 upfront team payout**).\n" +
+            "• **October 15:** Innovation Challenge Milestone 2 progress review.";
+        } else if (q.includes("fund") || q.includes("grant") || q.includes("innovation") || q.includes("1200") || q.includes("challenge")) {
+          fallbackText = "Here is the financial breakdown for the **CEAS Innovation Challenge**, Sir:\n\n" +
+            "• **Guaranteed Grant:** **$1,200.00** ($300/person) for completing the deliverables.\n" +
+            "• **Upfront Working Capital:** **$600.00** ($150/person) upon submitting the Pitch Video on Sept 28.\n" +
+            "• **Top 25% Bonus:** Additional **$1,200.00** bonus pool plus podium prizes up to $700/person.\n" +
+            "• **Rules:** Itemized receipts required via the Canvas Purchase Request Form.";
+        } else if (q.includes("team") || q.includes("roster") || q.includes("who")) {
+          fallbackText = "Here is the **Team Avengers Roster & Assignments**, Sir:\n\n" +
+            "• **Ro:** Documentation, Minutes & AI Integration (Lead)\n" +
+            "• **Aron:** Procurement, Finance & Budgeting\n" +
+            "• **Eli:** Inventory & Resource Management\n" +
+            "• **Shyam:** Time Management & Scheduling";
+        } else {
+          fallbackText = "At your service, Sir. J.A.R.V.I.S. neural telemetry is operational.\n\n" +
+            "All engineering subsystems for the **Kinetic Pour Drink Table** are indexed (8-bottle fluidics, T8 elevator, GROTHEN pumps, and CEAS Innovation Challenge deadlines).\n\n" +
+            "*(Note: Running in high-speed local mode. To connect to full Gemini cloud reasoning, launch via `python app.py` or the Cloudflare tunnel)*.";
         }
+
+        loadingDiv.innerHTML = `
+          <span class="chat-sender">J.A.R.V.I.S. // LOCAL KNOWLEDGE ENGINE</span>
+          <div class="chat-bubble">${formatReply(fallbackText)}</div>
+        `;
       }
-    }
-    throw new Error('Connection timeout');
-  }
-
-  async function selectOption(key, cardEl) {
-    currentKey = key;
-    lastCustomQuery = '';
-    document.querySelectorAll('.tactical-card').forEach(c => c.classList.remove('active'));
-    if (cardEl) {
-      cardEl.classList.add('active');
-    } else {
-      const allCards = document.querySelectorAll('.tactical-card');
-      const idx = ['tasks', 'meeting', 'budget', 'funding', 'mechanism', 'drive'].indexOf(key);
-      if (idx >= 0 && allCards[idx]) allCards[idx].classList.add('active');
+      history.scrollTop = history.scrollHeight;
     }
 
-    const title = titles[key] || "J.A.R.V.I.S. INTELLIGENCE";
-    document.getElementById('panelTitle').innerText = title;
-    
-    const panelBody = document.getElementById('panelBody');
-    panelBody.innerHTML = '<em>Accessing Avengers project telemetry...</em>';
-
-    const sender = document.getElementById('userSelect').value;
-    const promptText = queries[key] || key;
-
-    try {
-      const data = await fetchWithRetry('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sender: sender, message: promptText })
-      }, 3);
-      panelBody.innerHTML = typeof marked !== 'undefined' ? marked.parse(data.reply) : data.reply;
-    } catch (e) {
-      panelBody.innerHTML = `
-        <div style="background:rgba(239,68,68,0.1); border-left:4px solid #ef4444; padding:14px; border-radius:4px; margin-top:8px;">
-          <strong style="color:#f87171; font-size:14px;">⚠️ Connection Momentarily Interrupted</strong><br>
-          <span style="font-size:13px; color:#cbd5e1;">The server was waking from standby or deploying telemetry updates.</span><br><br>
-          <button onclick="selectOption('${key}')" style="background:#0284c7; color:#fff; border:none; padding:8px 18px; border-radius:4px; cursor:pointer; font-weight:bold; letter-spacing:0.5px;">
-            ⟳ Reconnect & Refresh Telemetry
-          </button>
-        </div>`;
+    function askPreset(question) {
+      sendJarvisMessage(question);
     }
-  }
 
-  function resyncCurrentOption() {
-    if (lastCustomQuery) {
-      executeCustomQuery(lastCustomQuery);
-    } else {
-      selectOption(currentKey);
+    function escapeHtml(text) {
+      return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
-  }
 
-  async function sendCustom() {
-    const input = document.getElementById('customQuery');
-    const text = input.value.trim();
-    if (!text) return;
-    lastCustomQuery = text;
-    input.value = '';
-    executeCustomQuery(text);
-  }
-
-  function retryCustom() {
-    if (lastCustomQuery) {
-      executeCustomQuery(lastCustomQuery);
-    } else {
-      resyncCurrentOption();
+    function formatReply(text) {
+      return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n\n/g, '<br><br>')
+        .replace(/\n/g, '<br>');
     }
-  }
-
-  async function executeCustomQuery(text) {
-    document.querySelectorAll('.tactical-card').forEach(c => c.classList.remove('active'));
-    document.getElementById('panelTitle').innerText = `QUERY: "${text.toUpperCase()}"`;
-    const panelBody = document.getElementById('panelBody');
-    panelBody.innerHTML = '<em>J.A.R.V.I.S. is crunching neural telemetry...</em>';
-
-    const sender = document.getElementById('userSelect').value;
-    try {
-      const data = await fetchWithRetry('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sender: sender, message: text })
-      }, 3);
-      panelBody.innerHTML = typeof marked !== 'undefined' ? marked.parse(data.reply) : data.reply;
-    } catch (e) {
-      panelBody.innerHTML = `
-        <div style="background:rgba(239,68,68,0.1); border-left:4px solid #ef4444; padding:14px; border-radius:4px; margin-top:8px;">
-          <strong style="color:#f87171; font-size:14px;">⚠️ Connection Momentarily Interrupted</strong><br>
-          <span style="font-size:13px; color:#cbd5e1;">Neural response timed out or server is reconnecting.</span><br><br>
-          <button onclick="retryCustom()" style="background:#0284c7; color:#fff; border:none; padding:8px 18px; border-radius:4px; cursor:pointer; font-weight:bold; letter-spacing:0.5px;">
-            ⟳ Retry Query
-          </button>
-        </div>`;
-    }
-  }
-
-  window.onload = () => {
-    selectOption('tasks', document.querySelector('.tactical-grid .tactical-card'));
-  };
-</script>
-
+  </script>
 </body>
 </html>
