@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BAR-BOTIC OS // Automated Drink-Dispensing Table (Team Avengers)</title>
+  
+  <!-- Fonts: Plus Jakarta Sans, Space Grotesk, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="static/css/chromatic_void.css">
+  
+  <!-- Three.js and OrbitControls -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <span class="brand-badge">CAPSTONE 2026</span>
+      <span class="brand-title">BAR-BOTIC OS</span>
+    </div>
+
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#portal" class="active">PORTAL</a></li>
+        <li><a href="#simulation">3D TWIN &amp; HMI</a></li>
+        <li><a href="#plc-algorithm">PLC ALGORITHM</a></li>
+        <li><a href="#jarvis-ai">J.A.R.V.I.S. AI</a></li>
+      </ul>
+    </nav>
+
+    <div class="nav-actions">
+      <button class="btn-secondary" onclick="focusSubsystem('bottling'); document.getElementById('simulation').scrollIntoView();">
+        8-BOTTLE CRATE
+      </button>
+      <button class="btn-primary" onclick="focusSubsystem('all'); document.getElementById('simulation').scrollIntoView();">
+        LAUNCH 3D TWIN
+      </button>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       1. HERO SECTION WITH CADENCE ANIMATED MOVING BACKGROUND
+       ========================================================================== -->
+  <section id="portal" class="hero-portal">
+    <!-- Cadence Animated Canvas -->
+    <canvas id="cadence-canvas"></canvas>
+
+    <div class="hero-tag">
+      <span>AUTONOMOUS FLUIDIC SYSTEM // UC SENIOR DESIGN CAPSTONE</span>
+    </div>
+
+    <h1 class="hero-headline">
+      AUTOMATED DRINK TABLE <br>
+      <span class="accent">BAR-BOTIC OS</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      Engineered by Team Avengers for University of Cincinnati Senior Design (MECH5051 / EECE5001). Precision 8-bottle cocktail synthesizer featuring an in-house 3D printed reservoir crate, GROTHEN 24V peristaltic pumps, inline check-valves, custom mixing manifold, and stepper-driven linear elevator.
+    </p>
+
+    <!-- Real-Time Telemetry Status Bar -->
+    <div class="hero-telemetry-bar">
+      <div class="telemetry-pill">
+        <div class="label">RESERVOIR STATUS</div>
+        <div class="val">8 BOTTLES <span>750ml</span></div>
+      </div>
+
+      <div class="telemetry-pill ultraviolet">
+        <div class="label">DOSING PUMP ARRAY</div>
+        <div class="val">8x GROTHEN <span>24V PWM</span></div>
+      </div>
+
+      <div class="telemetry-pill">
+        <div class="label">LINEAR ELEVATOR</div>
+        <div class="val">T8 SCREW <span>100mm</span></div>
+      </div>
+
+      <div class="telemetry-pill ultraviolet">
+        <div class="label">PLC FIRMWARE</div>
+        <div class="val" style="color: var(--status-green);">ESP32 BUS <span>ONLINE</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       2. INTERACTIVE 3D DIGITAL TWIN & TOUCHSCREEN HMI SCREEN
+       ========================================================================== -->
+  <section id="simulation" class="simulation-section">
+    <div class="section-header">
+      <div>
+        <span style="font-family: var(--font-body); font-weight: 700; color: var(--infrared); font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase;">
+          ENGINEERING DIGITAL TWIN // 8-BOTTLE PHYSICAL FLUID DYNAMICS
+        </span>
+        <h2 class="section-title">Interactive 3D Simulation &amp; HMI</h2>
+        <p class="section-desc">
+          Live 3D kinematics with real fluid drain and tube flow animation. Pick a drink on the touchscreen HMI to watch the elevator descend, active bottles drain, fluid pulses flow through silicone tubes, and the cocktail dispense!
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem;">
+        <button id="btn-xray" class="btn-secondary" onclick="toggleXRay()">
+          X-RAY: ACTIVE
+        </button>
+      </div>
+    </div>
+
+    <div class="sim-container">
+      <!-- 3D Viewport -->
+      <div class="sim-viewport-wrapper" id="three-viewport">
+        <canvas id="three-canvas"></canvas>
+
+        <div class="viewport-hud">
+          <div class="hud-badge">
+            <span id="view-badge">FULL SYSTEM // TABLE CUTAWAY</span>
+          </div>
+        </div>
+
+        <div class="viewport-controls">
+          <div class="focus-pills">
+            <button id="btn-focus-all" class="focus-btn active" onclick="focusSubsystem('all')">
+              TABLE OVERVIEW
+            </button>
+            <button id="btn-focus-bottling" class="focus-btn" onclick="focusSubsystem('bottling')">
+              8-BOTTLE 3D CRATE
+            </button>
+            <button id="btn-focus-manifold" class="focus-btn" onclick="focusSubsystem('manifold')">
+              PERISTALTIC &amp; MANIFOLD
+            </button>
+            <button id="btn-focus-lift" class="focus-btn" onclick="focusSubsystem('lift')">
+              LIFT ELEVATOR
+            </button>
+            <button id="btn-focus-plc" class="focus-btn" onclick="focusSubsystem('plc')">
+              PLC &amp; SENSORS
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: User HMI Touchscreen & Controls -->
+      <div class="hmi-control-deck">
+        <!-- Touchscreen Ordering Panel -->
+        <div class="hmi-screen-card">
+          <div class="hmi-header">
+            <span class="hmi-title">DRINK SELECTION HMI</span>
+            <span class="hmi-mode-tag">TOUCHSCREEN ACTIVE</span>
+          </div>
+
+          <!-- 6 Preset Cocktail Cards -->
+          <div class="hmi-drink-grid">
+            <button class="hmi-drink-btn active" onclick="selectRecipeHmi('Old Fashioned', [0, 7], 'a84200', this)">
+              <span class="drink-name">Old Fashioned</span>
+              <span class="drink-spec">Bourbon + Citrus Sour</span>
+            </button>
+
+            <button class="hmi-drink-btn" onclick="selectRecipeHmi('Cosmopolitan', [1, 4, 5, 7], 'd61a3c', this)">
+              <span class="drink-name">Cosmopolitan</span>
+              <span class="drink-spec">Vodka + Triple Sec + Cran</span>
+            </button>
+
+            <button class="hmi-drink-btn" onclick="selectRecipeHmi('Gin & Tonic', [2, 6, 7], '00f0ff', this)">
+              <span class="drink-name">Gin &amp; Tonic</span>
+              <span class="drink-spec">Gin + Tonic + Citrus</span>
+            </button>
+
+            <button class="hmi-drink-btn" onclick="selectRecipeHmi('Tequila Sunrise', [3, 4, 5, 7], 'ff5722', this)">
+              <span class="drink-name">Tequila Sunrise</span>
+              <span class="drink-spec">Tequila + Citrus + Cran</span>
+            </button>
+
+            <button class="hmi-drink-btn" onclick="selectRecipeHmi('Cyber Long Island', [0, 1, 2, 3, 4, 7], 'ff9900', this)">
+              <span class="drink-name">Cyber Long Island</span>
+              <span class="drink-spec">Vodka + Gin + Teq + Rum</span>
+            </button>
+
+            <button class="hmi-drink-btn" onclick="selectRecipeHmi('Bar-Botic Reserve', [0, 1, 2, 3, 4, 5, 6, 7], '8b24e3', this)">
+              <span class="drink-name">Bar-Botic Reserve</span>
+              <span class="drink-spec">All 8 Botanical Spirits</span>
+            </button>
+          </div>
+
+          <!-- Real-Time 8-Bottle Fill Gauges -->
+          <div style="font-family: var(--font-body); font-weight: 700; font-size: 0.74rem; color: var(--text-muted); margin-bottom: 0.45rem; letter-spacing: 0.04em;">
+            RESERVOIR INVENTORY GAUGES (REAL-TIME DRAIN)
+          </div>
+          <div class="bottle-levels-monitor">
+            <div class="bottle-gauge">
+              <div class="gauge-bar-track"><div id="gauge-fill-0" class="gauge-bar-fill" style="height: 100%;"></div></div>
+              <span class="bottle-gauge-label">BOURBON</span>
+            </div>
+            <div class="bottle-gauge">
+              <div class="gauge-bar-track"><div id="gauge-fill-1" class="gauge-bar-fill" style="height: 100%;"></div></div>
+              <span class="bottle-gauge-label">VODKA</span>
+            </div>
+            <div class="bottle-gauge">
+              <div class="gauge-bar-track"><div id="gauge-fill-2" class="gauge-bar-fill" style="height: 100%;"></div></div>
+              <span class="bottle-gauge-label">GIN</span>
+            </div>
+            <div class="bottle-gauge">
+              <div class="gauge-bar-track"><div id="gauge-fill-3" class="gauge-bar-fill" style="height: 100%;"></div></div>
+              <span class="bottle-gauge-label">TEQUILA</span>
+            </div>
+            <div class="bottle-gauge">
+              <div class="gauge-bar-track"><div id="gauge-fill-4" class="gauge-bar-fill" style="height: 100%;"></div></div>
+              <span class="bottle-gauge-label">TRIPLE SEC</span>
+            </div>
+            <div class="bottle-gauge">
+              <div class="gauge-bar-track"><div id="gauge-fill-5" class="gauge-bar-fill" style="height: 100%;"></div></div>
+              <span class="bottle-gauge-label">CRANBERRY</span>
+            </div>
+            <div class="bottle-gauge">
+              <div class="gauge-bar-track"><div id="gauge-fill-6" class="gauge-bar-fill" style="height: 100%;"></div></div>
+              <span class="bottle-gauge-label">TONIC</span>
+            </div>
+            <div class="bottle-gauge">
+              <div class="gauge-bar-track"><div id="gauge-fill-7" class="gauge-bar-fill" style="height: 100%;"></div></div>
+              <span class="bottle-gauge-label">CITRUS</span>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div style="display: flex; flex-direction: column; gap: 0.65rem;">
+            <button id="btn-place-cup" class="btn-secondary" style="width: 100%; justify-content: center;" onclick="placeDrinkCup()">
+              PLACE DRINK CUP
+            </button>
+
+            <button id="btn-dispense" class="btn-primary btn-dispense" disabled onclick="startDispenseCycle()">
+              START DISPENSE SEQUENCE
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Telemetry Terminal -->
+        <div class="hmi-screen-card" style="padding: 1.15rem;">
+          <div style="display: flex; justify-content: space-between; font-family: var(--font-body); font-weight: 700; font-size: 0.76rem; margin-bottom: 0.6rem;">
+            <span>TELEMETRY BUS</span>
+            <span style="color: var(--status-green);">ESP32 I2C // 400kHz</span>
+          </div>
+
+          <div id="telemetry-terminal" class="telemetry-terminal">
+            <div class="terminal-line">
+              <span class="time">[21:05:00.000]</span>
+              <span class="status-ok">[PLC]</span>
+              <span>Bar-Botic OS initialized. Place cup to begin.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       3. PLC ALGORITHM & STATE MACHINE VISUALIZER
+       ========================================================================== -->
+  <section id="plc-algorithm" class="plc-section">
+    <div class="plc-card">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <span style="font-family: var(--font-body); font-weight: 700; color: var(--infrared); font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase;">
+            AUTOMATION FIRMWARE ARCHITECTURE
+          </span>
+          <h3 style="font-family: var(--font-title); font-size: 1.8rem; margin: 0.3rem 0;">
+            PLC &amp; Embedded State Machine
+          </h3>
+          <p style="color: var(--text-secondary); max-width: 700px; font-size: 0.95rem;">
+            Deterministic execution sequence running on the ESP32 / Arduino controller. Each step guarantees optical safety verification, zero fluid backflow, and precision volumetric dosing.
+          </p>
+        </div>
+
+        <div style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted);">
+          CYCLE CLOCK: <span style="color: var(--infrared);">10ms TICK</span>
+        </div>
+      </div>
+
+      <!-- Interactive 8-Step Node Chain -->
+      <div class="plc-step-chain">
+        <div class="plc-step-node active" data-step="1">
+          <div class="plc-step-num">01</div>
+          <div class="plc-step-title">IR VESSEL DETECT</div>
+          <div class="plc-step-desc">Photocell optical beam checks cup seated on coaster.</div>
+        </div>
+
+        <div class="plc-step-node" data-step="2">
+          <div class="plc-step-num">02</div>
+          <div class="plc-step-title">SAFETY LATCH</div>
+          <div class="plc-step-desc">Latching relay enabled. Platform encoders re-zeroed.</div>
+        </div>
+
+        <div class="plc-step-node" data-step="3">
+          <div class="plc-step-num">03</div>
+          <div class="plc-step-title">STEPPER DESCENT</div>
+          <div class="plc-step-desc">T8 lead screw lowers platform to bottom limit switch.</div>
+        </div>
+
+        <div class="plc-step-node" data-step="4">
+          <div class="plc-step-num">04</div>
+          <div class="plc-step-title">CHECK-VALVE PRIME</div>
+          <div class="plc-step-desc">Inline non-return valves unseat under head pressure.</div>
+        </div>
+
+        <div class="plc-step-node" data-step="5">
+          <div class="plc-step-num">05</div>
+          <div class="plc-step-title">PERISTALTIC DOSING</div>
+          <div class="plc-step-desc">24V PWM pulses calibrate active pump rollers by mL.</div>
+        </div>
+
+        <div class="plc-step-node" data-step="6">
+          <div class="plc-step-num">06</div>
+          <div class="plc-step-title">ANTI-DRIP PURGE</div>
+          <div class="plc-step-desc">0.2s reverse pump pulse prevents nozzle droplet runoff.</div>
+        </div>
+
+        <div class="plc-step-node" data-step="7">
+          <div class="plc-step-num">07</div>
+          <div class="plc-step-title">STEPPER ASCENT</div>
+          <div class="plc-step-desc">Lead screw elevates finished drink flush with tabletop.</div>
+        </div>
+
+        <div class="plc-step-node" data-step="8">
+          <div class="plc-step-num">08</div>
+          <div class="plc-step-title">CYCLE COMPLETE</div>
+          <div class="plc-step-desc">Audible chime sounded. Telemetry bus released.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       4. J.A.R.V.I.S. ONE-STOP AI ASSISTANT CONSOLE
+       ========================================================================== -->
+  <section id="jarvis-ai" class="jarvis-section">
+    <div class="section-header">
+      <div>
+        <span style="font-family: var(--font-body); font-weight: 700; color: var(--infrared); font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase;">
+          TEAM AI INTEGRATION // GEMINI POWERED
+        </span>
+        <h2 class="section-title">J.A.R.V.I.S. Capstone Intelligence</h2>
+        <p class="section-desc">
+          Your unified engineering hub. Ask J.A.R.V.I.S. about the 8-bottle fluidics, BOM procurement, Innovation Challenge grants, meeting minutes, and CAD deadlines with instant AI answers!
+        </p>
+      </div>
+
+      <div style="font-family: var(--font-body); font-weight: 700; font-size: 0.82rem; color: var(--status-green);">
+        J.A.R.V.I.S. MARK VII // ONLINE
+      </div>
+    </div>
+
+    <div class="jarvis-container">
+      <!-- Live Chat Terminal -->
+      <div class="jarvis-chat-wrapper">
+        <div id="chat-history" class="chat-history">
+          <div class="chat-msg jarvis">
+            <span class="chat-sender">J.A.R.V.I.S. // AI PROJECT LEAD</span>
+            <div class="chat-bubble">
+              Good evening, Operator. All systems for the <strong>Bar-Botic OS Automated Drink Table</strong> are nominal. I have indexed your 8-bottle fluidics, GROTHEN pumps, T8 elevator kinematics, and team deadlines. How may I assist your engineering work tonight?
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-input-row">
+          <input type="text" id="chat-input" class="chat-input" placeholder="Ask J.A.R.V.I.S. about parts, BOM, fluidics, or dates..." onkeydown="if(event.key==='Enter') sendJarvisMessage()">
+          <button class="btn-primary" onclick="sendJarvisMessage()">SEND</button>
+        </div>
+      </div>
+
+      <!-- Quick Knowledge Pills -->
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <span style="font-family: var(--font-body); font-weight: 700; font-size: 0.76rem; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase;">
+          RAPID INQUIRY PRESETS
+        </span>
+
+        <div class="prompt-pills-stack">
+          <button class="prompt-pill" onclick="askPreset('What are the 8 bottle parameters and fluidic tubing specs?')">
+            ▸ 8-Bottle Fluidics &amp; Tubing Specs
+          </button>
+          <button class="prompt-pill" onclick="askPreset('Explain the T8 lead screw elevator lift mechanism')">
+            ▸ T8 Lead Screw Elevator Kinematics
+          </button>
+          <button class="prompt-pill" onclick="askPreset('What is the deadline for the 5-Minute Pitch Deck Video?')">
+            ▸ Pitch Video Deadline &amp; $600 Payout
+          </button>
+          <button class="prompt-pill" onclick="askPreset('Explain the CEAS Innovation Challenge $1,200 grant requirements')">
+            ▸ $1,200 Innovation Challenge Breakdown
+          </button>
+          <button class="prompt-pill" onclick="askPreset('Who is responsible for the electrical and PLC subsystems?')">
+            ▸ Team Roster &amp; Subsystem Responsibilities
+          </button>
+        </div>
+
+        <div style="background: rgba(18, 18, 24, 0.7); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 1rem; font-size: 0.85rem; color: var(--text-secondary);">
+          <span style="color: var(--infrared); font-family: var(--font-body); font-weight: 800;">CAPSTONE MILESTONE:</span><br>
+          Team Design Proposal &amp; CAD BOM due <strong>Wednesday, Sept 23</strong>.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-info">
+      <div style="font-weight: 700; color: #fff;">BAR-BOTIC OS // PROJECT AVENGERS</div>
+      <div style="color: var(--text-muted); font-size: 0.78rem; margin-top: 0.25rem;">
+        MECH5051 / EECE5001 &bull; <span class="uc">UNIVERSITY OF CINCINNATI</span> &bull; 2026
+      </div>
+    </div>
+
+    <div style="font-family: var(--font-body); font-weight: 600; color: var(--text-muted); font-size: 0.82rem;">
+      8-BOTTLE RESERVOIR &bull; 24V PERISTALTIC &bull; LEAD SCREW LIFT &bull; J.A.R.V.I.S. AI
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="static/js/simulation.js"></script>
+
+  <script>
+    /* ==========================================
+       J.A.R.V.I.S. AI CHAT CLIENT
+       ========================================== */
+    async function sendJarvisMessage(text) {
+      const input = document.getElementById('chat-input');
+      const message = text || input.value.trim();
+      if (!message) return;
+
+      if (!text) input.value = '';
+
+      const history = document.getElementById('chat-history');
+
+      // User Message
+      const userDiv = document.createElement('div');
+      userDiv.className = 'chat-msg user';
+      userDiv.innerHTML = `
+        <span class="chat-sender">OPERATOR</span>
+        <div class="chat-bubble">${escapeHtml(message)}</div>
+      `;
+      history.appendChild(userDiv);
+      history.scrollTop = history.scrollHeight;
+
+      // Loading Bubble
+      const loadingDiv = document.createElement('div');
+      loadingDiv.className = 'chat-msg jarvis';
+      loadingDiv.innerHTML = `
+        <span class="chat-sender">J.A.R.V.I.S. // PROCESSING</span>
+        <div class="chat-bubble" style="color: var(--infrared);">Analyzing query telemetry...</div>
+      `;
+      history.appendChild(loadingDiv);
+      history.scrollTop = history.scrollHeight;
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sender: 'Operator', message: message })
+        });
+        const data = await res.json();
+        loadingDiv.innerHTML = `
+          <span class="chat-sender">J.A.R.V.I.S. // AI PROJECT LEAD</span>
+          <div class="chat-bubble">${formatReply(data.reply || "No response received.")}</div>
+        `;
+      } catch (err) {
+        // Intelligent Offline Knowledge Fallback
+        const q = message.toLowerCase();
+        let fallbackText = "";
+
+        if (q.includes("bottle") || q.includes("fluid") || q.includes("tube") || q.includes("pump")) {
+          fallbackText = "Here are the engineering parameters for the **8-Bottle Fluidics Subsystem**, Sir:\n\n" +
+            "• **Reservoirs:** 8x 750ml Bordeaux-style modular bottles in a 2x4 3D-printed caddy.\n" +
+            "• **Check Valves:** 1/4\" inline one-way valves to prevent backflow and keep lines primed.\n" +
+            "• **Dosing Pumps:** 8x GROTHEN 24V peristaltic pumps with 3-roller rotor heads.\n" +
+            "• **Tubing:** High-temperature food-grade 3x5mm silicone tubing converging at the 3D printed manifold.\n" +
+            "• **Leads:** Rohendhar & Aron Joseph.";
+        } else if (q.includes("lift") || q.includes("elevator") || q.includes("screw") || q.includes("stepper")) {
+          fallbackText = "Regarding the **T8 Linear Elevator Subsystem**, Sir:\n\n" +
+            "• **Mechanism:** NEMA 17 stepper motor driving a T8 stainless lead screw with dual precision guide rods.\n" +
+            "• **Stroke Travel:** 100 mm vertical stroke (lowers cup into dispensing bay, then lifts flush with tabletop).\n" +
+            "• **Sensors:** IR optical photocell cup-presence check and optical microswitch endstops.\n" +
+            "• **Status:** Kinematics calibrated to 10ms cycle clock.";
+        } else if (q.includes("deadline") || q.includes("date") || q.includes("pitch") || q.includes("video")) {
+          fallbackText = "Here are the critical **Senior Design Milestone Deadlines**, Sir:\n\n" +
+            "• **Wednesday, Sept 23:** Team Design Proposal & CAD BOM submission.\n" +
+            "• **Monday, Sept 28:** 5-Minute Pitch Deck Video due (**$600 upfront team payout**).\n" +
+            "• **October 15:** Innovation Challenge Milestone 2 progress review.";
+        } else if (q.includes("fund") || q.includes("grant") || q.includes("innovation") || q.includes("1200") || q.includes("challenge")) {
+          fallbackText = "Here is the financial breakdown for the **CEAS Innovation Challenge**, Sir:\n\n" +
+            "• **Guaranteed Grant:** **$1,200.00** ($300/person) for completing the deliverables.\n" +
+            "• **Upfront Working Capital:** **$600.00** ($150/person) upon submitting the Pitch Video on Sept 28.\n" +
+            "• **Top 25% Bonus:** Additional **$1,200.00** bonus pool plus podium prizes up to $700/person.\n" +
+            "• **Rules:** Itemized receipts required via the Canvas Purchase Request Form.";
+        } else if (q.includes("team") || q.includes("roster") || q.includes("who")) {
+          fallbackText = "Here is the **Team Avengers Roster & Assignments**, Sir:\n\n" +
+            "• **Ro:** Documentation, Minutes & AI Integration (Lead)\n" +
+            "• **Aron:** Procurement, Finance & Budgeting\n" +
+            "• **Eli:** Inventory & Resource Management\n" +
+            "• **Shyam:** Time Management & Scheduling";
+        } else {
+          fallbackText = "At your service, Sir. J.A.R.V.I.S. neural telemetry is operational.\n\n" +
+            "All engineering subsystems for the **Bar-Botic OS Drink Table** are indexed (8-bottle fluidics, T8 elevator, GROTHEN pumps, and CEAS Innovation Challenge deadlines).\n\n" +
+            "*(Note: Running in high-speed local mode. To connect to full Gemini cloud reasoning, launch via `python app.py` or the Cloudflare tunnel)*.";
+        }
+
+        loadingDiv.innerHTML = `
+          <span class="chat-sender">J.A.R.V.I.S. // LOCAL KNOWLEDGE ENGINE</span>
+          <div class="chat-bubble">${formatReply(fallbackText)}</div>
+        `;
+      }
+      history.scrollTop = history.scrollHeight;
+    }
+
+    function askPreset(question) {
+      sendJarvisMessage(question);
+    }
+
+    function escapeHtml(text) {
+      return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function formatReply(text) {
+      return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n\n/g, '<br><br>')
+        .replace(/\n/g, '<br>');
+    }
+  </script>
+</body>
+</html>
