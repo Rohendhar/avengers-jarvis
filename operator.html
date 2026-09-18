@@ -3,36 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kinetic Pour // J.A.R.V.I.S. Operator Command Portal</title>
+  <title>Kinetic Pour // J.A.R.V.I.S. Tactical Operator Command Deck</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;0,800;1,400&family=Space+Grotesk:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-dark: #07090e;
-      --panel-bg: rgba(13, 17, 26, 0.92);
+      --bg-tactical: #04070e;
+      --bg-panel: #090f1d;
+      --bg-panel-sub: #0e172a;
+      --border-tactical: #1e293b;
+      --border-active: #00f0ff;
       --cyan: #00f0ff;
-      --cyan-glow: rgba(0, 240, 255, 0.35);
-      --infrared: #ff3b14;
-      --gold: #ffd600;
-      --green: #00e676;
-      --border-cyan: rgba(0, 240, 255, 0.22);
-      --font-display: 'Space Grotesk', sans-serif;
+      --cyan-dim: rgba(0, 240, 255, 0.2);
+      --amber: #f59e0b;
+      --amber-dim: rgba(245, 158, 11, 0.2);
+      --red: #ef4444;
+      --green: #10b981;
+      --green-glow: rgba(16, 185, 129, 0.35);
+      --slate-text: #94a3b8;
+      --bright-text: #f8fafc;
       --font-mono: 'JetBrains Mono', monospace;
+      --font-disp: 'Space Grotesk', sans-serif;
       --font-body: 'Plus Jakarta Sans', sans-serif;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background-color: var(--bg-dark);
+      background-color: var(--bg-tactical);
       background-image: 
-        radial-gradient(circle at 15% 20%, rgba(0, 240, 255, 0.08) 0%, transparent 45%),
-        radial-gradient(circle at 85% 80%, rgba(255, 59, 20, 0.07) 0%, transparent 50%),
-        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
-      color: #f1f5f9;
+        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+        radial-gradient(ellipse at 50% 0%, rgba(0, 240, 255, 0.08) 0%, transparent 70%);
+      background-size: 32px 32px, 32px 32px, 100% 100%;
+      color: var(--bright-text);
       font-family: var(--font-body);
       min-height: 100vh;
       display: flex;
@@ -40,9 +45,53 @@
       overflow-x: hidden;
     }
 
+    /* Scanline effect */
+    body::after {
+      content: " ";
+      position: fixed;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.45;
+    }
+
+    /* TOP CLASSIFIED BANNER */
+    .classified-banner {
+      background: #020408;
+      border-bottom: 1px solid #1e293b;
+      padding: 0.35rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      color: #64748b;
+      text-transform: uppercase;
+    }
+    .classified-tag {
+      color: var(--amber);
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .classified-tag::before {
+      content: '';
+      display: inline-block;
+      width: 6px; height: 6px;
+      background: var(--amber);
+      border-radius: 50%;
+      box-shadow: 0 0 6px var(--amber);
+      animation: blinkAmber 1s infinite alternate;
+    }
+
+    /* TACTICAL HEADER */
     header {
-      background: rgba(8, 11, 18, 0.95);
-      border-bottom: 1px solid var(--border-cyan);
+      background: rgba(6, 10, 19, 0.95);
+      border-bottom: 1px solid var(--border-tactical);
       padding: 0.85rem 2rem;
       display: flex;
       justify-content: space-between;
@@ -50,639 +99,1897 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      backdrop-filter: blur(20px);
+      backdrop-filter: blur(12px);
     }
 
-    .brand-group { display: flex; align-items: center; gap: 12px; }
-
-    .brand-badge {
-      width: 12px; height: 12px; border-radius: 50%;
-      background: var(--cyan); box-shadow: 0 0 12px var(--cyan);
-      animation: pulseGreen 1.4s infinite alternate;
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 14px;
     }
 
-    .brand-title {
-      font-family: var(--font-display); font-size: 1.1rem;
-      font-weight: 800; letter-spacing: 0.06em; color: #fff;
+    .reticle-icon {
+      width: 32px;
+      height: 32px;
+      border: 2px solid var(--cyan);
+      border-radius: 6px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 14px rgba(0, 240, 255, 0.25);
+    }
+    .reticle-icon::before {
+      content: '';
+      position: absolute;
+      width: 14px; height: 14px;
+      border: 1px dashed var(--cyan);
+      border-radius: 50%;
+      animation: spinClock 8s linear infinite;
+    }
+    .reticle-icon::after {
+      content: '';
+      width: 4px; height: 4px;
+      background: var(--cyan);
+      border-radius: 50%;
     }
 
+    .brand-titles {
+      display: flex;
+      flex-direction: column;
+    }
+    .brand-main {
+      font-family: var(--font-disp);
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
     .brand-sub {
-      font-family: var(--font-mono); font-size: 0.7rem;
-      color: var(--cyan); margin-left: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--cyan);
+      letter-spacing: 0.05em;
     }
 
-    .header-links { display: flex; align-items: center; gap: 14px; }
+    .header-telemetry {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
 
-    .link-public-site {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 0.4rem 0.9rem; border-radius: 8px;
+    .telemetry-pill {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border-tactical);
+      padding: 0.35rem 0.85rem;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #94a3b8;
+    }
+    .telemetry-pill strong { color: var(--bright-text); }
+
+    .btn-audio-toggle {
+      background: rgba(0, 240, 255, 0.08);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      color: var(--cyan);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.4rem 0.85rem;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-audio-toggle:hover {
+      background: rgba(0, 240, 255, 0.2);
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+    }
+
+    .btn-public-site {
+      background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.18);
-      background: rgba(255, 255, 255, 0.05); color: #e2e8f0;
-      text-decoration: none; font-size: 0.76rem; font-weight: 700;
-      font-family: var(--font-display); transition: all 0.2s ease;
+      color: #cbd5e1;
+      font-family: var(--font-disp);
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 0.4rem 0.95rem;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
     }
-    .link-public-site:hover {
-      background: rgba(0, 240, 255, 0.15); border-color: var(--cyan);
-      color: #fff; transform: translateY(-1px);
+    .btn-public-site:hover {
+      background: rgba(0, 240, 255, 0.15);
+      border-color: var(--cyan);
+      color: #fff;
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.25);
     }
 
+    /* MAIN CONTAINER */
     main {
-      flex: 1; max-width: 1600px; width: 100%; margin: 0 auto;
-      padding: 1.8rem 2rem 2.5rem; display: flex; flex-direction: column; gap: 1.5rem;
+      flex: 1;
+      max-width: 1700px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.2rem 2rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
     }
 
-    .operator-telemetry-row {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+    /* TOP LIVE HARDWARE TELEMETRY ROW */
+    .tactical-telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
     }
 
-    .telemetry-card {
-      background: var(--panel-bg); border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px; padding: 0.9rem 1.1rem; display: flex;
-      flex-direction: column; gap: 4px; backdrop-filter: blur(12px);
+    .tac-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-tactical);
+      border-radius: 8px;
+      padding: 0.85rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      position: relative;
+      overflow: hidden;
     }
-    .telemetry-card:hover {
-      border-color: var(--cyan); box-shadow: 0 0 16px rgba(0, 240, 255, 0.12);
+    .tac-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 3px; height: 100%;
+      background: var(--border-tactical);
+      transition: background 0.3s;
+    }
+    .tac-card:hover::before { background: var(--cyan); }
+    .tac-card.accent-amber:hover::before { background: var(--amber); }
+    .tac-card.accent-green:hover::before { background: var(--green); }
+
+    .tac-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #64748b;
+      letter-spacing: 0.06em;
+    }
+    .tac-val {
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .tac-val .unit { font-size: 0.72rem; color: var(--slate-text); font-weight: 400; }
+    .tac-footer {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--cyan);
+      display: flex;
+      justify-content: space-between;
     }
 
-    .telemetry-label {
-      font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700;
-      color: #94a3b8; letter-spacing: 0.06em; text-transform: uppercase;
-      display: flex; justify-content: space-between;
-    }
-    .telemetry-val {
-      font-family: var(--font-display); font-size: 0.95rem; font-weight: 800; color: #fff;
-    }
-    .telemetry-sub {
-      font-size: 0.72rem; color: var(--cyan); font-family: var(--font-mono);
+    /* TACTICAL TAB SWITCHBOARD */
+    .switchboard-nav {
+      display: flex;
+      gap: 6px;
+      border-bottom: 1px solid var(--border-tactical);
+      padding-bottom: 0.6rem;
+      overflow-x: auto;
     }
 
-    .hud-console-deck {
-      display: grid; grid-template-columns: 1fr 390px; gap: 1.6rem;
-      background: radial-gradient(120% 120% at 20% 15%, rgba(20, 26, 38, 0.85) 0%, rgba(10, 13, 20, 0.95) 60%, rgba(6, 8, 12, 0.98) 100%);
-      border: 1.5px solid var(--border-cyan); border-radius: 20px;
-      padding: 1.6rem; position: relative;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+    .switch-tab {
+      background: rgba(14, 23, 42, 0.6);
+      border: 1px solid var(--border-tactical);
+      border-radius: 6px;
+      padding: 0.55rem 1.1rem;
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #94a3b8;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+    .switch-tab:hover {
+      background: rgba(0, 240, 255, 0.08);
+      border-color: rgba(0, 240, 255, 0.4);
+      color: #fff;
+    }
+    .switch-tab.active {
+      background: rgba(0, 240, 255, 0.15);
+      border-color: var(--cyan);
+      color: var(--cyan);
+      box-shadow: 0 0 14px rgba(0, 240, 255, 0.2);
+    }
+    .switch-tab .tab-badge {
+      font-size: 0.62rem;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.08);
     }
 
-    .hud-corner {
-      position: absolute; width: 16px; height: 16px; border: 2px solid var(--cyan);
-      pointer-events: none; z-index: 5;
-    }
-    .hud-corner.tl { top: 12px; left: 12px; border-right: none; border-bottom: none; }
-    .hud-corner.tr { top: 12px; right: 12px; border-left: none; border-bottom: none; }
-    .hud-corner.bl { bottom: 12px; left: 12px; border-right: none; border-top: none; }
-    .hud-corner.br { bottom: 12px; right: 12px; border-left: none; border-top: none; }
-
-    .chat-station {
-      display: flex; flex-direction: column; height: 620px;
-      background: rgba(10, 14, 22, 0.95); border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 16px; overflow: hidden; box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.12);
+    /* OPERATOR AUTH BAR */
+    .operator-auth-panel {
+      background: #080d19;
+      border: 1px solid var(--border-tactical);
+      border-radius: 8px;
+      padding: 0.8rem 1.3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
     }
 
-    .operator-control-bar {
-      padding: 0.75rem 1.2rem; background: rgba(14, 18, 28, 0.95);
-      border-bottom: 1px solid rgba(0, 240, 255, 0.18);
-      display: flex; justify-content: space-between; align-items: center;
-      flex-wrap: wrap; gap: 0.8rem;
+    .auth-status-block {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
     }
-
-    .operator-status-tag {
-      display: flex; align-items: center; gap: 8px; font-family: var(--font-mono);
-      font-size: 0.74rem; font-weight: 700; color: #94a3b8;
+    .auth-radar-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #64748b;
+      box-shadow: 0 0 8px rgba(100, 116, 139, 0.5);
     }
-    .operator-status-tag.active-auth { color: var(--cyan); }
-
-    .status-dot {
-      width: 8px; height: 8px; border-radius: 50%; background: #94a3b8;
-      box-shadow: 0 0 6px rgba(148, 163, 184, 0.5);
-    }
-    .status-dot.active-green {
-      background: var(--cyan); box-shadow: 0 0 10px var(--cyan);
+    .auth-radar-dot.authenticated {
+      background: var(--green);
+      box-shadow: 0 0 12px var(--green);
       animation: pulseGreen 1.2s infinite alternate;
     }
 
-    .operator-buttons { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-
-    .op-select-btn {
-      background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 6px; padding: 0.35rem 0.75rem; font-family: var(--font-display);
-      font-size: 0.74rem; font-weight: 700; color: #cbd5e1; cursor: pointer;
-      display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s ease;
-    }
-    .op-select-btn:hover {
-      background: rgba(0, 240, 255, 0.14); border-color: var(--cyan); color: #fff;
-    }
-    .op-select-btn.active {
-      background: rgba(0, 240, 255, 0.22); border-color: var(--cyan); color: var(--cyan);
-      box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+    .operator-selector-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
-    .op-logout-btn {
-      background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35);
-      color: #f87171; border-radius: 6px; padding: 0.35rem 0.7rem;
-      font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700;
-      cursor: pointer; transition: all 0.2s ease;
+    .op-badge-btn {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--border-tactical);
+      border-radius: 6px;
+      padding: 0.4rem 0.9rem;
+      font-family: var(--font-disp);
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #cbd5e1;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
     }
-    .op-logout-btn:hover { background: rgba(239, 68, 68, 0.3); border-color: #ef4444; color: #fff; }
-
-    .operator-passcode-box {
-      margin: 0.8rem 1.2rem; padding: 1rem 1.3rem; background: rgba(8, 12, 20, 0.98);
-      border: 1.5px solid var(--cyan); border-radius: 12px;
-      box-shadow: 0 8px 30px rgba(0, 240, 255, 0.2); animation: fadeIn 0.2s ease-out;
+    .op-badge-btn:hover {
+      border-color: var(--cyan);
+      background: rgba(0, 240, 255, 0.12);
+      color: #fff;
+    }
+    .op-badge-btn.active {
+      background: rgba(0, 240, 255, 0.22);
+      border-color: var(--cyan);
+      color: var(--cyan);
+      box-shadow: 0 0 14px rgba(0, 240, 255, 0.3);
     }
 
+    .op-exit-btn {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #f87171;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.4rem 0.85rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .op-exit-btn:hover {
+      background: rgba(239, 68, 68, 0.3);
+      border-color: var(--red);
+      color: #fff;
+    }
+
+    /* PASSCODE MODAL DRAWER */
+    .passcode-modal {
+      background: rgba(8, 12, 22, 0.98);
+      border: 1.5px solid var(--cyan);
+      border-radius: 8px;
+      padding: 1.1rem 1.4rem;
+      margin-top: 0.5rem;
+      box-shadow: 0 10px 30px rgba(0, 240, 255, 0.25);
+      display: none;
+    }
+    .passcode-title {
+      font-family: var(--font-disp);
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--cyan);
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+    }
+    .passcode-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
     .passcode-input {
-      background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(0, 240, 255, 0.45);
-      border-radius: 8px; color: #fff; padding: 0.5rem 0.9rem;
-      font-family: var(--font-mono); font-size: 0.84rem; outline: none; transition: all 0.2s;
+      background: #020408;
+      border: 1px solid rgba(0, 240, 255, 0.5);
+      border-radius: 6px;
+      color: #fff;
+      padding: 0.55rem 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      outline: none;
+      width: 280px;
     }
-    .passcode-input:focus { border-color: var(--cyan); box-shadow: 0 0 12px rgba(0, 240, 255, 0.4); }
+    .passcode-input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 14px rgba(0, 240, 255, 0.4);
+    }
+    .btn-auth {
+      background: var(--cyan);
+      color: #020408;
+      font-family: var(--font-disp);
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 0.55rem 1.2rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-auth:hover {
+      box-shadow: 0 0 16px var(--cyan);
+      transform: translateY(-1px);
+    }
+
+    /* TAB CONTENT WRAPPER */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.25s ease-out; }
+
+    /* TAB 1: JARVIS TACTICAL HUD */
+    .tactical-hud-deck {
+      display: grid;
+      grid-template-columns: 1fr 410px;
+      gap: 1.4rem;
+    }
+
+    .terminal-window {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-tactical);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      height: 640px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .terminal-topbar {
+      background: #050913;
+      border-bottom: 1px solid var(--border-tactical);
+      padding: 0.6rem 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: #64748b;
+    }
 
     .chat-history {
-      flex: 1; overflow-y: auto; padding: 1.2rem; display: flex; flex-direction: column; gap: 1.1rem;
+      flex: 1;
+      padding: 1.2rem 1.4rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      background: radial-gradient(circle at top right, rgba(0, 240, 255, 0.02) 0%, transparent 60%);
     }
 
-    .chat-msg { display: flex; flex-direction: column; gap: 4px; max-width: 90%; animation: fadeInMsg 0.25s ease-out; }
-    .chat-msg.jarvis { align-self: flex-start; }
-    .chat-msg.user { align-self: flex-end; }
+    .chat-msg {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      max-width: 90%;
+    }
+    .chat-msg.user {
+      align-self: flex-end;
+      align-items: flex-end;
+    }
+    .chat-msg.jarvis {
+      align-self: flex-start;
+      align-items: flex-start;
+    }
 
-    .chat-sender { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; }
+    .chat-sender {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
 
-    .chat-bubble { padding: 1rem 1.3rem; border-radius: 12px; font-size: 0.92rem; line-height: 1.6; }
-
-    .chat-msg.jarvis .chat-bubble {
-      background: linear-gradient(135deg, rgba(20, 26, 38, 0.95) 0%, rgba(12, 16, 24, 0.98) 100%);
-      border: 1px solid rgba(0, 240, 255, 0.25); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    .chat-bubble {
+      padding: 0.85rem 1.1rem;
+      border-radius: 8px;
+      font-size: 0.86rem;
+      line-height: 1.55;
+      font-family: var(--font-body);
     }
     .chat-msg.user .chat-bubble {
-      background: linear-gradient(135deg, rgba(255, 59, 20, 0.3) 0%, rgba(255, 87, 34, 0.2) 100%);
-      border: 1px solid var(--infrared); box-shadow: 0 0 20px rgba(255, 59, 20, 0.25);
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      color: #e2e8f0;
+      border-bottom-right-radius: 2px;
+    }
+    .chat-msg.jarvis .chat-bubble {
+      background: #0d1527;
+      border: 1px solid #1e293b;
+      color: #f1f5f9;
+      border-bottom-left-radius: 2px;
     }
 
-    .chat-input-row {
-      display: flex; gap: 8px; padding: 0.9rem 1.2rem; background: rgba(12, 16, 24, 0.95);
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    .chat-bubble h3 {
+      font-family: var(--font-disp);
+      font-size: 0.95rem;
+      color: var(--cyan);
+      margin: 0.5rem 0 0.3rem;
+    }
+    .chat-bubble p { margin-bottom: 0.4rem; }
+    .chat-bubble ul { margin-left: 1.2rem; margin-bottom: 0.4rem; }
+    .chat-bubble li { margin-bottom: 0.25rem; }
+    .chat-bubble code {
+      font-family: var(--font-mono);
+      background: rgba(0, 240, 255, 0.12);
+      color: var(--cyan);
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 0.8em;
     }
 
-    .chat-input {
-      flex: 1; background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 10px; color: #fff; padding: 0.8rem 1.2rem;
-      font-family: var(--font-body); font-size: 0.9rem; outline: none; transition: all 0.2s;
+    /* CLI Prompt Input */
+    .terminal-cli-bar {
+      background: #050812;
+      border-top: 1px solid var(--border-tactical);
+      padding: 0.8rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .chat-input:focus { border-color: var(--cyan); box-shadow: 0 0 14px rgba(0, 240, 255, 0.25); }
-
-    .btn-transmit {
-      background: linear-gradient(135deg, #00f0ff 0%, #00a0cc 100%); border: none;
-      border-radius: 10px; color: #050810; font-family: var(--font-display);
-      font-weight: 800; font-size: 0.85rem; padding: 0 1.6rem; cursor: pointer;
-      transition: all 0.2s; letter-spacing: 0.04em;
+    .cli-prefix {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--green);
+      white-space: nowrap;
     }
-    .btn-transmit:hover { box-shadow: 0 0 20px rgba(0, 240, 255, 0.5); transform: translateY(-1px); }
-
-    .core-deck { display: flex; flex-direction: column; gap: 1.2rem; }
-
-    .arc-reactor-card {
-      background: linear-gradient(180deg, rgba(16, 20, 30, 0.92) 0%, rgba(8, 10, 16, 0.98) 100%);
-      border: 1px solid var(--border-cyan); border-radius: 16px;
-      padding: 1.4rem 1.2rem; display: flex; flex-direction: column; align-items: center; gap: 1rem;
-      box-shadow: 0 0 35px rgba(0, 240, 255, 0.15);
+    .cli-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      outline: none;
     }
-
-    .arc-visualizer {
-      position: relative; width: 110px; height: 110px; display: flex;
-      align-items: center; justify-content: center;
+    .cli-send-btn {
+      background: rgba(0, 240, 255, 0.15);
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 0.45rem 1.1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
     }
-    .arc-ring-1 {
-      position: absolute; width: 108px; height: 108px; border: 2px dashed rgba(0, 240, 255, 0.55);
-      border-radius: 50%; animation: spinClockwise 12s linear infinite;
-    }
-    .arc-ring-2 {
-      position: absolute; width: 82px; height: 82px; border: 2px solid transparent;
-      border-top: 2.5px solid var(--cyan); border-bottom: 2.5px solid var(--infrared);
-      border-radius: 50%; animation: spinCounter 6s linear infinite;
-    }
-    .arc-ring-3 {
-      position: absolute; width: 58px; height: 58px; border: 1.5px dotted rgba(255, 255, 255, 0.7);
-      border-radius: 50%; animation: spinClockwise 8s linear infinite;
-    }
-    .arc-glow-core {
-      position: absolute; width: 34px; height: 34px; border-radius: 50%;
-      background: radial-gradient(circle, #ffffff 0%, #00f0ff 40%, rgba(255, 59, 20, 0.6) 85%, transparent 100%);
-      box-shadow: 0 0 25px var(--cyan); animation: corePulse 2s ease-in-out infinite alternate;
+    .cli-send-btn:hover {
+      background: var(--cyan);
+      color: #020408;
+      box-shadow: 0 0 12px var(--cyan);
     }
 
-    @keyframes spinClockwise { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    @keyframes spinCounter { 0% { transform: rotate(0deg); } 100% { transform: rotate(-360deg); } }
-    @keyframes corePulse {
-      0% { transform: scale(0.92); opacity: 0.85; filter: drop-shadow(0 0 10px var(--cyan)); }
-      100% { transform: scale(1.1); opacity: 1; filter: drop-shadow(0 0 25px var(--infrared)); }
+    /* RIGHT HUD DECK: Arc Reactor & Presets */
+    .hud-side-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
     }
 
-    .waveform-bar-group {
-      display: flex; align-items: center; justify-content: center; gap: 3.5px; height: 28px; width: 100%;
-    }
-    .w-bar {
-      width: 3.5px; height: 6px; background: linear-gradient(180deg, var(--cyan) 0%, var(--infrared) 100%);
-      border-radius: 2px; animation: wave 1.2s ease-in-out infinite alternate; box-shadow: 0 0 6px var(--cyan);
-    }
-    .w-bar:nth-child(1) { animation-delay: 0.1s; }
-    .w-bar:nth-child(2) { animation-delay: 0.35s; }
-    .w-bar:nth-child(3) { animation-delay: 0.55s; }
-    .w-bar:nth-child(4) { animation-delay: 0.2s; }
-    .w-bar:nth-child(5) { animation-delay: 0.65s; }
-    .w-bar:nth-child(6) { animation-delay: 0.4s; }
-    .w-bar:nth-child(7) { animation-delay: 0.75s; }
-    .w-bar:nth-child(8) { animation-delay: 0.3s; }
-    .w-bar:nth-child(9) { animation-delay: 0.5s; }
-    .w-bar:nth-child(10) { animation-delay: 0.25s; }
-
-    @keyframes wave { 0% { height: 4px; } 100% { height: 24px; } }
-
-    .presets-box { display: flex; flex-direction: column; gap: 0.6rem; }
-
-    .preset-pill {
-      background: linear-gradient(135deg, rgba(20, 25, 36, 0.85) 0%, rgba(12, 16, 24, 0.92) 100%);
-      border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 10px;
-      padding: 0.75rem 1rem; color: #f1f5f9; font-size: 0.8rem; font-weight: 600;
-      text-align: left; cursor: pointer; display: flex; justify-content: space-between;
-      align-items: center; transition: all 0.2s;
-    }
-    .preset-pill:hover {
-      border-color: var(--cyan); background: rgba(0, 240, 255, 0.1); transform: translateX(3px);
+    .arc-reactor-box {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-tactical);
+      border-radius: 8px;
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      position: relative;
     }
 
+    .reactor-core-frame {
+      width: 170px;
+      height: 170px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .arc-ring {
+      position: absolute;
+      border-radius: 50%;
+    }
+    .arc-ring.r1 {
+      width: 160px; height: 160px;
+      border: 2px dashed var(--cyan);
+      animation: spinClock 20s linear infinite;
+    }
+    .arc-ring.r2 {
+      width: 125px; height: 125px;
+      border: 2px solid transparent;
+      border-top-color: var(--amber);
+      border-bottom-color: var(--cyan);
+      animation: spinCounter 12s linear infinite;
+    }
+    .arc-ring.r3 {
+      width: 90px; height: 90px;
+      border: 1px dotted rgba(0, 240, 255, 0.8);
+      animation: spinClock 8s linear infinite;
+    }
+    .arc-center-plasma {
+      width: 50px; height: 50px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffffff 10%, #00f0ff 65%, rgba(0, 240, 255, 0) 100%);
+      box-shadow: 0 0 25px #00f0ff, 0 0 45px rgba(0, 240, 255, 0.5);
+      animation: pulsePlasma 1.6s infinite alternate;
+    }
+
+    /* Equalizer Waveform */
+    .equalizer-waveform {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      height: 36px;
+      padding: 0 10px;
+    }
+    .eq-bar {
+      width: 4px;
+      height: 14px;
+      background: var(--cyan);
+      border-radius: 2px;
+      animation: eqOscillate 1.2s infinite ease-in-out alternate;
+    }
+    .eq-bar:nth-child(2) { animation-delay: 0.15s; }
+    .eq-bar:nth-child(3) { animation-delay: 0.3s; }
+    .eq-bar:nth-child(4) { animation-delay: 0.45s; }
+    .eq-bar:nth-child(5) { animation-delay: 0.6s; }
+    .eq-bar:nth-child(6) { animation-delay: 0.75s; }
+    .eq-bar:nth-child(7) { animation-delay: 0.9s; }
+    .eq-bar:nth-child(8) { animation-delay: 0.35s; }
+    .eq-bar:nth-child(9) { animation-delay: 0.5s; }
+    .eq-bar:nth-child(10) { animation-delay: 0.2s; }
+
+    /* Preset Actions */
+    .tactical-presets-box {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-tactical);
+      border-radius: 8px;
+      padding: 1.1rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    .preset-title {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #64748b;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .preset-btn {
+      background: rgba(14, 23, 42, 0.8);
+      border: 1px solid var(--border-tactical);
+      border-radius: 6px;
+      padding: 0.55rem 0.85rem;
+      color: #e2e8f0;
+      font-family: var(--font-disp);
+      font-size: 0.74rem;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .preset-btn:hover {
+      background: rgba(0, 240, 255, 0.12);
+      border-color: var(--cyan);
+      color: #fff;
+    }
+
+    /* TAB 2: PLC I/O REGISTER MATRIX */
+    .plc-matrix-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.4rem;
+    }
+    .plc-panel {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-tactical);
+      border-radius: 8px;
+      padding: 1.4rem;
+    }
+    .plc-panel-header {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--cyan);
+      border-bottom: 1px solid var(--border-tactical);
+      padding-bottom: 0.6rem;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .plc-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+    }
+    .plc-table th {
+      text-align: left;
+      padding: 0.5rem 0.6rem;
+      color: #64748b;
+      border-bottom: 1px solid var(--border-tactical);
+    }
+    .plc-table td {
+      padding: 0.6rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: #cbd5e1;
+    }
+    .plc-table tr:hover {
+      background: rgba(0, 240, 255, 0.04);
+    }
+    .pin-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+    .pin-status-pill.high {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--green);
+      border: 1px solid var(--green);
+    }
+    .pin-status-pill.low {
+      background: rgba(100, 116, 139, 0.15);
+      color: #64748b;
+      border: 1px solid #475569;
+    }
+    .btn-test-toggle {
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      color: var(--cyan);
+      padding: 2px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.65rem;
+    }
+    .btn-test-toggle:hover {
+      background: var(--cyan);
+      color: #000;
+    }
+
+    /* TAB 3: BOM LEDGER */
+    .bom-table-deck {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-tactical);
+      border-radius: 8px;
+      padding: 1.4rem;
+      overflow-x: auto;
+    }
+    .bom-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border-tactical);
+    }
+    .bom-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.76rem;
+      font-family: var(--font-body);
+    }
+    .bom-table th {
+      text-align: left;
+      padding: 0.6rem 0.8rem;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: #64748b;
+      border-bottom: 1px solid var(--border-tactical);
+      text-transform: uppercase;
+    }
+    .bom-table td {
+      padding: 0.7rem 0.8rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: #cbd5e1;
+    }
+    .bom-table tr:hover { background: rgba(0, 240, 255, 0.03); }
+
+    /* TAB 4: GANTT CRITICAL PATH */
+    .gantt-radar-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.4rem;
+    }
+    .countdown-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-tactical);
+      border-radius: 8px;
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+    }
+    .countdown-timer {
+      font-family: var(--font-mono);
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--amber);
+    }
+
+    /* TAB 5: KINEMATICS CALCULATOR */
+    .calculator-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.4rem;
+    }
+    .calc-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-tactical);
+      border-radius: 8px;
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .calc-input-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .calc-input-row label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: #94a3b8;
+    }
+    .calc-input {
+      background: #03060d;
+      border: 1px solid var(--border-tactical);
+      border-radius: 6px;
+      padding: 0.55rem 0.9rem;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      outline: none;
+    }
+    .calc-input:focus { border-color: var(--cyan); }
+    .calc-result-box {
+      background: rgba(0, 240, 255, 0.08);
+      border: 1px dashed var(--cyan);
+      border-radius: 6px;
+      padding: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: #e2e8f0;
+    }
+
+    /* OPERATOR CHECKLIST DRAWER */
+    .operator-dossier-deck {
+      background: #080d19;
+      border: 1px solid var(--border-tactical);
+      border-radius: 8px;
+      padding: 1.1rem 1.4rem;
+      display: none;
+    }
+    .dossier-checklist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 0.8rem;
+    }
+    .dossier-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.82rem;
+      color: #cbd5e1;
+    }
+    .dossier-item input[type="checkbox"] {
+      width: 16px; height: 16px;
+      accent-color: var(--cyan);
+      cursor: pointer;
+    }
+
+    /* KEYFRAME ANIMATIONS */
+    @keyframes spinClock { 100% { transform: rotate(360deg); } }
+    @keyframes spinCounter { 100% { transform: rotate(-360deg); } }
+    @keyframes pulsePlasma {
+      0% { transform: scale(0.92); opacity: 0.8; }
+      100% { transform: scale(1.08); opacity: 1; }
+    }
+    @keyframes blinkAmber {
+      0% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
     @keyframes pulseGreen {
-      0% { opacity: 0.6; transform: scale(0.95); }
-      100% { opacity: 1; transform: scale(1.05); }
+      0% { transform: scale(0.95); opacity: 0.7; }
+      100% { transform: scale(1.1); opacity: 1; }
     }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes fadeInMsg { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes eqOscillate {
+      0% { height: 6px; }
+      100% { height: 28px; }
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(4px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
 
-    @media (max-width: 1024px) {
-      .hud-console-deck { grid-template-columns: 1fr; }
-      .operator-telemetry-row { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 640px) {
-      .operator-telemetry-row { grid-template-columns: 1fr; }
+    @media (max-width: 1100px) {
+      .tactical-telemetry-grid { grid-template-columns: repeat(2, 1fr); }
+      .tactical-hud-deck { grid-template-columns: 1fr; }
+      .plc-matrix-grid { grid-template-columns: 1fr; }
+      .gantt-radar-grid { grid-template-columns: 1fr; }
+      .calculator-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
+  <!-- TOP CLASSIFIED BANNER -->
+  <div class="classified-banner">
+    <div class="classified-tag">
+      RESTRICTED CLEARANCE // UC SENIOR DESIGN CAPSTONE
+    </div>
+    <div>
+      STATION: MECH5051 / EECE5001 // NODE: 192.168.1.120:5050
+    </div>
+    <div id="live-utc-clock">
+      EDT: --:--:--
+    </div>
+  </div>
+
+  <!-- TACTICAL HEADER -->
   <header>
-    <div class="brand-group">
-      <div class="brand-badge"></div>
-      <div>
-        <span class="brand-title">J.A.R.V.I.S. MARK VII</span>
-        <span class="brand-sub">// OPERATOR COMMAND DECK</span>
+    <div class="brand-section">
+      <div class="reticle-icon"></div>
+      <div class="brand-titles">
+        <div class="brand-main">
+          J.A.R.V.I.S.
+          <span style="font-size: 0.7rem; color: var(--cyan); font-family: var(--font-mono); font-weight: 700;">TACTICAL DECK MK-VII</span>
+        </div>
+        <div class="brand-sub">
+          KINETIC POUR // INDUSTRIAL SCADA &amp; MISSION CONTROL
+        </div>
       </div>
     </div>
 
-    <div class="header-links">
-      <span style="font-family: var(--font-mono); font-size: 0.72rem; color: #94a3b8;">
-        CLEARANCE: LEVEL 5 PROTOCOL
-      </span>
-      <a href="https://rohendhar.github.io/kinetic-pour/" class="link-public-site">
+    <div class="header-telemetry">
+      <div class="telemetry-pill">
+        <span>BUS:</span>
+        <strong style="color: var(--cyan);">24.18V DC</strong>
+        <span>//</span>
+        <strong style="color: var(--green);">4.82A</strong>
+      </div>
+      <div class="telemetry-pill">
+        <span>PLC:</span>
+        <strong style="color: var(--green);">LINKED (115.2k)</strong>
+      </div>
+      <button class="btn-audio-toggle" id="btn-audio-toggle" onclick="toggleAudioFX()">
+        <span>🔊 AUDIO FX:</span>
+        <span id="audio-fx-state">ON</span>
+      </button>
+      <a href="https://rohendhar.github.io/kinetic-pour/" class="btn-public-site">
         ← Public Kinetic Pour Site
       </a>
     </div>
   </header>
 
   <main>
-    <div class="operator-telemetry-row">
-      <div class="telemetry-card">
-        <div class="telemetry-label">
-          <span>8-BOTTLE FLUIDICS</span>
-          <span style="color: var(--cyan);">SUB-01</span>
+    <!-- TOP LIVE TELEMETRY CARDS -->
+    <div class="tactical-telemetry-grid">
+      <div class="tac-card">
+        <div class="tac-header">
+          <span>SUB-01 // FLUIDICS</span>
+          <span style="color: var(--cyan);">8x GROTHEN</span>
         </div>
-        <div class="telemetry-val">GROTHEN 24V × 8</div>
-        <div class="telemetry-sub">LEADS: RO &amp; ARON</div>
+        <div class="tac-val">
+          150 <span class="unit">mL/min per pump</span>
+        </div>
+        <div class="tac-footer">
+          <span>LEADS: RO &amp; ARON</span>
+          <span style="color: var(--green);">NOMINAL</span>
+        </div>
       </div>
 
-      <div class="telemetry-card">
-        <div class="telemetry-label">
-          <span>T8 ELEVATOR LIFT</span>
-          <span style="color: var(--infrared);">SUB-02</span>
+      <div class="tac-card">
+        <div class="tac-header">
+          <span>SUB-02 // KINEMATICS</span>
+          <span style="color: var(--amber);">T8x8 LEAD SCREW</span>
         </div>
-        <div class="telemetry-val">NEMA 17 / 100mm</div>
-        <div class="telemetry-sub">LEADS: SHYAM &amp; ELI</div>
+        <div class="tac-val">
+          400 <span class="unit">steps/mm @ 16x</span>
+        </div>
+        <div class="tac-footer">
+          <span>LEADS: SHYAM &amp; ELI</span>
+          <span style="color: var(--cyan);">HOMED</span>
+        </div>
       </div>
 
-      <div class="telemetry-card">
-        <div class="telemetry-label">
-          <span>INDUSTRIAL PLC</span>
-          <span style="color: var(--gold);">SUB-03</span>
+      <div class="tac-card accent-amber">
+        <div class="tac-header">
+          <span>SUB-03 // AUTOMATION</span>
+          <span style="color: var(--green);">CLICK PLC 24V</span>
         </div>
-        <div class="telemetry-val">CLICK 24V / LRS-350</div>
-        <div class="telemetry-sub">LEAD: ELI RADABAUGH</div>
+        <div class="tac-val">
+          14.6 <span class="unit">A (LRS-350-24)</span>
+        </div>
+        <div class="tac-footer">
+          <span>LEAD: ELI RADABAUGH</span>
+          <span style="color: var(--green);">ARMED</span>
+        </div>
       </div>
 
-      <div class="telemetry-card">
-        <div class="telemetry-label">
-          <span>CAPSTONE GRANT</span>
-          <span style="color: var(--green);">CEAS 2026</span>
+      <div class="tac-card accent-green">
+        <div class="tac-header">
+          <span>SUB-04 // CEAS GRANT</span>
+          <span style="color: var(--cyan);">$1,200 TOTAL</span>
         </div>
-        <div class="telemetry-val">$1,200.00 ALLOCATED</div>
-        <div class="telemetry-sub">LEAD: ARON JOSEPH</div>
+        <div class="tac-val">
+          $600 <span class="unit">payout on Sept 28</span>
+        </div>
+        <div class="tac-footer">
+          <span>LEAD: ARON JOSEPH</span>
+          <span style="color: var(--amber);">PITCH DUE</span>
+        </div>
       </div>
     </div>
 
-    <div class="hud-console-deck">
-      <div class="hud-corner tl"></div>
-      <div class="hud-corner tr"></div>
-      <div class="hud-corner bl"></div>
-      <div class="hud-corner br"></div>
+    <!-- TACTICAL SWITCHBOARD TABS -->
+    <div class="switchboard-nav">
+      <button class="switch-tab active" onclick="switchTacticalTab('tab-jarvis')">
+        <span>[01] J.A.R.V.I.S. TACTICAL HUD</span>
+        <span class="tab-badge">CORE</span>
+      </button>
+      <button class="switch-tab" onclick="switchTacticalTab('tab-plc')">
+        <span>[02] PLC REGISTER &amp; I/O MATRIX</span>
+        <span class="tab-badge">HARDWARE</span>
+      </button>
+      <button class="switch-tab" onclick="switchTacticalTab('tab-bom')">
+        <span>[03] SOURCING LEDGER &amp; BOM</span>
+        <span class="tab-badge">FINANCE</span>
+      </button>
+      <button class="switch-tab" onclick="switchTacticalTab('tab-gantt')">
+        <span>[04] MILESTONES &amp; CRITICAL PATH</span>
+        <span class="tab-badge">SCHEDULE</span>
+      </button>
+      <button class="switch-tab" onclick="switchTacticalTab('tab-calc')">
+        <span>[05] HYDRAULICS &amp; KINEMATICS CALC</span>
+        <span class="tab-badge">MATH</span>
+      </button>
+    </div>
 
-      <div class="chat-station">
-        <div class="operator-control-bar">
-          <div class="operator-status-tag" id="operator-status-tag">
-            <span class="status-dot" id="operator-status-dot"></span>
-            <span id="operator-status-text">STATUS: OBSERVER // CLEARANCE REQUIRED</span>
-          </div>
-
-          <div class="operator-buttons">
-            <button class="op-select-btn" id="btn-op-ro" onclick="promptOperatorLogin('Ro')">
-              👤 Ro
-            </button>
-            <button class="op-select-btn" id="btn-op-aron" onclick="promptOperatorLogin('Aron')">
-              👤 Aron
-            </button>
-            <button class="op-select-btn" id="btn-op-eli" onclick="promptOperatorLogin('Eli')">
-              👤 Eli
-            </button>
-            <button class="op-select-btn" id="btn-op-shyam" onclick="promptOperatorLogin('Shyam')">
-              👤 Shyam
-            </button>
-            <button class="op-logout-btn" id="operator-logout-btn" onclick="logoutOperator()" style="display:none;">
-              LOGOUT
-            </button>
-          </div>
-        </div>
-
-        <div class="operator-passcode-box" id="operator-passcode-box" style="display: none;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <span style="font-family: var(--font-display); font-weight: 800; font-size: 0.84rem; color: var(--cyan); letter-spacing: 0.04em;">
-              OPERATOR CLEARANCE REQUIRED
-            </span>
-            <span style="font-family: var(--font-mono); font-size: 0.68rem; color: #94a3b8;">
-              CLEARANCE LEVEL 5
-            </span>
-          </div>
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <div style="font-size: 0.82rem; color: #e2e8f0;">
-              Enter Passcode to operate as <strong id="target-operator-name" style="color: var(--cyan);">Ro</strong>:
-              <span style="font-size: 0.72rem; color: #94a3b8; margin-left: 6px;">(Hint: enter operator name)</span>
-            </div>
-            <div style="display: flex; gap: 8px; align-items: center;">
-              <input type="password" id="operator-passcode-input" class="passcode-input" placeholder="Enter operator name..." onkeydown="if(event.key==='Enter') submitOperatorPasscode()">
-              <button class="btn-transmit" onclick="submitOperatorPasscode()" style="padding: 0.5rem 1.2rem; font-size: 0.78rem;">AUTHENTICATE</button>
-              <button onclick="cancelOperatorLogin()" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #cbd5e1; border-radius: 8px; padding: 0.5rem 0.85rem; font-size: 0.76rem; cursor: pointer;">CANCEL</button>
-            </div>
-            <div id="passcode-error-msg" style="color: #ff3b30; font-family: var(--font-mono); font-size: 0.72rem; display: none;">
-              ⚠️ ACCESS DENIED: Passcode must match operator name (case-insensitive).
-            </div>
-          </div>
-        </div>
-
-        <div id="chat-history" class="chat-history">
-          <div class="chat-msg jarvis">
-            <span class="chat-sender" style="color: var(--cyan);">J.A.R.V.I.S. // SECURITY MATRIX</span>
-            <div class="chat-bubble">
-              Welcome to the <strong>Kinetic Pour Operator Command Portal</strong>. All classified Capstone engineering dossiers, CEAS Innovation Challenge finances ($1,200 grant / $600 working capital), and internal task deliverables are indexed under Level 5 Security.<br><br>
-              <em>Please select your operator profile above (Ro, Aron, Eli, or Shyam) and authenticate with your passcode to access your active directives.</em>
-            </div>
-          </div>
-        </div>
-
-        <div class="chat-input-row">
-          <input type="text" id="chat-input" class="chat-input" placeholder="Query J.A.R.V.I.S. about active tasks, CEAS grant finances, or CAD deadlines..." onkeydown="if(event.key==='Enter') sendJarvisMessage()">
-          <button class="btn-transmit" onclick="sendJarvisMessage()">TRANSMIT</button>
-        </div>
+    <!-- OPERATOR AUTHENTICATION PANEL -->
+    <div class="operator-auth-panel">
+      <div class="auth-status-block">
+        <span class="auth-radar-dot" id="auth-radar-dot"></span>
+        <span id="auth-status-text" style="color: #94a3b8;">
+          CLEARANCE: <strong style="color: #cbd5e1;">OBSERVER TELEMETRY</strong> // SELECT OPERATOR PROFILE
+        </span>
       </div>
 
-      <div class="core-deck">
-        <div class="arc-reactor-card">
-          <div class="arc-visualizer">
-            <div class="arc-ring-1"></div>
-            <div class="arc-ring-2"></div>
-            <div class="arc-ring-3"></div>
-            <div class="arc-glow-core"></div>
+      <div class="operator-selector-group">
+        <button class="op-badge-btn" id="btn-op-ro" onclick="promptOperatorLogin('Ro')">
+          👤 OP-01: Ro
+        </button>
+        <button class="op-badge-btn" id="btn-op-aron" onclick="promptOperatorLogin('Aron')">
+          👤 OP-02: Aron
+        </button>
+        <button class="op-badge-btn" id="btn-op-eli" onclick="promptOperatorLogin('Eli')">
+          👤 OP-03: Eli
+        </button>
+        <button class="op-badge-btn" id="btn-op-shyam" onclick="promptOperatorLogin('Shyam')">
+          👤 OP-04: Shyam
+        </button>
+        <button class="op-exit-btn" id="btn-logout" onclick="logoutOperator()" style="display: none;">
+          LOGOUT // LOCK
+        </button>
+      </div>
+    </div>
+
+    <!-- PASSCODE PROMPT DRAWER -->
+    <div class="passcode-modal" id="passcode-modal">
+      <div class="passcode-title">
+        <span>SECURITY INTERLOCK // CLEARANCE LEVEL 5 VERIFICATION</span>
+        <span style="font-family: var(--font-mono); font-size: 0.7rem; color: #94a3b8;">ENCRYPTION: AES-256</span>
+      </div>
+      <div style="font-size: 0.8rem; color: #cbd5e1;">
+        Enter authentication passcode for <strong id="target-op-name" style="color: var(--cyan);">Ro</strong>:
+        <span style="font-size: 0.72rem; color: #64748b; margin-left: 6px;">(Passcode = Operator Name)</span>
+      </div>
+      <div class="passcode-row">
+        <input type="password" id="passcode-input" class="passcode-input" placeholder="Passcode (e.g. Ro)" onkeydown="if(event.key==='Enter') verifyPasscode()">
+        <button class="btn-auth" onclick="verifyPasscode()">AUTHENTICATE</button>
+        <button onclick="cancelPasscode()" style="background: transparent; border: 1px solid #334155; color: #94a3b8; padding: 0.55rem 0.9rem; border-radius: 6px; cursor: pointer;">CANCEL</button>
+      </div>
+      <div id="passcode-error" style="color: var(--red); font-family: var(--font-mono); font-size: 0.72rem; margin-top: 6px; display: none;">
+        ⚠️ AUTHENTICATION DENIED: Passcode does not match operator credential.
+      </div>
+    </div>
+
+    <!-- OPERATOR PERSONAL DOSSIER & CHECKLIST (UNLOCKED) -->
+    <div class="operator-dossier-deck" id="operator-dossier-deck">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-tactical); padding-bottom: 0.5rem;">
+        <div style="font-family: var(--font-disp); font-size: 0.88rem; font-weight: 800; color: var(--cyan);">
+          OPERATOR DOSSIER // <span id="dossier-operator-name">ROHENDHAR</span> [LEVEL 5 CLEARANCE]
+        </div>
+        <div style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--green);">
+          ● BIOMETRIC SYNCHRONIZED
+        </div>
+      </div>
+      <div style="margin-top: 0.6rem; font-size: 0.78rem; color: #94a3b8; font-family: var(--font-mono);" id="dossier-role-desc">
+        ROLE: Systems Integration Lead &amp; Project Manager
+      </div>
+      <ul class="dossier-checklist" id="dossier-checklist">
+        <!-- Injected via JS -->
+      </ul>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- TAB 1: JARVIS TACTICAL HUD -->
+    <!-- ================================================================= -->
+    <div class="tab-content active" id="tab-jarvis">
+      <div class="tactical-hud-deck">
+        
+        <!-- Terminal Window -->
+        <div class="terminal-window">
+          <div class="terminal-topbar">
+            <span>TERMINAL: /dev/ttyS0 [115200 8N1]</span>
+            <span id="terminal-clearance-badge" style="color: var(--amber);">[SECURITY: OBSERVER TELEMETRY]</span>
           </div>
 
-          <div style="text-align: center;">
-            <div style="font-family: var(--font-display); font-weight: 800; font-size: 0.95rem; color: #fff; letter-spacing: 0.04em;">
-              NEURAL CORE
-            </div>
-            <div style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--cyan); margin-top: 2px;">
-              TACTICAL DECISION ENGINE
+          <div class="chat-history" id="chat-history">
+            <div class="chat-msg jarvis">
+              <span class="chat-sender" style="color: var(--cyan);">J.A.R.V.I.S. // TACTICAL CORE ONLINE</span>
+              <div class="chat-bubble">
+                Good day. Tactical telemetry link established.<br><br>
+                To decrypt internal Capstone deliverables, CEAS grant allocations ($1,200), or milestone schedules, select your <strong>Operator Profile</strong> above and authenticate with your passcode.<br><br>
+                <em>Command shortcut: Type <code>help</code>, <code>status</code>, <code>bom</code>, or <code>deadlines</code> into the CLI prompt below.</em>
+              </div>
             </div>
           </div>
 
-          <div class="waveform-bar-group" id="waveform-group">
-            <span class="w-bar"></span>
-            <span class="w-bar"></span>
-            <span class="w-bar"></span>
-            <span class="w-bar"></span>
-            <span class="w-bar"></span>
-            <span class="w-bar"></span>
-            <span class="w-bar"></span>
-            <span class="w-bar"></span>
-            <span class="w-bar"></span>
-            <span class="w-bar"></span>
+          <!-- CLI Prompt Bar -->
+          <div class="terminal-cli-bar">
+            <span class="cli-prefix" id="cli-prompt-prefix">OP@JARVIS:~$</span>
+            <input type="text" id="cli-input" class="cli-input" placeholder="Enter query or CLI command (e.g. 'status', 'deliverables', 'bom', 'payout')..." onkeydown="if(event.key==='Enter') executeCliCommand()">
+            <button class="cli-send-btn" onclick="executeCliCommand()">EXECUTE</button>
           </div>
         </div>
 
-        <div class="presets-box">
-          <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: #94a3b8; letter-spacing: 0.08em; text-transform: uppercase;">
-            OPERATOR MISSION PRESETS
-          </span>
+        <!-- Right Tactical Deck: Arc Reactor & Presets -->
+        <div class="hud-side-panel">
+          <div class="arc-reactor-box">
+            <div class="reactor-core-frame">
+              <div class="arc-ring r1"></div>
+              <div class="arc-ring r2"></div>
+              <div class="arc-ring r3"></div>
+              <div class="arc-center-plasma"></div>
+            </div>
 
-          <div id="presets-container" style="display: flex; flex-direction: column; gap: 0.55rem;">
-            <button class="preset-pill" onclick="askPreset('What are my priority deliverables and action items?')">
-              <span>▸ My Priority Action Items</span>
-              <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--cyan);">[TASK]</span>
+            <div class="equalizer-waveform" id="equalizer-waveform">
+              <span class="eq-bar"></span>
+              <span class="eq-bar"></span>
+              <span class="eq-bar"></span>
+              <span class="eq-bar"></span>
+              <span class="eq-bar"></span>
+              <span class="eq-bar"></span>
+              <span class="eq-bar"></span>
+              <span class="eq-bar"></span>
+              <span class="eq-bar"></span>
+              <span class="eq-bar"></span>
+            </div>
+
+            <div style="font-family: var(--font-mono); font-size: 0.68rem; color: #64748b; letter-spacing: 0.08em; text-align: center;">
+              ARC REACTOR CORE // FREQ: 14.8 MHz<br>
+              <span style="color: var(--cyan);">NEURAL SYNAPSE STABLE</span>
+            </div>
+          </div>
+
+          <!-- Presets -->
+          <div class="tactical-presets-box">
+            <div class="preset-title">MISSION QUERY PRESETS</div>
+            <button class="preset-btn" onclick="runPreset('What are my priority deliverables and action items?')">
+              <span>▸ Priority Action Items</span>
+              <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--cyan);">[TODO]</span>
             </button>
-            <button class="preset-pill" onclick="askPreset('What are our milestone deadlines and Gantt schedule?')">
-              <span>▸ Master Milestone Deadlines</span>
-              <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--infrared);">[PLAN]</span>
+            <button class="preset-btn" onclick="runPreset('What are our milestone deadlines and Gantt schedule?')">
+              <span>▸ Master Milestone Schedule</span>
+              <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--amber);">[DATES]</span>
             </button>
-            <button class="preset-pill" onclick="askPreset('What is the deadline for the 5-Minute Pitch Deck Video and $600 payout?')">
+            <button class="preset-btn" onclick="runPreset('What is the deadline for the 5-Minute Pitch Deck Video and $600 payout?')">
               <span>▸ Pitch Video &amp; $600 Payout</span>
-              <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--gold);">[DATE]</span>
+              <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--green);">[CASH]</span>
             </button>
-            <button class="preset-pill" onclick="askPreset('Explain the CEAS Innovation Challenge $1,200 grant requirements')">
+            <button class="preset-btn" onclick="runPreset('Explain the CEAS Innovation Challenge $1,200 grant requirements')">
               <span>▸ $1,200 Grant Requirements</span>
-              <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--green);">[FUND]</span>
+              <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--cyan);">[RULES]</span>
             </button>
-            <button class="preset-pill" onclick="askPreset('What are the 8 bottle parameters and fluidic tubing specs?')">
+            <button class="preset-btn" onclick="runPreset('What are the 8 bottle parameters and fluidic tubing specs?')">
               <span>▸ 8-Bottle Fluidics &amp; Tubing</span>
-              <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--cyan);">[SPEC]</span>
+              <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--amber);">[SPEC]</span>
+            </button>
+            <button class="preset-btn" onclick="runPreset('What are the electrical PLC and relay specifications?')">
+              <span>▸ Click PLC &amp; Power Supply</span>
+              <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--green);">[ELEC]</span>
             </button>
           </div>
         </div>
+
       </div>
     </div>
+
+    <!-- ================================================================= -->
+    <!-- TAB 2: PLC REGISTER & I/O PIN MATRIX -->
+    <!-- ================================================================= -->
+    <div class="tab-content" id="tab-plc">
+      <div class="plc-matrix-grid">
+        
+        <!-- INPUTS -->
+        <div class="plc-panel">
+          <div class="plc-panel-header">
+            <span>AUTOMATIONDIRECT CLICK PLC // DIGITAL INPUTS (24V SINKING)</span>
+            <span style="color: var(--green);">6 CHANNELS</span>
+          </div>
+          <table class="plc-table">
+            <thead>
+              <tr>
+                <th>ADDRESS</th>
+                <th>SIGNAL</th>
+                <th>HARDWARE COMPONENT</th>
+                <th>STATE</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="color: var(--cyan);">X001</td>
+                <td>E_STOP_NC</td>
+                <td>Mushroom Emergency Pushbutton</td>
+                <td><span class="pin-status-pill high" id="pin-x001">CLOSED (24V)</span></td>
+              </tr>
+              <tr>
+                <td style="color: var(--cyan);">X002</td>
+                <td>CUP_SENSE</td>
+                <td>Infrared Photocell Centering Ring</td>
+                <td><span class="pin-status-pill high" id="pin-x002">DETECTED (24V)</span></td>
+              </tr>
+              <tr>
+                <td style="color: var(--cyan);">X003</td>
+                <td>LIMIT_UP</td>
+                <td>Normally-Closed Optical Microswitch</td>
+                <td><span class="pin-status-pill high" id="pin-x003">UNTRIPPED</span></td>
+              </tr>
+              <tr>
+                <td style="color: var(--cyan);">X004</td>
+                <td>LIMIT_DN</td>
+                <td>Normally-Closed Optical Microswitch</td>
+                <td><span class="pin-status-pill high" id="pin-x004">UNTRIPPED</span></td>
+              </tr>
+              <tr>
+                <td style="color: var(--cyan);">X005</td>
+                <td>FLOAT_BUS_1_4</td>
+                <td>Liquid Level Sensors (Bays 1-4)</td>
+                <td><span class="pin-status-pill high" id="pin-x005">OK (&gt;20%)</span></td>
+              </tr>
+              <tr>
+                <td style="color: var(--cyan);">X006</td>
+                <td>FLOAT_BUS_5_8</td>
+                <td>Liquid Level Sensors (Bays 5-8)</td>
+                <td><span class="pin-status-pill high" id="pin-x006">OK (&gt;20%)</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- OUTPUTS -->
+        <div class="plc-panel">
+          <div class="plc-panel-header">
+            <span>RELAY &amp; STEPPER OUTPUT MATRIX (24V RELAY / 1N4007 SNUBBER)</span>
+            <span style="color: var(--amber);">10 ACTUATORS</span>
+          </div>
+          <table class="plc-table">
+            <thead>
+              <tr>
+                <th>ADDRESS</th>
+                <th>ACTUATOR</th>
+                <th>LOAD CURRENT</th>
+                <th>STATUS / TEST</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="color: var(--cyan);">Y001</td>
+                <td>Pump 1: Bourbon</td>
+                <td>24V DC / 0.45A</td>
+                <td><button class="btn-test-toggle" onclick="togglePlcOutput(this, 'Y001')">OFF</button></td>
+              </tr>
+              <tr>
+                <td style="color: var(--cyan);">Y002</td>
+                <td>Pump 2: Vodka</td>
+                <td>24V DC / 0.45A</td>
+                <td><button class="btn-test-toggle" onclick="togglePlcOutput(this, 'Y002')">OFF</button></td>
+              </tr>
+              <tr>
+                <td style="color: var(--cyan);">Y003</td>
+                <td>Pump 3: Gin</td>
+                <td>24V DC / 0.45A</td>
+                <td><button class="btn-test-toggle" onclick="togglePlcOutput(this, 'Y003')">OFF</button></td>
+              </tr>
+              <tr>
+                <td style="color: var(--cyan);">Y004</td>
+                <td>Pump 4: Tequila</td>
+                <td>24V DC / 0.45A</td>
+                <td><button class="btn-test-toggle" onclick="togglePlcOutput(this, 'Y004')">OFF</button></td>
+              </tr>
+              <tr>
+                <td style="color: var(--cyan);">Y005</td>
+                <td>Pump 5: Triple Sec</td>
+                <td>24V DC / 0.45A</td>
+                <td><button class="btn-test-toggle" onclick="togglePlcOutput(this, 'Y005')">OFF</button></td>
+              </tr>
+              <tr>
+                <td style="color: var(--cyan);">Y006</td>
+                <td>Pump 6: Cranberry</td>
+                <td>24V DC / 0.45A</td>
+                <td><button class="btn-test-toggle" onclick="togglePlcOutput(this, 'Y006')">OFF</button></td>
+              </tr>
+              <tr>
+                <td style="color: var(--cyan);">Y007</td>
+                <td>Pump 7: Tonic Water</td>
+                <td>24V DC / 0.45A</td>
+                <td><button class="btn-test-toggle" onclick="togglePlcOutput(this, 'Y007')">OFF</button></td>
+              </tr>
+              <tr>
+                <td style="color: var(--cyan);">Y008</td>
+                <td>Pump 8: Citrus Juice</td>
+                <td>24V DC / 0.45A</td>
+                <td><button class="btn-test-toggle" onclick="togglePlcOutput(this, 'Y008')">OFF</button></td>
+              </tr>
+              <tr>
+                <td style="color: var(--amber);">Y009</td>
+                <td>Z-Stepper DIR (CW/CCW)</td>
+                <td>TTL Logic 5V</td>
+                <td><span class="pin-status-pill low">STANDBY</span></td>
+              </tr>
+              <tr>
+                <td style="color: var(--amber);">Y010</td>
+                <td>Z-Stepper PULSE</td>
+                <td>PWM 20 kHz</td>
+                <td><span class="pin-status-pill low">HOLD (0 kHz)</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- TAB 3: SOURCING LEDGER & BOM ROLLUP -->
+    <!-- ================================================================= -->
+    <div class="tab-content" id="tab-bom">
+      <div class="bom-table-deck">
+        <div class="bom-header-bar">
+          <div>
+            <span style="font-family: var(--font-disp); font-size: 1rem; font-weight: 800; color: #fff;">
+              ITEMIZED BILL OF MATERIALS (BOM) &amp; REQUISITIONS
+            </span>
+            <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--cyan);">
+              CEAS INNOVATION CHALLENGE GRANT ALLOCATION // LEAD: ARON JOSEPH
+            </div>
+          </div>
+          <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--green); text-align: right;">
+            GRANT: $1,200.00 &nbsp;|&nbsp; UPFRONT CAPITAL: $600.00
+          </div>
+        </div>
+
+        <table class="bom-table">
+          <thead>
+            <tr>
+              <th>REF #</th>
+              <th>SUB</th>
+              <th>ITEM DESCRIPTION</th>
+              <th>SUPPLIER / VENDOR</th>
+              <th>QTY</th>
+              <th>EST. UNIT</th>
+              <th>SUBTOTAL</th>
+              <th>PRE-APPROVAL STATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color: var(--cyan);">BOM-01</td>
+              <td>FLUID</td>
+              <td>GROTHEN 24V Peristaltic Dosing Pumps (3-Roller)</td>
+              <td>Amazon Business</td>
+              <td>8</td>
+              <td>$14.50</td>
+              <td>$116.00</td>
+              <td><span class="pin-status-pill high">PRE-APPROVED</span></td>
+            </tr>
+            <tr>
+              <td style="color: var(--cyan);">BOM-02</td>
+              <td>FLUID</td>
+              <td>750ml Flat-Bottom Glass Liquor Bottles &amp; Rubber Bungs</td>
+              <td>Uline / Specialized Glass</td>
+              <td>8</td>
+              <td>$6.20</td>
+              <td>$49.60</td>
+              <td><span class="pin-status-pill high">PRE-APPROVED</span></td>
+            </tr>
+            <tr>
+              <td style="color: var(--cyan);">BOM-03</td>
+              <td>FLUID</td>
+              <td>Food-Grade Silicone Tubing (3mm ID × 5mm OD, 50ft)</td>
+              <td>McMaster-Carr</td>
+              <td>1</td>
+              <td>$28.50</td>
+              <td>$28.50</td>
+              <td><span class="pin-status-pill high">PRE-APPROVED</span></td>
+            </tr>
+            <tr>
+              <td style="color: var(--cyan);">BOM-04</td>
+              <td>FLUID</td>
+              <td>1/4" Inline PVDF One-Way Check Valves</td>
+              <td>McMaster-Carr</td>
+              <td>8</td>
+              <td>$3.80</td>
+              <td>$30.40</td>
+              <td><span class="pin-status-pill high">PRE-APPROVED</span></td>
+            </tr>
+            <tr>
+              <td style="color: var(--amber);">BOM-05</td>
+              <td>ELEC</td>
+              <td>Mean Well LRS-350-24 (24V DC, 14.6A Enclosed PSU)</td>
+              <td>AutomationDirect</td>
+              <td>1</td>
+              <td>$42.00</td>
+              <td>$42.00</td>
+              <td><span class="pin-status-pill high">PRE-APPROVED</span></td>
+            </tr>
+            <tr>
+              <td style="color: var(--amber);">BOM-06</td>
+              <td>ELEC</td>
+              <td>AutomationDirect CLICK C0-00DR-D PLC (or Siemens LOGO!)</td>
+              <td>AutomationDirect</td>
+              <td>1</td>
+              <td>$119.00</td>
+              <td>$119.00</td>
+              <td><span class="pin-status-pill high">CANVAS REQ PENDING</span></td>
+            </tr>
+            <tr>
+              <td style="color: var(--amber);">BOM-07</td>
+              <td>ELEC</td>
+              <td>8-Channel 24V Optoisolated Relay Module + 1N4007 Diodes</td>
+              <td>Amazon Business</td>
+              <td>1</td>
+              <td>$16.80</td>
+              <td>$16.80</td>
+              <td><span class="pin-status-pill high">PRE-APPROVED</span></td>
+            </tr>
+            <tr>
+              <td style="color: var(--green);">BOM-08</td>
+              <td>MECH</td>
+              <td>NEMA 17 Stepper Motor + T8x8 Lead Screw (100mm travel)</td>
+              <td>SteppersOnline</td>
+              <td>1</td>
+              <td>$24.50</td>
+              <td>$24.50</td>
+              <td><span class="pin-status-pill high">PRE-APPROVED</span></td>
+            </tr>
+            <tr>
+              <td style="color: var(--green);">BOM-09</td>
+              <td>MECH</td>
+              <td>MGN12H Linear Rail &amp; Dual Bearing Carriage (350mm)</td>
+              <td>Amazon Business</td>
+              <td>1</td>
+              <td>$22.00</td>
+              <td>$22.00</td>
+              <td><span class="pin-status-pill high">PRE-APPROVED</span></td>
+            </tr>
+            <tr>
+              <td style="color: var(--green);">BOM-10</td>
+              <td>MECH</td>
+              <td>Custom PETG 8-Nozzle Dispensing Manifold &amp; Cup Ring</td>
+              <td>1819 Makerspace (3D Print)</td>
+              <td>1</td>
+              <td>$0.00</td>
+              <td>$0.00</td>
+              <td><span class="pin-status-pill high">IN-HOUSE</span></td>
+            </tr>
+            <tr style="background: rgba(0, 240, 255, 0.08); font-weight: 700;">
+              <td colspan="6" style="text-align: right; font-family: var(--font-mono); color: #fff;">ESTIMATED HARDWARE PROTOTYPE ROLLUP:</td>
+              <td style="font-family: var(--font-mono); color: var(--cyan); font-size: 0.95rem;">$448.80</td>
+              <td style="font-family: var(--font-mono); color: var(--green);">UNDER $600 WORKING CAPITAL</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- TAB 4: MILESTONES & CRITICAL PATH -->
+    <!-- ================================================================= -->
+    <div class="tab-content" id="tab-gantt">
+      <div class="gantt-radar-grid">
+        
+        <div class="countdown-card">
+          <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--red); font-weight: 700;">
+            🚨 CRITICAL MILESTONE 01 // 6 DAYS REMAINING
+          </div>
+          <div style="font-family: var(--font-disp); font-size: 1.1rem; font-weight: 800; color: #fff;">
+            Team Design Proposal Submission
+          </div>
+          <div class="countdown-timer" id="timer-m1">
+            05d : 14h : 22m : 18s
+          </div>
+          <p style="font-size: 0.8rem; color: #94a3b8;">
+            Requires complete itemized BOM vendor quotes from Aron, Electrical layout from Eli, Elevator kinematics from Shyam, and 8-nozzle CAD routing from Ro.
+          </p>
+        </div>
+
+        <div class="countdown-card">
+          <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--green); font-weight: 700;">
+            💰 FINANCIAL MILESTONE 02 // CAPITAL UNLOCK
+          </div>
+          <div style="font-family: var(--font-disp); font-size: 1.1rem; font-weight: 800; color: #fff;">
+            5-Minute Pitch Deck Video Submission ($600 Payout)
+          </div>
+          <div class="countdown-timer" id="timer-m2" style="color: var(--green);">
+            10d : 18h : 45m : 00s
+          </div>
+          <p style="font-size: 0.8rem; color: #94a3b8;">
+            Submitting this 5-minute video presentation unlocks the upfront <strong>$600.00 team payout ($150/person)</strong> deposited directly into team accounts for hardware purchasing.
+          </p>
+        </div>
+
+        <div class="countdown-card">
+          <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--cyan); font-weight: 700;">
+            🔬 ENGINEERING BENCHMARK 03
+          </div>
+          <div style="font-family: var(--font-disp); font-size: 1.1rem; font-weight: 800; color: #fff;">
+            Innovation Challenge Prototype Day
+          </div>
+          <div class="countdown-timer" id="timer-m3" style="color: var(--cyan);">
+            47d : 12h : 00m : 00s
+          </div>
+          <p style="font-size: 0.8rem; color: #94a3b8;">
+            Target date: Wednesday, Nov 4, 2026. Live in-person hardware demonstration of the automated 8-bottle pump matrix and elevator cup lift at UC 1819 Innovation Hub.
+          </p>
+        </div>
+
+        <div class="countdown-card">
+          <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--amber); font-weight: 700;">
+            🏆 COMPETITION GALA &amp; FINAL DEFENSE 04
+          </div>
+          <div style="font-family: var(--font-disp); font-size: 1.1rem; font-weight: 800; color: #fff;">
+            Final Awards Gala &amp; Senior Design Course Defense
+          </div>
+          <div class="countdown-timer" id="timer-m4" style="color: var(--amber);">
+            61d : 16h : 30m : 00s
+          </div>
+          <p style="font-size: 0.8rem; color: #94a3b8;">
+            Wednesday, Nov 18: Final Gala ($600 second stipend + $1,200 top 25% bonus). Tuesday, Dec 1: Formal Senior Design Course Defense before faculty panel.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- TAB 5: HYDRAULICS & KINEMATICS CALCULATOR -->
+    <!-- ================================================================= -->
+    <div class="tab-content" id="tab-calc">
+      <div class="calculator-grid">
+        
+        <!-- Peristaltic Fluid Flow Calculator -->
+        <div class="calc-card">
+          <div style="font-family: var(--font-disp); font-size: 1rem; font-weight: 800; color: var(--cyan);">
+            PERISTALTIC DOSING &amp; SHOT DISPENSE CALCULATOR
+          </div>
+          <p style="font-size: 0.78rem; color: #94a3b8;">
+            Calibrated for GROTHEN 24V DC 3-Roller pumps with 3mm ID food-grade silicone tubing (~150 mL/min).
+          </p>
+
+          <div class="calc-input-row">
+            <label>TARGET SHOT VOLUME (mL):</label>
+            <input type="number" id="calc-volume-ml" class="calc-input" value="44.3" step="0.5" oninput="calculateFluidDosing()">
+          </div>
+
+          <div class="calc-input-row">
+            <label>PUMP CALIBRATED FLOW RATE (mL / min):</label>
+            <input type="number" id="calc-flowrate" class="calc-input" value="150" step="5" oninput="calculateFluidDosing()">
+          </div>
+
+          <div class="calc-result-box" id="calc-dosing-result">
+            ⏱️ Required Run Time: <strong>17.72 seconds</strong><br>
+            ⚡ Energy Consumed: <strong>10.70 Joules</strong> (at 24V, 0.45A)<br>
+            📦 Liquid Volume: <strong>1.50 fl oz</strong> (Standard Jigger Shot)
+          </div>
+        </div>
+
+        <!-- Stepper Elevator Travel Calculator -->
+        <div class="calc-card">
+          <div style="font-family: var(--font-disp); font-size: 1rem; font-weight: 800; color: var(--amber);">
+            T8 LEAD SCREW &amp; NEMA 17 KINEMATICS CALCULATOR
+          </div>
+          <p style="font-size: 0.78rem; color: #94a3b8;">
+            Calibrated for T8x8 Lead Screw (2mm pitch, 4 starts = 8mm lead/rev) &amp; 1.8° stepper with 1/16 microstepping.
+          </p>
+
+          <div class="calc-input-row">
+            <label>VERTICAL TRAVEL STROKE (mm):</label>
+            <input type="number" id="calc-travel-mm" class="calc-input" value="100" step="5" oninput="calculateStepperKinematics()">
+          </div>
+
+          <div class="calc-input-row">
+            <label>DESIRED CARRIAGE TRANSIT SPEED (mm / sec):</label>
+            <input type="number" id="calc-speed-mms" class="calc-input" value="25" step="5" oninput="calculateStepperKinematics()">
+          </div>
+
+          <div class="calc-result-box" id="calc-stepper-result">
+            ⚙️ Steps Per Millimeter: <strong>400.0 steps / mm</strong><br>
+            🔄 Total Step Pulses: <strong>40,000 steps</strong><br>
+            ⏱️ Transit Duration: <strong>4.00 seconds</strong> (PLC PWM freq: 10,000 Hz)
+          </div>
+        </div>
+
+      </div>
+    </div>
+
   </main>
 
   <script>
-    let currentOperator = sessionStorage.getItem('kp_operator_auth_name') || null;
-    let isOperatorAuthenticated = sessionStorage.getItem('kp_operator_auth_state') === 'true';
-    let targetOperator = 'Ro';
+    // ==========================================
+    // AUDIO SYNTHESIZER (WEB AUDIO API)
+    // ==========================================
+    let audioCtx = null;
+    let audioEnabled = true;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playTacticalBeep(freq = 880, type = 'sine', duration = 0.05) {
+      if (!audioEnabled) return;
+      try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function toggleAudioFX() {
+      audioEnabled = !audioEnabled;
+      const el = document.getElementById('audio-fx-state');
+      if (el) el.innerText = audioEnabled ? 'ON' : 'OFF';
+      playTacticalBeep(audioEnabled ? 1200 : 400);
+    }
+
+    // ==========================================
+    // REAL-TIME CLOCK & MISSION COUNTDOWNS
+    // ==========================================
+    function updateMissionClocks() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour12: false });
+      const ms = String(now.getMilliseconds()).padStart(3, '0');
+      const clockEl = document.getElementById('live-utc-clock');
+      if (clockEl) clockEl.innerText = `EDT: ${timeStr}.${ms}`;
+
+      // Target Dates
+      const deadlines = {
+        'timer-m1': new Date('2026-09-23T13:30:00-04:00'), // Proposal
+        'timer-m2': new Date('2026-09-28T23:59:59-04:00'), // Video $600
+        'timer-m3': new Date('2026-11-04T12:00:00-05:00'), // Demo Day
+        'timer-m4': new Date('2026-11-18T18:00:00-05:00'), // Gala
+      };
+
+      for (const [id, date] of Object.entries(deadlines)) {
+        const diff = date - now;
+        const el = document.getElementById(id);
+        if (el) {
+          if (diff <= 0) {
+            el.innerText = "00d : 00h : 00m : 00s [DEADLINE PASSED]";
+          } else {
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const m = Math.floor((diff / (1000 * 60)) % 60);
+            const s = Math.floor((diff / 1000) % 60);
+            el.innerText = `${String(d).padStart(2, '0')}d : ${String(h).padStart(2, '0')}h : ${String(m).padStart(2, '0')}m : ${String(s).padStart(2, '0')}s`;
+          }
+        }
+      }
+    }
+    setInterval(updateMissionClocks, 80);
+
+    // ==========================================
+    // TAB SWITCHING
+    // ==========================================
+    function switchTacticalTab(tabId) {
+      playTacticalBeep(920);
+      document.querySelectorAll('.switch-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+      event.currentTarget.classList.add('active');
+      const target = document.getElementById(tabId);
+      if (target) target.classList.add('active');
+    }
+
+    // ==========================================
+    // OPERATOR AUTHENTICATION & DOSSIERS
+    // ==========================================
+    let authenticatedOperator = sessionStorage.getItem('kp_op_name') || null;
+    let targetPromptOperator = 'Ro';
+
+    const OPERATOR_DOSSIERS = {
+      'Ro': {
+        code: 'OP-RO-01',
+        title: 'Project Manager & Systems Integration Lead',
+        tasks: [
+          '8-Nozzle Manifold CAD: Complete fluid convergence routing in Fusion 360/SolidWorks.',
+          'Jacob Cress Documentation: Finalize and submit neutral Sponsor 101 description.',
+          'Proposal Synthesis: Consolidate BOM vendor quotes and CAD layouts by Sept 23.',
+          'Pitch Deck Video: Script and storyboard 5-minute video for Sept 28 ($600 payout).'
+        ]
+      },
+      'Aron': {
+        code: 'OP-AJ-02',
+        title: 'Finance, Procurement & Bottling Co-Lead',
+        tasks: [
+          'Itemized BOM Rollup: Compile exact vendor quotes for the Sept 23 Team Proposal.',
+          'Bottling Hardware: Finalize specs for 8 glass bottles, silicone check valves & bungs.',
+          'Canvas Purchase Requests: Prepare pre-approval request forms for Innovation Chair.',
+          'Canvas Course Check: Verify enrollment for $300 individual student stipend.'
+        ]
+      },
+      'Eli': {
+        code: 'OP-ER-03',
+        title: 'Electrical & Industrial Automation Lead',
+        tasks: [
+          'BOM Quotes: Finalize datasheets for Click PLC, Mean Well 24V PSU, and 8ch relays.',
+          'Single-Line Schematic: Create full electrical wiring diagram with E-stop cut.',
+          'Lift Limit Switches: Mount and verify NC optical homing switches with Shyam.',
+          'Bulkhead Layout: Finalize IP65 enclosure gland sizing and thermal venting.'
+        ]
+      },
+      'Shyam': {
+        code: 'OP-SP-04',
+        title: 'Operations & Kinematics Lead',
+        tasks: [
+          'Elevator CAD: Complete MGN12H linear rail and T8 lead screw mount bracket layout.',
+          'Master Gantt Chart: Update Excel critical path for Sept 23 Proposal & Sept 28 Video.',
+          'Ice Study: Document recommendation on stainless steel stones vs Peltier plate.',
+          'Makerspace 3D Prints: Queue PETG test prints at UC 1819 Innovation Hub.'
+        ]
+      }
+    };
 
     function promptOperatorLogin(name) {
-      targetOperator = name;
-      const targetEl = document.getElementById('target-operator-name');
-      if (targetEl) targetEl.innerText = name;
-
-      const box = document.getElementById('operator-passcode-box');
-      if (box) box.style.display = 'block';
-
-      const input = document.getElementById('operator-passcode-input');
-      if (input) {
-        input.value = '';
-        input.placeholder = `Passcode (e.g. ${name})`;
-        input.focus();
-      }
-
-      const err = document.getElementById('passcode-error-msg');
-      if (err) err.style.display = 'none';
+      playTacticalBeep(1100);
+      targetPromptOperator = name;
+      document.getElementById('target-op-name').innerText = name;
+      const modal = document.getElementById('passcode-modal');
+      modal.style.display = 'block';
+      const input = document.getElementById('passcode-input');
+      input.value = '';
+      input.placeholder = `Passcode (e.g. ${name})`;
+      input.focus();
+      document.getElementById('passcode-error').style.display = 'none';
     }
 
-    function cancelOperatorLogin() {
-      const box = document.getElementById('operator-passcode-box');
-      if (box) box.style.display = 'none';
+    function cancelPasscode() {
+      playTacticalBeep(600);
+      document.getElementById('passcode-modal').style.display = 'none';
     }
 
-    function submitOperatorPasscode() {
-      const input = document.getElementById('operator-passcode-input');
+    function verifyPasscode() {
+      const input = document.getElementById('passcode-input');
       const val = (input ? input.value : '').trim();
-      const err = document.getElementById('passcode-error-msg');
+      const err = document.getElementById('passcode-error');
 
-      if (val.toLowerCase() === targetOperator.toLowerCase()) {
-        currentOperator = targetOperator;
-        isOperatorAuthenticated = true;
-        sessionStorage.setItem('kp_operator_auth_name', currentOperator);
-        sessionStorage.setItem('kp_operator_auth_state', 'true');
-
-        const box = document.getElementById('operator-passcode-box');
-        if (box) box.style.display = 'none';
-
-        renderUI();
-
-        appendJarvisSystemNotice(
-          `Clearance Level 5 verified. Welcome, <strong>Operator ${currentOperator}</strong>. Active deliverables, CEAS grant allocations ($1,200), upfront payout schedule ($600), and internal subsystem deadlines are unlocked.`
-        );
+      if (val.toLowerCase() === targetPromptOperator.toLowerCase()) {
+        playTacticalBeep(1400);
+        authenticatedOperator = targetPromptOperator;
+        sessionStorage.setItem('kp_op_name', targetPromptOperator);
+        document.getElementById('passcode-modal').style.display = 'none';
+        applyOperatorUI();
+        appendSystemMessage(`ACCESS GRANTED: Level 5 Tactical Telemetry Unlocked for Operator ${targetPromptOperator.toUpperCase()}.`);
       } else {
-        if (err) {
-          err.innerText = `⚠️ ACCESS DENIED: Passcode must match operator name ("${targetOperator}").`;
-          err.style.display = 'block';
-        }
-        if (input) {
-          input.style.borderColor = '#ff3b30';
-          setTimeout(() => { input.style.borderColor = 'rgba(0, 240, 255, 0.45)'; }, 1000);
-        }
+        playTacticalBeep(350, 'sawtooth', 0.2);
+        if (err) err.style.display = 'block';
       }
     }
 
     function logoutOperator() {
-      sessionStorage.removeItem('kp_operator_auth_name');
-      sessionStorage.removeItem('kp_operator_auth_state');
-      currentOperator = null;
-      isOperatorAuthenticated = false;
-
-      const box = document.getElementById('operator-passcode-box');
-      if (box) box.style.display = 'none';
-
-      renderUI();
-
-      appendJarvisSystemNotice(
-        `Operator logged out. Security protocols reset to Level 1. Please select an operator to authenticate.`
-      );
+      playTacticalBeep(500);
+      authenticatedOperator = null;
+      sessionStorage.removeItem('kp_op_name');
+      applyOperatorUI();
+      appendSystemMessage("OPERATOR SECURE LOGOUT: Terminal returned to restricted Observer mode.");
     }
 
-    function renderUI() {
-      const btns = document.querySelectorAll('.op-select-btn');
-      btns.forEach(b => b.classList.remove('active'));
+    function applyOperatorUI() {
+      const dot = document.getElementById('auth-radar-dot');
+      const statusText = document.getElementById('auth-status-text');
+      const logoutBtn = document.getElementById('btn-logout');
+      const badgePrefix = document.getElementById('cli-prompt-prefix');
+      const clearanceBadge = document.getElementById('terminal-clearance-badge');
+      const dossierDeck = document.getElementById('operator-dossier-deck');
 
-      if (isOperatorAuthenticated && currentOperator) {
-        const activeBtn = document.getElementById(`btn-op-${currentOperator.toLowerCase()}`);
+      document.querySelectorAll('.op-badge-btn').forEach(btn => btn.classList.remove('active'));
+
+      if (authenticatedOperator) {
+        dot.className = 'auth-radar-dot authenticated';
+        statusText.innerHTML = `OPERATOR: <strong style="color: var(--cyan);">${authenticatedOperator.toUpperCase()}</strong> // LEVEL 5 CLEARANCE GRANTED`;
+        logoutBtn.style.display = 'inline-block';
+        badgePrefix.innerText = `${authenticatedOperator.toUpperCase()}@JARVIS:~$`;
+        clearanceBadge.innerText = `[SECURITY: LEVEL 5 CLEARANCE // ${authenticatedOperator.toUpperCase()}]`;
+        clearanceBadge.style.color = 'var(--green)';
+
+        const activeBtn = document.getElementById(`btn-op-${authenticatedOperator.toLowerCase()}`);
         if (activeBtn) activeBtn.classList.add('active');
-      }
 
-      const tag = document.getElementById('operator-status-tag');
-      const dot = document.getElementById('operator-status-dot');
-      const text = document.getElementById('operator-status-text');
-      const logoutBtn = document.getElementById('operator-logout-btn');
-
-      if (isOperatorAuthenticated && currentOperator) {
-        if (tag) tag.classList.add('active-auth');
-        if (dot) dot.classList.add('active-green');
-        if (text) text.innerText = `OPERATOR: ${currentOperator.toUpperCase()} // CLEARANCE: LEVEL 5 (AUTHORIZED)`;
-        if (logoutBtn) logoutBtn.style.display = 'inline-block';
+        // Render Dossier Checklist
+        const dossier = OPERATOR_DOSSIERS[authenticatedOperator];
+        if (dossier) {
+          dossierDeck.style.display = 'block';
+          document.getElementById('dossier-operator-name').innerText = `${authenticatedOperator.toUpperCase()} [${dossier.code}]`;
+          document.getElementById('dossier-role-desc').innerText = `ROLE: ${dossier.title}`;
+          const list = document.getElementById('dossier-checklist');
+          list.innerHTML = '';
+          dossier.tasks.forEach((task, idx) => {
+            const savedKey = `kp_task_${authenticatedOperator}_${idx}`;
+            const checked = localStorage.getItem(savedKey) === 'true';
+            const li = document.createElement('li');
+            li.className = 'dossier-item';
+            li.innerHTML = `
+              <input type="checkbox" id="${savedKey}" ${checked ? 'checked' : ''} onchange="localStorage.setItem('${savedKey}', this.checked); playTacticalBeep(1000);">
+              <label for="${savedKey}" style="${checked ? 'text-decoration: line-through; color: #64748b;' : ''}">${task}</label>
+            `;
+            list.appendChild(li);
+          });
+        }
       } else {
-        if (tag) tag.classList.remove('active-auth');
-        if (dot) dot.classList.remove('active-green');
-        if (text) text.innerText = 'STATUS: OBSERVER // CLEARANCE REQUIRED';
-        if (logoutBtn) logoutBtn.style.display = 'none';
+        dot.className = 'auth-radar-dot';
+        statusText.innerHTML = `CLEARANCE: <strong style="color: #cbd5e1;">OBSERVER TELEMETRY</strong> // SELECT OPERATOR PROFILE`;
+        logoutBtn.style.display = 'none';
+        badgePrefix.innerText = `OP@JARVIS:~$`;
+        clearanceBadge.innerText = `[SECURITY: OBSERVER TELEMETRY]`;
+        clearanceBadge.style.color = 'var(--amber)';
+        dossierDeck.style.display = 'none';
       }
     }
 
-    function appendJarvisSystemNotice(html) {
+    // ==========================================
+    // TERMINAL CHAT & CLI ENGINE
+    // ==========================================
+    function appendSystemMessage(text) {
       const history = document.getElementById('chat-history');
-      if (!history) return;
-
       const div = document.createElement('div');
       div.className = 'chat-msg jarvis';
       div.innerHTML = `
-        <span class="chat-sender" style="color: var(--cyan);">J.A.R.V.I.S. // SECURITY MATRIX</span>
-        <div class="chat-bubble" style="border-color: rgba(0, 240, 255, 0.4);">${html}</div>
+        <span class="chat-sender" style="color: var(--amber);">SYSTEM NOTIFICATION</span>
+        <div class="chat-bubble" style="border-color: rgba(245, 158, 11, 0.4);">${text}</div>
       `;
       history.appendChild(div);
       history.scrollTop = history.scrollHeight;
     }
 
-    function surgeWaveform(active) {
-      const bars = document.querySelectorAll('.w-bar');
-      bars.forEach(b => {
-        b.style.animationDuration = active ? '0.3s' : '1.2s';
-        b.style.boxShadow = active ? '0 0 14px #00f0ff' : '0 0 6px rgba(0, 240, 255, 0.6)';
-      });
-    }
-
-    async function sendJarvisMessage(text) {
-      const input = document.getElementById('chat-input');
-      const message = text || input.value.trim();
+    async function executeCliCommand(cmdText) {
+      const input = document.getElementById('cli-input');
+      const message = cmdText || (input ? input.value.trim() : '');
       if (!message) return;
+      if (input) input.value = '';
 
-      if (!text) input.value = '';
+      playTacticalBeep(1050);
 
       const history = document.getElementById('chat-history');
-
       const userDiv = document.createElement('div');
       userDiv.className = 'chat-msg user';
-      const senderHeader = isOperatorAuthenticated 
-        ? `OPERATOR: ${currentOperator.toUpperCase()} // TRANSMIT` 
-        : 'OBSERVER // INQUIRY';
-
+      const senderTag = authenticatedOperator ? `OPERATOR [${authenticatedOperator.toUpperCase()}]` : 'OBSERVER';
       userDiv.innerHTML = `
-        <span class="chat-sender" style="color: var(--infrared);">${senderHeader}</span>
+        <span class="chat-sender" style="color: var(--cyan);">${senderTag}</span>
         <div class="chat-bubble">${escapeHtml(message)}</div>
       `;
       history.appendChild(userDiv);
       history.scrollTop = history.scrollHeight;
 
-      surgeWaveform(true);
+      // Handle direct local CLI shortcuts
+      const lower = message.toLowerCase().trim();
+      if (lower === 'clear') {
+        history.innerHTML = '';
+        appendSystemMessage("Terminal buffer cleared.");
+        return;
+      }
+      if (lower === 'help') {
+        appendSystemMessage(
+          "<strong>AVAILABLE CLI COMMANDS:</strong><br>" +
+          "• <code>status</code> : System health and hardware telemetry<br>" +
+          "• <code>whoami</code> : Current authenticated operator clearance<br>" +
+          "• <code>bom</code> : Requisitions and procurement rundown<br>" +
+          "• <code>deadlines</code> : Critical milestone countdown radar<br>" +
+          "• <code>plc</code> : I/O pin mapping matrix summary<br>" +
+          "• <code>clear</code> : Clear terminal logs<br>" +
+          "<em>Or enter any natural language question for J.A.R.V.I.S.</em>"
+        );
+        return;
+      }
 
+      // Live synthesis loader
       const loadingDiv = document.createElement('div');
       loadingDiv.className = 'chat-msg jarvis';
       loadingDiv.innerHTML = `
-        <span class="chat-sender" style="color: var(--cyan); display: flex; align-items: center; gap: 6px;">
-          <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan); animation: pulseGreen 1s infinite alternate;"></span>
-          J.A.R.V.I.S. // SYNTHESIZING
-        </span>
-        <div class="chat-bubble" style="color: var(--cyan);">
-          Accessing encrypted Capstone telemetry...
-        </div>
+        <span class="chat-sender" style="color: var(--cyan);">J.A.R.V.I.S. // PROCESSING</span>
+        <div class="chat-bubble" style="color: var(--cyan);">Querying Capstone encrypted database...</div>
       `;
       history.appendChild(loadingDiv);
       history.scrollTop = history.scrollHeight;
@@ -691,125 +1998,182 @@
         const res = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            sender: isOperatorAuthenticated ? currentOperator : 'Guest', 
-            operatorAuth: isOperatorAuthenticated,
-            message: message 
+          body: JSON.stringify({
+            sender: authenticatedOperator || 'Guest',
+            operatorAuth: !!authenticatedOperator,
+            message: message
           })
         });
         const data = await res.json();
-        surgeWaveform(false);
         loadingDiv.innerHTML = `
-          <span class="chat-sender" style="color: var(--cyan);">
-            J.A.R.V.I.S. // ${isOperatorAuthenticated ? 'TACTICAL OPERATOR AI' : 'OBSERVER TELEMETRY'}
-          </span>
-          <div class="chat-bubble">${formatReply(data.reply || "No response received.")}</div>
+          <span class="chat-sender" style="color: var(--cyan);">J.A.R.V.I.S. // RESPONSE</span>
+          <div class="chat-bubble">${formatReply(data.reply || 'No response telemetry received.')}</div>
         `;
-      } catch (err) {
-        surgeWaveform(false);
-        const q = message.toLowerCase();
-        let fallbackText = "";
-
-        if (!isOperatorAuthenticated) {
-          if (q.includes("task") || q.includes("todo") || q.includes("action") || q.includes("deadline") || q.includes("fund") || q.includes("money") || q.includes("grant") || q.includes("payout")) {
-            fallbackText = "🔒 **Security Interlock Active**: You are currently in Observer mode.\n\n" +
-              "To review internal task lists, CEAS grant allocations ($1,200), or milestone deadlines, please select your operator profile (Ro, Aron, Eli, or Shyam) and authenticate with your passcode.";
-          } else {
-            fallbackText = "Welcome to the **Operator Command Portal**. Please authenticate as an operator to unlock Level 5 Capstone telemetry.";
-          }
-        } else {
-          const op = currentOperator.toLowerCase();
-
-          if (q.includes("task") || q.includes("todo") || q.includes("action") || q.includes("what should i") || q.includes("deliverable") || q.includes("assignment")) {
-            if (op.includes("eli")) {
-              fallbackText = "Good day, **Mr. Radabaugh**. Here are your active engineering deliverables as **Electrical Lead**:\n\n" +
-                "### ⚡ Eli's Priority Action Items (Target: Wednesday, Sept 23):\n" +
-                "1. **BOM Vendor Quotes**: Finalize exact quotes and datasheets for the Click PLC (AutomationDirect) or Siemens LOGO!, Mean Well LRS-350-24 power supply, 24V relay module, flyback diodes, and terminal blocks.\n" +
-                "2. **Electrical CAD Layout**: Produce single-line wiring schematic and bulkhead IP-rated enclosure layout.\n" +
-                "3. **Z-Axis Lift Co-Lead**: Finalize wiring and mount locations for upper/lower normally-closed optical limit switches on the lift carriage with Shyam.\n" +
-                "4. **Innovation Challenge**: Confirm you have joined the Canvas course page (mandatory for $300 payout).";
-            } else if (op.includes("aron")) {
-              fallbackText = "Good day, **Mr. Joseph**. Here are your active deliverables as **Finance & Bottling Co-Lead**:\n\n" +
-                "### 💰 Aron's Priority Action Items (Target: Wednesday, Sept 23):\n" +
-                "1. **BOM Cost Rollup**: Compile itemized quotes from all 4 section leads for the Team Design Proposal.\n" +
-                "2. **Bottling Hardware Quotes**: Finalize vendor quotes for 8 uniform flat-bottom bottles (500ml–750ml), food-grade rubber corks with silicone check valves, 12V peristaltic pumps, and silicone tubing.\n" +
-                "3. **Purchase Request Forms**: Prepare Canvas Purchase Request drafts for Innovation Chair authorization (pre-approval required prior to any spending).\n" +
-                "4. **Innovation Challenge**: Confirm Canvas enrollment for $300 individual stipend.";
-            } else if (op.includes("shyam")) {
-              fallbackText = "Good day, **Mr. Patel**. Here are your active deliverables as **Operations & Gantt Lead**:\n\n" +
-                "### 📐 Shyam's Priority Action Items (Target: Wednesday, Sept 23):\n" +
-                "1. **Lift Mechanism CAD Layout**: Complete CAD drawing and sizing for the MGN12H linear guide rail (350mm–400mm) and 8mm lead screw with NEMA 17 motor.\n" +
-                "2. **Master Gantt Maintenance**: Update the master Excel schedule for upcoming deliverables (Sept 23 Proposal, Sept 28 Pitch Video).\n" +
-                "3. **Ice / Thermal Study**: Finalize recommendation (reusable 304 stainless steel whiskey stones cold bay vs thermoelectric Peltier plate).\n" +
-                "4. **Innovation Challenge**: Confirm Canvas enrollment for $300 individual stipend.";
-            } else {
-              fallbackText = "Good day, **Sir (Mr. Rohendhar)**. Here are your active executive directives as **Project Manager & Systems Lead**:\n\n" +
-                "### 🎯 Ro's Priority Action Items (Target: Wednesday, Sept 23):\n" +
-                "1. **Bottling CAD & Fluid Routing**: Complete CAD layout drawing for the 8-nozzle dispensing manifold, cup centering ring, and fluid routing lines.\n" +
-                "2. **Jacob Cress Documentation**: Finalize and submit the Team Lead / Project Sponsor introductory document.\n" +
-                "3. **Team Proposal Synthesis**: Merge all 4 section BOM quotes and CAD layouts into the master submission by Sept 23.\n" +
-                "4. **5-Minute Pitch Deck Video**: Structure slides and script for the Sept 28 submission ($600 upfront team payout).";
-            }
-          } else if (q.includes("deadline") || q.includes("date") || q.includes("schedule") || q.includes("when") || q.includes("due") || q.includes("gantt") || q.includes("milestone")) {
-            fallbackText = `Good day, **Operator ${currentOperator}**. Here is our verified Master Milestone Schedule:\n\n` +
-              "### 📅 Master Project Deadlines:\n" +
-              "• **🚨 Wednesday, Sept 23**: **Team Design Proposal** *(BOM Quotes + Section CAD Layouts)*.\n" +
-              "• **💰 Monday, Sept 28**: **5-Minute Pitch Deck Video** *(Unlocks $600.00 upfront team payout for prototype capital)*.\n" +
-              "• **Friday, Oct 2**: Senior Design Draft Proposal for Prof. Jacob Cress.\n" +
-              "• **Wednesday, Nov 4**: Innovation Challenge **Prototype Day** (In-person benchtop rig demo).\n" +
-              "• **🎉 Wednesday, Nov 18**: **Final Competition & Gala** *($600 second stipend + $1,200 bonus + 100% reimbursement)*.\n" +
-              "• **Tuesday, Dec 1**: Formal Senior Design Course Defense.\n\n" +
-              "⏰ *Meeting Cadence*: Twice weekly — immediately before (12:45 PM) and after (2:45 PM) Wednesday 1:30 PM class.";
-          } else if (q.includes("fund") || q.includes("money") || q.includes("grant") || q.includes("budget") || q.includes("payout") || q.includes("cost") || q.includes("1200") || q.includes("600") || q.includes("challenge") || q.includes("stipend")) {
-            fallbackText = `Here is the financial breakdown for the **CEAS Innovation Challenge**, **Operator ${currentOperator}**:\n\n` +
-              "• **Total Guaranteed Grant**: **$1,200.00** ($300.00 per student) for completing the 3 deliverables.\n" +
-              "• **Upfront Working Capital**: **$600.00** ($150/person) awarded upon submitting the **5-Minute Pitch Deck Video (Sept 28)**, used directly as active prototype budget.\n" +
-              "• **Top 25% Bonus**: Additional **$1,200.00** ($300/person); podium prizes up to **$700/person**.\n" +
-              "• **100% Material Reimbursement**: Covers all hardware, fasteners, and 1819 Makerspace equipment.\n" +
-              "• **⚠️ Critical Rule**: You MUST complete the Canvas **Purchase Request Form** and obtain Innovation Chair authorization **BEFORE** buying anything. Itemized receipts only; NO gift cards.";
-          } else if (q.includes("bottle") || q.includes("fluid") || q.includes("tube") || q.includes("pump")) {
-            fallbackText = `Here are the engineering parameters for the **8-Bottle Fluidics Subsystem**, **Operator ${currentOperator}**:\n\n` +
-              "• **Reservoirs:** 8x 750ml Bordeaux-style modular bottles in a 2x4 3D-printed caddy.\n" +
-              "• **Check Valves:** 1/4\" inline one-way valves to prevent backflow and keep lines primed.\n" +
-              "• **Dosing Pumps:** 8x GROTHEN 24V peristaltic pumps with 3-roller rotor heads.\n" +
-              "• **Tubing:** High-temperature food-grade 3x5mm silicone tubing converging at the 3D printed manifold.\n" +
-              "• **Leads:** Rohendhar & Aron Joseph.";
-          } else if (q.includes("lift") || q.includes("elevator") || q.includes("screw") || q.includes("stepper")) {
-            fallbackText = `Regarding the **T8 Linear Elevator Subsystem**, **Operator ${currentOperator}**:\n\n` +
-              "• **Mechanism:** NEMA 17 stepper motor driving a T8 stainless lead screw with dual precision guide rods.\n" +
-              "• **Stroke Travel:** 100 mm vertical stroke (lowers cup into dispensing bay, then lifts flush with tabletop).\n" +
-              "• **Sensors:** IR optical photocell cup-presence check and optical microswitch endstops.\n" +
-              "• **Leads:** Shyam Patel & Eli Radabaugh.";
-          } else if (q.includes("team") || q.includes("roster") || q.includes("who")) {
-            fallbackText = `Here is the **Kinetic Pour Leadership Roster**, **Operator ${currentOperator}**:\n\n` +
-              "• **Rohendhar**: Project Manager & Systems Integration Lead (Lead)\n" +
-              "• **Aron Joseph**: Finance, Procurement & Bottling Co-Lead\n" +
-              "• **Eli Radabaugh**: Electrical Subsystem & Industrial Automation Lead\n" +
-              "• **Shyam Patel**: Mechanical Kinematics, Linear Elevator & Gantt Lead";
-          } else {
-            fallbackText = `At your service, **Operator ${currentOperator}**. J.A.R.V.I.S. neural telemetry is fully operational.\n\n` +
-              "All Level 5 engineering dossiers for **Kinetic Pour** are indexed (8-bottle fluidics, T8 elevator, GROTHEN pumps, CEAS Innovation Challenge budgets, and personal task matrices).\n\n" +
-              "How may I assist your engineering deliverables today?";
-          }
-        }
-
+        playTacticalBeep(850);
+      } catch (e) {
+        // Zero-PC Static Fallback
+        playTacticalBeep(780);
+        const reply = generateStaticOperatorReply(message);
         loadingDiv.innerHTML = `
-          <span class="chat-sender" style="color: var(--cyan);">
-            J.A.R.V.I.S. // ${isOperatorAuthenticated ? 'LOCAL OPERATOR ENGINE' : 'OBSERVER TELEMETRY'}
-          </span>
-          <div class="chat-bubble">${formatReply(fallbackText)}</div>
+          <span class="chat-sender" style="color: var(--cyan);">J.A.R.V.I.S. // TACTICAL INTELLIGENCE</span>
+          <div class="chat-bubble">${formatReply(reply)}</div>
         `;
       }
       history.scrollTop = history.scrollHeight;
     }
 
-    function askPreset(q) { sendJarvisMessage(q); }
-    function escapeHtml(text) { return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-    function formatReply(text) {
-      return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+    function runPreset(q) {
+      executeCliCommand(q);
     }
 
-    renderUI();
+    function generateStaticOperatorReply(msg) {
+      const q = msg.toLowerCase();
+      const isAuth = !!authenticatedOperator;
+      const op = (authenticatedOperator || '').toLowerCase();
+
+      if (!isAuth) {
+        if (q.includes('task') || q.includes('todo') || q.includes('action') || q.includes('deadline') || q.includes('grant') || q.includes('payout') || q.includes('money') || q.includes('fund')) {
+          return "🔒 **Security Interlock Active**: Observer clearance insufficient for Capstone internal deliverables or CEAS grant records.\n\n" +
+                 "Please select an **Operator Profile** (Ro, Aron, Eli, Shyam) above and authenticate with your passcode.";
+        }
+        return "Welcome to the **Kinetic Pour Tactical Command Deck**.\n\n" +
+               "Operating in **Observer Mode**. I can answer general system architecture, fluidics telemetry, and elevator kinematics.\n\n" +
+               "Authenticate as a team operator to decrypt internal task lists and financial grant budgets.";
+      }
+
+      // Authenticated Responses
+      if (q.includes('task') || q.includes('todo') || q.includes('action') || q.includes('deliverable') || q.includes('whoami')) {
+        if (op.includes('eli')) {
+          return "Good day, **Mr. Radabaugh**. Here are your active engineering directives as **Electrical & Automation Lead**:\n\n" +
+                 "### ⚡ Eli's Priority Deliverables (Target: Wednesday, Sept 23):\n" +
+                 "1. **BOM Vendor Quotes**: Finalize exact quotes for the Click PLC, Mean Well 24V PSU, 8-channel relay board, and 1N4007 flyback diodes.\n" +
+                 "2. **Wiring Schematic**: Produce single-line electrical schematic with physical mushroom E-stop cut on 24V rail.\n" +
+                 "3. **Homing Sensors**: Calibrate NC optical limit switches for carriage homing with Shyam.\n" +
+                 "4. **Canvas Enrollment**: Verify enrollment in Innovation Challenge Canvas course for $300 student stipend.";
+        } else if (op.includes('aron')) {
+          return "Good day, **Mr. Joseph**. Here are your active deliverables as **Finance & Procurement Lead**:\n\n" +
+                 "### 💰 Aron's Priority Deliverables (Target: Wednesday, Sept 23):\n" +
+                 "1. **BOM Cost Rollup**: Consolidate quotes from all 4 section leads for the Team Proposal submission.\n" +
+                 "2. **Bottling Quotes**: Finalize vendor quotes for 8 uniform glass bottles, silicone bungs, check valves, and Grothen peristaltic pumps.\n" +
+                 "3. **Canvas Purchase Requests**: Prepare pre-approval request forms for Innovation Chair authorization.\n" +
+                 "4. **Grant Drawdown**: Maintain $600 upfront working capital ledger for prototype purchasing.";
+        } else if (op.includes('shyam')) {
+          return "Good day, **Mr. Patel**. Here are your active deliverables as **Operations & Kinematics Lead**:\n\n" +
+                 "### 📐 Shyam's Priority Deliverables (Target: Wednesday, Sept 23):\n" +
+                 "1. **Elevator CAD Layout**: Complete CAD assembly for MGN12H linear rail and T8 lead screw with NEMA 17 stepper.\n" +
+                 "2. **Master Gantt Schedule**: Maintain critical path Excel schedule for Sept 23 Proposal and Sept 28 Pitch Video.\n" +
+                 "3. **Thermal / Ice Study**: Finalize recommendation on 304 stainless steel whiskey stones vs Peltier cold plate.\n" +
+                 "4. **3D Print Queue**: Queue elevator bracket and carriage test prints at UC 1819 Makerspace.";
+        } else {
+          return "Good day, **Sir (Mr. Rohendhar)**. Here are your active executive directives as **Project Manager & Systems Lead**:\n\n" +
+                 "### 🎯 Ro's Priority Deliverables (Target: Wednesday, Sept 23):\n" +
+                 "1. **8-Nozzle Manifold CAD**: Finalize fluid convergence geometry and cup centering ring in Fusion 360/SolidWorks.\n" +
+                 "2. **Jacob Cress Documentation**: Submit finalized Team Lead / Sponsor introductory document.\n" +
+                 "3. **Team Proposal Synthesis**: Merge all 4 section BOM quotes and CAD drawings into master submission by Sept 23.\n" +
+                 "4. **5-Minute Pitch Deck Video**: Direct script and slide deck for Sept 28 video ($600 upfront team payout).";
+        }
+      }
+
+      if (q.includes('deadline') || q.includes('gantt') || q.includes('schedule') || q.includes('when')) {
+        return "### 📅 Master Capstone Milestone Deadlines:\n\n" +
+               "• **🚨 Wednesday, Sept 23**: **Team Design Proposal** (BOM Quotes + Section CAD Layouts) — **6 DAYS REMAINING**.\n" +
+               "• **💰 Monday, Sept 28**: **5-Minute Pitch Deck Video** (Unlocks **$600.00** upfront capital for prototype parts).\n" +
+               "• **Friday, Oct 2**: Senior Design Draft Proposal for Prof. Jacob Cress.\n" +
+               "• **Wednesday, Nov 4**: **Prototype Demo Day** (In-person benchtop rig demo at 1819 Hub).\n" +
+               "• **🎉 Wednesday, Nov 18**: **Final Competition & Gala** ($600 second stipend + $1,200 bonus + 100% material reimbursement).\n" +
+               "• **Tuesday, Dec 1**: Formal Senior Design Course Defense before faculty panel.";
+      }
+
+      if (q.includes('fund') || q.includes('grant') || q.includes('money') || q.includes('payout') || q.includes('cost') || q.includes('bom')) {
+        return "### 💰 CEAS Innovation Challenge Grant Breakdown:\n\n" +
+               "• **Total Guaranteed Grant**: **$1,200.00** ($300.00 per student) for deliverable completion.\n" +
+               "• **Upfront Working Capital**: **$600.00** ($150/person) awarded upon **Sept 28 Pitch Deck Video**, used directly as prototype budget.\n" +
+               "• **Top 25% Performance Bonus**: Additional **$1,200.00** ($300/person); podium prizes up to **$700/person**.\n" +
+               "• **100% Hardware Reimbursement**: All itemized receipts eligible upon prior Canvas purchase pre-approval.";
+      }
+
+      if (q.includes('plc') || q.includes('wire') || q.includes('relay') || q.includes('power')) {
+        return "### ⚡ Electrical & Control System Telemetry:\n\n" +
+               "• **PLC**: AutomationDirect CLICK C0-00DR-D (or Siemens LOGO! 24RCE) with 24V sinking I/O.\n" +
+               "• **Power Supply**: Mean Well LRS-350-24 (24V DC, 14.6A, 350W).\n" +
+               "• **Relays**: 8-channel optoisolated relay board with 1N4007 flyback diodes across inductive pump coils.\n" +
+               "• **Safety**: Physical mushroom E-Stop cutting 24V actuator power while maintaining PLC logic.";
+      }
+
+      return `Operational directive acknowledged, **${authenticatedOperator}**. All telemetry feeds nominal. How may I assist you further with CAD specs, wiring diagrams, or milestone tracking?`;
+    }
+
+    function formatReply(text) {
+      let f = text
+        .replace(/### (.*?)\n/g, '<h3>$1</h3>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/• (.*?)\n/g, '<li>$1</li>')
+        .replace(/`([^`]+)`/g, '<code>$1</code>');
+      if (f.includes('<li>')) f = f.replace(/(<li>.*?<\/li>)+/g, '<ul>$&</ul>');
+      return f.replace(/\n\n/g, '<br><br>');
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // ==========================================
+    // PLC INTERACTIVE OUTPUT TOGGLER
+    // ==========================================
+    function togglePlcOutput(btn, address) {
+      playTacticalBeep(1250);
+      const isOff = btn.innerText === 'OFF';
+      btn.innerText = isOff ? 'ON (ACTIVE)' : 'OFF';
+      btn.style.background = isOff ? 'var(--cyan)' : 'rgba(0, 240, 255, 0.1)';
+      btn.style.color = isOff ? '#000' : 'var(--cyan)';
+      btn.style.fontWeight = isOff ? '800' : '400';
+    }
+
+    // ==========================================
+    // ENGINEERING CALCULATORS
+    // ==========================================
+    function calculateFluidDosing() {
+      const vol = parseFloat(document.getElementById('calc-volume-ml').value) || 0;
+      const rate = parseFloat(document.getElementById('calc-flowrate').value) || 150;
+      const res = document.getElementById('calc-dosing-result');
+      if (!res) return;
+
+      const timeSec = (vol / rate) * 60;
+      const joules = 24 * 0.45 * timeSec;
+      const oz = vol * 0.033814;
+
+      res.innerHTML = `
+        ⏱️ Required Run Time: <strong>${timeSec.toFixed(2)} seconds</strong><br>
+        ⚡ Energy Consumed: <strong>${joules.toFixed(2)} Joules</strong> (at 24V, 0.45A)<br>
+        📦 Liquid Volume: <strong>${oz.toFixed(2)} fl oz</strong> (${(vol/44.3).toFixed(1)} Standard Shots)
+      `;
+    }
+
+    function calculateStepperKinematics() {
+      const dist = parseFloat(document.getElementById('calc-travel-mm').value) || 0;
+      const speed = parseFloat(document.getElementById('calc-speed-mms').value) || 25;
+      const res = document.getElementById('calc-stepper-result');
+      if (!res) return;
+
+      const stepsPerMm = 400.0;
+      const totalSteps = dist * stepsPerMm;
+      const duration = speed > 0 ? (dist / speed) : 0;
+      const pwmFreq = speed * stepsPerMm;
+
+      res.innerHTML = `
+        ⚙️ Steps Per Millimeter: <strong>${stepsPerMm.toFixed(1)} steps / mm</strong><br>
+        🔄 Total Step Pulses: <strong>${totalSteps.toLocaleString()} steps</strong><br>
+        ⏱️ Transit Duration: <strong>${duration.toFixed(2)} seconds</strong> (PLC PWM freq: ${pwmFreq.toLocaleString()} Hz)
+      `;
+    }
+
+    // Initialize UI on load
+    window.addEventListener('DOMContentLoaded', () => {
+      applyOperatorUI();
+      calculateFluidDosing();
+      calculateStepperKinematics();
+    });
   </script>
 </body>
 </html>
