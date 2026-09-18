@@ -789,6 +789,135 @@
       box-shadow: 0 0 8px #00f0ff;
     }
 
+    /* Operator Authentication & Clearance HUD */
+    .operator-auth-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      padding: 0.65rem 1.2rem;
+      background: rgba(10, 14, 22, 0.92);
+      border-bottom: 1px solid rgba(0, 240, 255, 0.15);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .operator-status-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #94a3b8;
+      letter-spacing: 0.04em;
+    }
+
+    .operator-status-pill.authenticated {
+      color: #00f0ff;
+    }
+
+    .status-indicator-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #94a3b8;
+      box-shadow: 0 0 6px rgba(148, 163, 184, 0.5);
+      transition: all 0.3s ease;
+    }
+
+    .status-indicator-dot.active-operator {
+      background: #00f0ff;
+      box-shadow: 0 0 10px #00f0ff;
+      animation: pulseGreen 1.2s infinite alternate;
+    }
+
+    .operator-selector-buttons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .operator-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 6px;
+      padding: 0.35rem 0.75rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+    }
+
+    .operator-btn:hover {
+      background: rgba(0, 240, 255, 0.12);
+      border-color: #00f0ff;
+      color: #fff;
+    }
+
+    .operator-btn.active {
+      background: rgba(0, 240, 255, 0.2);
+      border-color: #00f0ff;
+      color: #00f0ff;
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.25);
+    }
+
+    .operator-logout-btn {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #f87171;
+      border-radius: 6px;
+      padding: 0.35rem 0.65rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .operator-logout-btn:hover {
+      background: rgba(239, 68, 68, 0.3);
+      border-color: #ef4444;
+      color: #fff;
+    }
+
+    .operator-passcode-box {
+      margin: 0.8rem 1.2rem 0;
+      padding: 1rem 1.25rem;
+      background: rgba(8, 12, 20, 0.96);
+      border: 1.5px solid #00f0ff;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0, 240, 255, 0.2), inset 0 0 15px rgba(0, 240, 255, 0.08);
+      animation: fadeInPasscode 0.25s ease-out;
+    }
+
+    @keyframes fadeInPasscode {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .passcode-input {
+      background: rgba(0, 0, 0, 0.65);
+      border: 1px solid rgba(0, 240, 255, 0.45);
+      border-radius: 8px;
+      color: #fff;
+      padding: 0.45rem 0.85rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .passcode-input:focus {
+      border-color: #00f0ff;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+    }
+
     .chat-bubble {
       padding: 1.1rem 1.4rem !important;
       border-radius: 14px !important;
@@ -1296,21 +1425,27 @@
       <div class="jarvis-chat-wrapper">
         <!-- Comms Header -->
         <div class="chat-top-header">
-          <span class="channel-tag">TACTICAL SECURE COMM // CH-01</span>
-          <span>NEURAL ENCRYPTION: 100% // AES-256</span>
+          <div class="channel-tag">KINETIC POUR AI // PUBLIC INTERFACE</div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span>SURFACE TELEMETRY // VERIFIED</span>
+            <a href="https://rohendhar.github.io/jarvis-operator/" target="_blank" style="color: #00f0ff; text-decoration: none; border: 1px solid rgba(0,240,255,0.4); padding: 3px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 700; background: rgba(0,240,255,0.08); transition: all 0.2s;">
+              🔒 OPERATOR PORTAL ↗
+            </a>
+          </div>
         </div>
 
         <div id="chat-history" class="chat-history">
           <div class="chat-msg jarvis">
-            <span class="chat-sender">J.A.R.V.I.S. // AI PROJECT LEAD</span>
+            <span class="chat-sender">J.A.R.V.I.S. // PUBLIC INTELLIGENCE</span>
             <div class="chat-bubble">
-              Good evening, Operator. All systems for the <strong>Kinetic Pour Automated Drink Table</strong> are operational. I have indexed your 8-bottle fluidics, GROTHEN pumps, T8 elevator kinematics, and team deadlines. How may I assist your engineering work tonight?
+              Welcome to the <strong>Kinetic Pour Automated Drink Table</strong> public interface. I am J.A.R.V.I.S., your technical project guide. Feel free to explore our 8-bottle fluidics, GROTHEN peristaltic dosing pumps, T8 elevator kinematics, completed project milestones, and upcoming engineering goals.<br><br>
+              <em>(Note: Project engineering leads requiring internal task checklists, CEAS grant finances, and presentation deadlines should access the dedicated <a href="https://rohendhar.github.io/jarvis-operator/" target="_blank" style="color: #00f0ff; font-weight: 600;">Operator Command Portal</a>.)</em>
             </div>
           </div>
         </div>
 
         <div class="chat-input-row">
-          <input type="text" id="chat-input" class="chat-input" placeholder="Query J.A.R.V.I.S. about CAD, fluidics, grant deadlines, or code..." onkeydown="if(event.key==='Enter') sendJarvisMessage()">
+          <input type="text" id="chat-input" class="chat-input" placeholder="Query J.A.R.V.I.S. about CAD, fluidics, milestones, or project specs..." onkeydown="if(event.key==='Enter') sendJarvisMessage()">
           <button class="btn-primary" onclick="sendJarvisMessage()" style="padding: 0.8rem 1.4rem; font-weight: 700;">TRANSMIT</button>
         </div>
       </div>
@@ -1366,7 +1501,19 @@
             TACTICAL MISSION PRESETS
           </span>
 
-          <div class="prompt-pills-stack">
+          <div class="prompt-pills-stack" id="prompt-pills-stack">
+            <button class="prompt-pill" onclick="askPreset('What is Kinetic Pour and how does it work?')">
+              <span>▸ What is Kinetic Pour?</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #00f0ff;">[ABOUT]</span>
+            </button>
+            <button class="prompt-pill" onclick="askPreset('What milestones have been achieved so far?')">
+              <span>▸ Milestones Achieved</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #00e676;">[STATUS]</span>
+            </button>
+            <button class="prompt-pill" onclick="askPreset('What is the next upcoming milestone for Kinetic Pour?')">
+              <span>▸ Next Upcoming Milestone</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #ffd600;">[GOAL]</span>
+            </button>
             <button class="prompt-pill" onclick="askPreset('What are the 8 bottle parameters and fluidic tubing specs?')">
               <span>▸ 8-Bottle Fluidics &amp; Tubing</span>
               <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #00f0ff;">[SPEC]</span>
@@ -1374,18 +1521,6 @@
             <button class="prompt-pill" onclick="askPreset('Explain the T8 lead screw elevator lift mechanism')">
               <span>▸ T8 Lead Screw Elevator</span>
               <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #ff3b14;">[CAD]</span>
-            </button>
-            <button class="prompt-pill" onclick="askPreset('What is the deadline for the 5-Minute Pitch Deck Video?')">
-              <span>▸ Pitch Video &amp; $600 Payout</span>
-              <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #ffd600;">[DATE]</span>
-            </button>
-            <button class="prompt-pill" onclick="askPreset('Explain the CEAS Innovation Challenge $1,200 grant requirements')">
-              <span>▸ $1,200 Grant Requirements</span>
-              <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #00e676;">[FUND]</span>
-            </button>
-            <button class="prompt-pill" onclick="askPreset('Who is responsible for the electrical and PLC subsystems?')">
-              <span>▸ Team Roster &amp; Responsibilities</span>
-              <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #a34ee8;">[TEAM]</span>
             </button>
           </div>
         </div>
@@ -1429,6 +1564,9 @@
       });
     }
 
+    /* ==========================================
+       J.A.R.V.I.S. PUBLIC USER INTELLIGENCE ENGINE
+       ========================================== */
     async function sendJarvisMessage(text) {
       const input = document.getElementById('chat-input');
       const message = text || input.value.trim();
@@ -1442,7 +1580,7 @@
       const userDiv = document.createElement('div');
       userDiv.className = 'chat-msg user';
       userDiv.innerHTML = `
-        <span class="chat-sender" style="color: #ff5722;">OPERATOR // COMMAND TRANSMIT</span>
+        <span class="chat-sender" style="color: #ff5722;">VISITOR // INQUIRY</span>
         <div class="chat-bubble">${escapeHtml(message)}</div>
       `;
       history.appendChild(userDiv);
@@ -1461,7 +1599,7 @@
         </span>
         <div class="chat-bubble" style="color: #00f0ff; display: flex; align-items: center; gap: 8px;">
           <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#00f0ff; animation: pulseGreen 0.8s infinite alternate;"></span>
-          Computing neural telemetry &amp; Capstone knowledge index...
+          Computing telemetry &amp; project knowledge index...
         </div>
       `;
       history.appendChild(loadingDiv);
@@ -1471,61 +1609,79 @@
         const res = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ sender: 'Operator', message: message })
+          body: JSON.stringify({ 
+            sender: 'Guest', 
+            operatorAuth: false,
+            message: message 
+          })
         });
         const data = await res.json();
         surgeWaveform(false);
         loadingDiv.innerHTML = `
           <span class="chat-sender" style="color: #00f0ff; display: flex; align-items: center; gap: 6px;">
             <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#00f0ff; box-shadow:0 0 8px #00f0ff;"></span>
-            J.A.R.V.I.S. // TACTICAL AI
+            J.A.R.V.I.S. // PUBLIC INTELLIGENCE
           </span>
           <div class="chat-bubble">${formatReply(data.reply || "No response received.")}</div>
         `;
       } catch (err) {
         surgeWaveform(false);
-        // Intelligent Offline Knowledge Fallback
+        // Intelligent Offline Knowledge Fallback (100% Client-Side for GitHub Pages)
         const q = message.toLowerCase();
         let fallbackText = "";
 
-        if (q.includes("bottle") || q.includes("fluid") || q.includes("tube") || q.includes("pump")) {
-          fallbackText = "Here are the engineering parameters for the **8-Bottle Fluidics Subsystem**, Sir:\n\n" +
-            "• **Reservoirs:** 8x 750ml Bordeaux-style modular bottles in a 2x4 3D-printed caddy.\n" +
-            "• **Check Valves:** 1/4\" inline one-way valves to prevent backflow and keep lines primed.\n" +
-            "• **Dosing Pumps:** 8x GROTHEN 24V peristaltic pumps with 3-roller rotor heads.\n" +
-            "• **Tubing:** High-temperature food-grade 3x5mm silicone tubing converging at the 3D printed manifold.\n" +
-            "• **Leads:** Rohendhar & Aron Joseph.";
-        } else if (q.includes("lift") || q.includes("elevator") || q.includes("screw") || q.includes("stepper")) {
-          fallbackText = "Regarding the **T8 Linear Elevator Subsystem**, Sir:\n\n" +
+        if (q.includes("deadline") || q.includes("date") || q.includes("schedule") || q.includes("when") || q.includes("due") || q.includes("milestone") || q.includes("gantt") || q.includes("submit")) {
+          fallbackText = "Here is the verified **Kinetic Pour Milestone Status**:\n\n" +
+            "✅ **Milestones Achieved:**\n" +
+            "• **3D Fluidics Simulation**: 8-bottle hydraulic layout & Three.js interactive simulation completed and validated.\n" +
+            "• **Modular Caddy & Manifold**: Engineered 2x4 bottle mounting chassis and 8-nozzle dispensing head in CAD.\n" +
+            "• **PLC Safety Sequencing**: Mapped 8-stage safety state machine with optical cup-presence interlocks.\n\n" +
+            "🎯 **Next Upcoming Milestone:**\n" +
+            "• **Team Design Proposal & CAD BOM Submission**: Finalizing structural drawings, vendor datasheets, and procurement quotes for hardware assembly.\n\n" +
+            "🔒 *Note: Internal course presentation dates and administrative deadlines are managed securely in the [Operator Portal](https://rohendhar.github.io/jarvis-operator/).*";
+        } else if (q.includes("fund") || q.includes("money") || q.includes("grant") || q.includes("budget") || q.includes("payout") || q.includes("cost") || q.includes("1200") || q.includes("600") || q.includes("challenge") || q.includes("stipend") || q.includes("price")) {
+          fallbackText = "**Kinetic Pour** is an undergraduate Senior Design capstone project developed at the University of Cincinnati, supported through collegiate engineering innovation grants.\n\n" +
+            "🔒 **Access Restricted**: Specific grant allocations, internal working capital distributions, and purchase requisitions are restricted to team members via the secure [Operator Portal](https://rohendhar.github.io/jarvis-operator/).";
+        } else if (q.includes("task") || q.includes("todo") || q.includes("action") || q.includes("what should i") || q.includes("deliverable") || q.includes("assignment")) {
+          fallbackText = "Team member task allocations and internal accountability checklists are restricted to authorized leads.\n\n" +
+            "Authorized team members should log in at the [Operator Command Portal](https://rohendhar.github.io/jarvis-operator/) to review active deliverables.";
+        } else if (q.includes("team") || q.includes("who") || q.includes("roles") || q.includes("members") || q.includes("roster")) {
+          fallbackText = "**Kinetic Pour Engineering Team:**\n\n" +
+            "• **Rohendhar** — Project Manager & Systems Integration Lead\n" +
+            "• **Aron Joseph** — Finance & Bottling Subsystem Lead\n" +
+            "• **Eli Radabaugh** — Electrical & Industrial Automation Lead\n" +
+            "• **Shyam Patel** — Mechanical Kinematics & Operations Lead\n\n" +
+            "🔒 *Detailed task checklists and deliverable tracking are hosted on the [Operator Portal](https://rohendhar.github.io/jarvis-operator/).*";
+        } else if (q.includes("bottle") || q.includes("fluid") || q.includes("tube") || q.includes("pump") || q.includes("dispens")) {
+          fallbackText = "Here are the engineering specifications for the **8-Bottle Fluidics Subsystem**:\n\n" +
+            "• **Reservoirs:** 8x 750ml Bordeaux-style modular bottles seated in a 2x4 3D-printed caddy.\n" +
+            "• **Check Valves:** 1/4\" inline one-way check valves to prevent backflow and keep lines primed.\n" +
+            "• **Dosing Pumps:** 8x GROTHEN 24V peristaltic pumps with 3-roller rotor heads for positive-displacement metering.\n" +
+            "• **Tubing:** High-temperature food-grade 3x5mm silicone tubing converging at the 3D-printed central manifold.\n" +
+            "• **Sanitation:** Fully purgeable liquid routing designed for clean-in-place CIP protocols.";
+        } else if (q.includes("lift") || q.includes("elevator") || q.includes("screw") || q.includes("stepper") || q.includes("motor") || q.includes("rail")) {
+          fallbackText = "Regarding the **T8 Linear Elevator Subsystem**:\n\n" +
             "• **Mechanism:** NEMA 17 stepper motor driving a T8 stainless lead screw with dual precision guide rods.\n" +
             "• **Stroke Travel:** 100 mm vertical stroke (lowers cup into dispensing bay, then lifts flush with tabletop).\n" +
             "• **Sensors:** IR optical photocell cup-presence check and optical microswitch endstops.\n" +
             "• **Status:** Kinematics calibrated to 10ms cycle clock.";
-        } else if (q.includes("deadline") || q.includes("date") || q.includes("pitch") || q.includes("video")) {
-          fallbackText = "Here are the critical **Senior Design Milestone Deadlines**, Sir:\n\n" +
-            "• **Wednesday, Sept 23:** Team Design Proposal & CAD BOM submission.\n" +
-            "• **Monday, Sept 28:** 5-Minute Pitch Deck Video due (**$600 upfront team payout**).\n" +
-            "• **October 15:** Innovation Challenge Milestone 2 progress review.";
-        } else if (q.includes("fund") || q.includes("grant") || q.includes("innovation") || q.includes("1200") || q.includes("challenge")) {
-          fallbackText = "Here is the financial breakdown for the **CEAS Innovation Challenge**, Sir:\n\n" +
-            "• **Guaranteed Grant:** **$1,200.00** ($300/person) for completing the deliverables.\n" +
-            "• **Upfront Working Capital:** **$600.00** ($150/person) upon submitting the Pitch Video on Sept 28.\n" +
-            "• **Top 25% Bonus:** Additional **$1,200.00** bonus pool plus podium prizes up to $700/person.\n" +
-            "• **Rules:** Itemized receipts required via the Canvas Purchase Request Form.";
-        } else if (q.includes("team") || q.includes("roster") || q.includes("who")) {
-          fallbackText = "Here is the **Team Avengers Roster & Assignments**, Sir:\n\n" +
-            "• **Ro:** Documentation, Minutes & AI Integration (Lead)\n" +
-            "• **Aron:** Procurement, Finance & Budgeting\n" +
-            "• **Eli:** Inventory & Resource Management\n" +
-            "• **Shyam:** Time Management & Scheduling";
+        } else if (q.includes("ice") || q.includes("cool") || q.includes("thermal")) {
+          fallbackText = "Regarding the **Thermal Management Subsystem**:\n\n" +
+            "• **Architecture Decision:** Motorized compressors were ruled out due to bulk, plumbing, and power draw.\n" +
+            "• **Current Baseline:** Insulated cold bay utilizing **reusable food-grade 304 stainless steel whiskey stones** or compact 12V Peltier thermoelectric cold plates.\n" +
+            "• **Insulation:** Closed-cell neoprene barrier preventing condensation in the electrical compartment.";
         } else {
-          fallbackText = "At your service, Sir. J.A.R.V.I.S. neural telemetry is operational.\n\n" +
-            "All engineering subsystems for the **Kinetic Pour Drink Table** are indexed (8-bottle fluidics, T8 elevator, GROTHEN pumps, and CEAS Innovation Challenge deadlines).\n\n" +
-            "*(Note: Running in high-speed local mode. To connect to full Gemini cloud reasoning, launch via `python app.py` or the Cloudflare tunnel)*.";
+          fallbackText = "Hello! I am **J.A.R.V.I.S.**, systems intelligence for the **Kinetic Pour Automated Drink Table**.\n\n" +
+            "You are currently viewing the **Public Interface** (Surface Telemetry). I can assist with:\n" +
+            "• **Project Overview & Architecture**: Automated precision drink mixing table with 8 peristaltic pumps.\n" +
+            "• **Milestones Achieved**: Completed 3D fluidics simulation, CAD manifold, and PLC safety logic.\n" +
+            "• **Next Milestone**: Team Design Proposal & CAD BOM submission.\n" +
+            "• **Subsystems**: GROTHEN 24V pumps, T8 elevator lift, and capacitive touchscreen HMI.\n\n" +
+            "*(For internal team task lists, CEAS grant finances, and presentation deadlines, team operators should access the [Operator Portal](https://rohendhar.github.io/jarvis-operator/)).*";
         }
 
         loadingDiv.innerHTML = `
-          <span class="chat-sender">J.A.R.V.I.S. // LOCAL KNOWLEDGE ENGINE</span>
+          <span class="chat-sender">J.A.R.V.I.S. // PUBLIC INTELLIGENCE</span>
           <div class="chat-bubble">${formatReply(fallbackText)}</div>
         `;
       }
